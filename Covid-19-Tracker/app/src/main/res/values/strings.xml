@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Covid-19 Tracker</string>
     <string name="label_cases">Cases</string>
+    <string name="label_settings">Settings</string>
+    <string name="label_global_cases">Global Cases</string>
+    <string name="label_confirmed">Confirmed</string>
     <string name="label_deaths">Deaths</string>
+    <string name="label_recovered">Recovered</string>
+    <string name="label_default_number">0</string>
 </resources>
