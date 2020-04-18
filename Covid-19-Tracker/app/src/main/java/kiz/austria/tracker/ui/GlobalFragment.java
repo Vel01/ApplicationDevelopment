@@ -11,15 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.DataEntry;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.charts.Pie;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.data.DataParser;
 import kiz.austria.tracker.data.PathContract;
@@ -34,7 +25,6 @@ public class GlobalFragment extends Fragment implements DataParser.OnDataAvailab
 
     private TextView tvCases, tvDeaths, tvRecovered;
     private int disCases, disDeaths, disRecovered;
-    private AnyChartView pieGlobalCases;
 
     @Nullable
     @Override
@@ -43,21 +33,7 @@ public class GlobalFragment extends Fragment implements DataParser.OnDataAvailab
         tvCases = view.findViewById(R.id.tv_cases);
         tvDeaths = view.findViewById(R.id.tv_deaths);
         tvRecovered = view.findViewById(R.id.tv_recovered);
-        pieGlobalCases = view.findViewById(R.id.any_pie_global_cases);
         return view;
-    }
-
-    private void pieInit() {
-        Pie pie = AnyChart.pie();
-
-        List<DataEntry> dataEntries = new ArrayList<>();
-        Log.d(TAG, "pieInit: " + disCases);
-        dataEntries.add(new ValueDataEntry("Cases", disCases));
-        dataEntries.add(new ValueDataEntry("Deaths", disDeaths));
-        dataEntries.add(new ValueDataEntry("Recovered", disRecovered));
-
-        pie.data(dataEntries);
-        pieGlobalCases.setChart(pie);
     }
 
     @Override
@@ -66,7 +42,6 @@ public class GlobalFragment extends Fragment implements DataParser.OnDataAvailab
         DataParser dataParser = DataParser.getInstance(this);
         dataParser.execute(PathContract.Link.DATA_GLOBAL);
     }
-
 
     @Override
     public void onDataAvailable(ListModel<Countries> data, RawData.DownloadStatus status) {
@@ -80,7 +55,6 @@ public class GlobalFragment extends Fragment implements DataParser.OnDataAvailab
                 disRecovered = Integer.parseInt(countries.getRecovered());
                 AnimationContract.Display.countNumber(tvRecovered, disRecovered);
             }
-            pieInit();
 
         } else Log.d(TAG, "onDownloadComplete: status " + status);
     }

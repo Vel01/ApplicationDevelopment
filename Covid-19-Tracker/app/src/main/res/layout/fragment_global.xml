@@ -119,18 +119,4 @@
 
     </RelativeLayout>
 
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp">
-
-        <com.anychart.AnyChartView
-            android:id="@+id/any_pie_global_cases"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-
-    </RelativeLayout>
-
 </LinearLayout>
