@@ -25,18 +25,13 @@ public class DataParser extends AsyncTask<String, Void, ListModel<Countries>> im
         void onDataAvailable(ListModel<Countries> coverage, final RawData.DownloadStatus status);
     }
 
-    private static DataParser mDataParser;
-
     private DataParser(OnDataAvailable onDataAvailable) {
         mOnDataAvailable = onDataAvailable;
         mCoverages = new ListModel<>();
     }
 
     public static DataParser getInstance(OnDataAvailable onDataAvailable) {
-        if (mDataParser == null) {
-            mDataParser = new DataParser(onDataAvailable);
-        }
-        return mDataParser;
+        return new DataParser(onDataAvailable);
     }
 
 

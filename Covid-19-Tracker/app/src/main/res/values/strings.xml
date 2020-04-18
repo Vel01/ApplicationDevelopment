@@ -7,4 +7,5 @@
     <string name="label_deaths">Deaths</string>
     <string name="label_recovered">Recovered</string>
     <string name="label_default_number">0</string>
+    <string name="label_view_all_countries">VIEW ALL COUNTRIES</string>
 </resources>

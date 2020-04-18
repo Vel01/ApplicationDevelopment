@@ -3,6 +3,7 @@ package kiz.austria.tracker.ui;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,4 +44,5 @@ public class MainActivity extends AppCompatActivity  {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

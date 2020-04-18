@@ -17,9 +17,9 @@
         android:textStyle="bold" />
 
     <RelativeLayout
-        android:layout_marginTop="4dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal"
         android:padding="8dp">
 
@@ -141,11 +141,11 @@
             android:layout_below="@+id/chart_global_cases"
             android:layout_centerInParent="true"
             android:layout_marginBottom="8dp"
-            android:text="Last Update: April 18, 2020"
             android:textColor="@android:color/secondary_text_light"
             android:textSize="12sp" />
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/btn_view_all_countries"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_update_date"
@@ -167,9 +167,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="VIEW ALL COUNTRIES"
+                    android:text="@string/label_view_all_countries"
                     android:textColor="@android:color/secondary_text_light"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

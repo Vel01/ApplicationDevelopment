@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -35,11 +36,13 @@ import kiz.austria.tracker.model.Countries;
 import kiz.austria.tracker.util.AnimationContract;
 import kiz.austria.tracker.util.BaseFragment;
 
-public class GlobalFragment extends BaseFragment implements DataParser.OnDataAvailable, OnChartValueSelectedListener {
+public class GlobalFragment extends BaseFragment implements DataParser.OnDataAvailable, OnChartValueSelectedListener, View.OnClickListener {
 
     private static final String TAG = "GlobalFragment";
 
-    private TextView tvCases, tvDeaths, tvRecovered;
+    private TextView tvCases;
+    private TextView tvDeaths;
+    private TextView tvRecovered;
     private int disCases, disDeaths, disRecovered;
     private PieChart chart;
 
@@ -47,9 +50,13 @@ public class GlobalFragment extends BaseFragment implements DataParser.OnDataAva
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_global, container, false);
+        TextView tvUpdate = view.findViewById(R.id.tv_update_date);
+        tvUpdate.setText(getCurrentDate());
         tvCases = view.findViewById(R.id.tv_cases);
         tvDeaths = view.findViewById(R.id.tv_deaths);
         tvRecovered = view.findViewById(R.id.tv_recovered);
+        CardView btnViewAllCountries = view.findViewById(R.id.btn_view_all_countries);
+        btnViewAllCountries.setOnClickListener(this);
         chart = view.findViewById(R.id.chart_global_cases);
         return view;
     }
@@ -157,4 +164,11 @@ public class GlobalFragment extends BaseFragment implements DataParser.OnDataAva
     public void onNothingSelected() {
         Log.i("PieChart", "nothing selected");
     }
+
+    @Override
+    public void onClick(View v) {
+        assert getFragmentManager() != null;
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new CountriesFragment()).commit();
+    }
+
 }
