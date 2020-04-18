@@ -17,10 +17,8 @@ import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.data.DataParser;
@@ -28,6 +26,7 @@ import kiz.austria.tracker.data.PathContract;
 import kiz.austria.tracker.data.RawData;
 import kiz.austria.tracker.list.ListModel;
 import kiz.austria.tracker.model.Countries;
+import kiz.austria.tracker.util.AnimationContract;
 
 public class GlobalFragment extends Fragment implements DataParser.OnDataAvailable {
 
@@ -36,39 +35,6 @@ public class GlobalFragment extends Fragment implements DataParser.OnDataAvailab
     private TextView tvCases, tvDeaths, tvRecovered;
     private int disCases, disDeaths, disRecovered;
     private AnyChartView pieGlobalCases;
-
-    @Override
-    public void onDataAvailable(ListModel<Countries> data, RawData.DownloadStatus status) {
-        if (status == RawData.DownloadStatus.OK) {
-            for (Countries countries : data.getCoverages()) {
-                Log.d(TAG, "onDownloadComplete: data is " + countries.toString());
-                disCases = Integer.parseInt(countries.getCases());
-                tvCases.setText(NumberFormat.getNumberInstance(Locale.US).format(disCases));
-                disDeaths = Integer.parseInt(countries.getDeaths());
-                tvDeaths.setText(NumberFormat.getNumberInstance(Locale.US).format(disDeaths));
-                disRecovered = Integer.parseInt(countries.getRecovered());
-                tvRecovered.setText(NumberFormat.getNumberInstance(Locale.US).format(disRecovered));
-            }
-            pieInit();
-
-        } else Log.d(TAG, "onDownloadComplete: status " + status);
-    }
-
-    private void pieInit() {
-
-
-        Pie pie = AnyChart.pie();
-
-        List<DataEntry> dataEntries = new ArrayList<>();
-        Log.d(TAG, "pieInit: " + disCases);
-        dataEntries.add(new ValueDataEntry("Cases", disCases));
-        dataEntries.add(new ValueDataEntry("Deaths", disDeaths));
-        dataEntries.add(new ValueDataEntry("Recovered", disRecovered));
-
-        pie.data(dataEntries);
-        pieGlobalCases.setChart(pie);
-
-    }
 
     @Nullable
     @Override
@@ -81,10 +47,42 @@ public class GlobalFragment extends Fragment implements DataParser.OnDataAvailab
         return view;
     }
 
+    private void pieInit() {
+        Pie pie = AnyChart.pie();
+
+        List<DataEntry> dataEntries = new ArrayList<>();
+        Log.d(TAG, "pieInit: " + disCases);
+        dataEntries.add(new ValueDataEntry("Cases", disCases));
+        dataEntries.add(new ValueDataEntry("Deaths", disDeaths));
+        dataEntries.add(new ValueDataEntry("Recovered", disRecovered));
+
+        pie.data(dataEntries);
+        pieGlobalCases.setChart(pie);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         DataParser dataParser = DataParser.getInstance(this);
         dataParser.execute(PathContract.Link.DATA_GLOBAL);
     }
+
+
+    @Override
+    public void onDataAvailable(ListModel<Countries> data, RawData.DownloadStatus status) {
+        if (status == RawData.DownloadStatus.OK) {
+            for (Countries countries : data.getCoverages()) {
+                Log.d(TAG, "onDownloadComplete: data is " + countries.toString());
+                disCases = Integer.parseInt(countries.getCases());
+                AnimationContract.Display.countNumber(tvCases, disCases);
+                disDeaths = Integer.parseInt(countries.getDeaths());
+                AnimationContract.Display.countNumber(tvDeaths, disDeaths);
+                disRecovered = Integer.parseInt(countries.getRecovered());
+                AnimationContract.Display.countNumber(tvRecovered, disRecovered);
+            }
+            pieInit();
+
+        } else Log.d(TAG, "onDownloadComplete: status " + status);
+    }
+
 }

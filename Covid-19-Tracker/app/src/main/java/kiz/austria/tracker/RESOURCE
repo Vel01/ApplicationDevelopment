@@ -1,0 +1,23 @@
+
+source site:
+https://github.com/sorxrob/coronavirus-ph-api
+https://github.com/javieraviles/covidAPI
+https://coronavirus-19-api.herokuapp.com/tabs/tab1
+
+===============================
+
+GET https://coronavirus-19-api.herokuapp.com/all -> global info
+
+GET https://coronavirus-19-api.herokuapp.com/countries -> all countries info
+
+GET https://coronavirus-19-api.herokuapp.com/countries/{countryName} -> country specific information
+ex. https://coronavirus-19-api.herokuapp.com/countries/North%20America
+
+Philippines only
+https://coronavirus-ph-api.herokuapp.com/cases
+
+----------------------------------------------
+chart features
+https://www.youtube.com/watch?v=qWBA2ikLJjU
+Count animation
+https://www.tutorialspoint.com/how-to-make-count-animation-in-android-textview
