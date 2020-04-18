@@ -1,7 +1,6 @@
 package kiz.austria.tracker.ui;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -35,16 +33,15 @@ import kiz.austria.tracker.data.RawData;
 import kiz.austria.tracker.list.ListModel;
 import kiz.austria.tracker.model.Countries;
 import kiz.austria.tracker.util.AnimationContract;
+import kiz.austria.tracker.util.BaseFragment;
 
-public class GlobalFragment extends Fragment implements DataParser.OnDataAvailable, OnChartValueSelectedListener {
+public class GlobalFragment extends BaseFragment implements DataParser.OnDataAvailable, OnChartValueSelectedListener {
 
     private static final String TAG = "GlobalFragment";
 
     private TextView tvCases, tvDeaths, tvRecovered;
     private int disCases, disDeaths, disRecovered;
     private PieChart chart;
-    protected Typeface tfRegular;
-    protected Typeface tfLight;
 
     @Nullable
     @Override
@@ -54,10 +51,6 @@ public class GlobalFragment extends Fragment implements DataParser.OnDataAvailab
         tvDeaths = view.findViewById(R.id.tv_deaths);
         tvRecovered = view.findViewById(R.id.tv_recovered);
         chart = view.findViewById(R.id.chart_global_cases);
-        if (getActivity() != null) {
-            tfRegular = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
-            tfLight = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Light.ttf");
-        }
         return view;
     }
 
@@ -91,7 +84,7 @@ public class GlobalFragment extends Fragment implements DataParser.OnDataAvailab
         chart.setUsePercentValues(true);
         chart.getDescription().setEnabled(false);
         chart.setExtraOffsets(5, 5, 5, 5);
-        chart.setDragDecelerationFrictionCoef(0.99f);
+        chart.setDragDecelerationFrictionCoef(0.95f);
         chart.setDrawHoleEnabled(true);
         chart.setHoleColor(Color.WHITE);
         chart.setTransparentCircleColor(Color.WHITE);
