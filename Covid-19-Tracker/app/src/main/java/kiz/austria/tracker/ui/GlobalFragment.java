@@ -6,11 +6,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -55,7 +55,7 @@ public class GlobalFragment extends BaseFragment implements DataParser.OnDataAva
         tvCases = view.findViewById(R.id.tv_cases);
         tvDeaths = view.findViewById(R.id.tv_deaths);
         tvRecovered = view.findViewById(R.id.tv_recovered);
-        CardView btnViewAllCountries = view.findViewById(R.id.btn_view_all_countries);
+        LinearLayout btnViewAllCountries = view.findViewById(R.id.btn_view_all_countries);
         btnViewAllCountries.setOnClickListener(this);
         chart = view.findViewById(R.id.chart_global_cases);
         return view;
