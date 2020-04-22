@@ -177,9 +177,13 @@
             android:contentDescription="Search Countries"
             android:focusable="true"
             android:src="@drawable/ic_sort" />
-
-
     </RelativeLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_countries_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:scrollbars="vertical" />
 
 </LinearLayout>
