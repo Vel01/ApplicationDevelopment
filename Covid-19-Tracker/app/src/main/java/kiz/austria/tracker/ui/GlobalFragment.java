@@ -2,6 +2,7 @@ package kiz.austria.tracker.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -46,10 +48,24 @@ public class GlobalFragment extends BaseFragment implements DataParser.OnDataAva
     private int disCases, disDeaths, disRecovered;
     private PieChart chart;
 
+    private ShimmerFrameLayout mShimmerFrameLayout;
+    private LinearLayout mChildShimmer, mChildMain;
+    private DataParser.OnDataAvailable mOnDataAvailable;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DataParser dataParser = DataParser.getInstance(this);
+        dataParser.execute(PathContract.Link.DATA_GLOBAL);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_global, container, false);
+        mShimmerFrameLayout = view.findViewById(R.id.layout_global_shimmer);
+        mChildShimmer = view.findViewById(R.id.child_layout_global_shimmer);
+        mChildMain = view.findViewById(R.id.child_layout_global_main);
         TextView tvUpdate = view.findViewById(R.id.tv_update_date);
         tvUpdate.setText(getCurrentDate());
         tvCases = view.findViewById(R.id.tv_cases);
@@ -58,15 +74,25 @@ public class GlobalFragment extends BaseFragment implements DataParser.OnDataAva
         LinearLayout btnViewAllCountries = view.findViewById(R.id.btn_view_all_countries);
         btnViewAllCountries.setOnClickListener(this);
         chart = view.findViewById(R.id.chart_global_cases);
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mChildShimmer.getVisibility() == View.VISIBLE) {
+                    mShimmerFrameLayout.stopShimmer();
+                    mShimmerFrameLayout.hideShimmer();
+                    mChildShimmer.setVisibility(View.GONE);
+                    mChildMain.setVisibility(View.VISIBLE);
+                    AnimationContract.Display.countNumber(tvCases, disCases);
+                    AnimationContract.Display.countNumber(tvDeaths, disDeaths);
+                    AnimationContract.Display.countNumber(tvRecovered, disRecovered);
+                    setPieChart();
+                }
+            }
+        }, 1000);
+
         return view;
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        DataParser dataParser = DataParser.getInstance(this);
-        dataParser.execute(PathContract.Link.DATA_GLOBAL);
     }
 
     @Override
@@ -75,12 +101,8 @@ public class GlobalFragment extends BaseFragment implements DataParser.OnDataAva
             for (Countries countries : data.getCoverages()) {
                 Log.d(TAG, "onDownloadComplete: data is " + countries.toString());
                 disCases = Integer.parseInt(countries.getCases());
-                AnimationContract.Display.countNumber(tvCases, disCases);
                 disDeaths = Integer.parseInt(countries.getDeaths());
-                AnimationContract.Display.countNumber(tvDeaths, disDeaths);
                 disRecovered = Integer.parseInt(countries.getRecovered());
-                AnimationContract.Display.countNumber(tvRecovered, disRecovered);
-                setPieChart();
             }
 
         } else Log.d(TAG, "onDownloadComplete: status " + status);
