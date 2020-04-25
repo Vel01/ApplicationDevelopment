@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import kiz.austria.tracker.R;
@@ -14,7 +15,6 @@ import kiz.austria.tracker.R;
 public class MainActivity extends AppCompatActivity implements InflateFragment {
 
     private static final String TAG = "MainActivity";
-
 
     @Override
     public void inflateCountriesFragment() {
@@ -74,5 +74,12 @@ public class MainActivity extends AppCompatActivity implements InflateFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (!(fragment instanceof OnBackPressed) || !((OnBackPressed) fragment).onBackPressed()) {
+            super.onBackPressed();
+        }
 
+    }
 }

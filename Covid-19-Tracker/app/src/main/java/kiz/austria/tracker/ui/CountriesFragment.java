@@ -23,7 +23,7 @@ import kiz.austria.tracker.data.CountriesDataParser;
 import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.model.Nation;
 
-public class CountriesFragment extends Fragment implements View.OnClickListener, CountriesDataParser.OnDataAvailable {
+public class CountriesFragment extends Fragment implements View.OnClickListener, CountriesDataParser.OnDataAvailable, OnBackPressed {
 
     private static final String TAG = "CountriesFragment";
 
@@ -78,5 +78,9 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         mInflatingFragment.inflateGlobalFragment();
     }
 
-
+    @Override
+    public boolean onBackPressed() {
+        mInflatingFragment.inflateGlobalFragment();
+        return true;
+    }
 }
