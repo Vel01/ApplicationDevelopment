@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements InflateFragment {
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (!(fragment instanceof OnBackPressed) || !((OnBackPressed) fragment).onBackPressed()) {
-            super.onBackPressed();
+            //TODO: AlertDialog, ask user if he/she want's to quit the app.
+            finish();
         }
-
     }
 }

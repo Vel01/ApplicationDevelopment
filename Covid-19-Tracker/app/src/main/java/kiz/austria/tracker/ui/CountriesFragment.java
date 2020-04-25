@@ -28,13 +28,24 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
     private static final String TAG = "CountriesFragment";
 
     @Override
+    public void onClick(View v) {
+        mInflatingFragment.inflateGlobalFragment();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        //TODO: AlertDialog, ask user if he/she want's to quit the app.
+        getActivity().finish();
+        return true;
+    }
+
+    @Override
     public void onDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK) {
             Log.d(TAG, "onDataAvailable: started with " + nations.toString());
             mNations.addAll(nations);
             mCountriesRecyclerAdapter.notifyDataSetChanged();
         }
-
     }
 
     //vars
@@ -73,14 +84,5 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         mInflatingFragment = (InflateFragment) context;
     }
 
-    @Override
-    public void onClick(View v) {
-        mInflatingFragment.inflateGlobalFragment();
-    }
 
-    @Override
-    public boolean onBackPressed() {
-        mInflatingFragment.inflateGlobalFragment();
-        return true;
-    }
 }

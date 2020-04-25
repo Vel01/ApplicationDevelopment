@@ -60,6 +60,10 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
         } else Log.d(TAG, "onDownloadComplete: status " + status);
     }
 
+    @Override
+    public void onClick(View v) {
+        mInflatingFragment.inflateCountriesFragment();
+    }
 
     //widgets
     private PieChart chart;
@@ -210,11 +214,6 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
     @Override
     public void onNothingSelected() {
         Log.i("PieChart", "nothing selected");
-    }
-
-    @Override
-    public void onClick(View v) {
-        mInflatingFragment.inflateCountriesFragment();
     }
 
 }
