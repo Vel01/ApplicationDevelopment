@@ -45,9 +45,9 @@ public class NationDataParser<T extends Nation> extends AsyncTask<String, Void, 
     }
 
     @Override
-    protected void onPostExecute(Nation nationListModel) {
+    protected void onPostExecute(Nation nation) {
         if (mOnDataAvailable != null) {
-            mOnDataAvailable.onDataAvailable(nationListModel, mDownloadStatus);
+            mOnDataAvailable.onDataAvailable(nation, mDownloadStatus);
         }
     }
 

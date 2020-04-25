@@ -16,12 +16,12 @@ import kiz.austria.tracker.R;
 public class CountriesFragment extends Fragment implements View.OnClickListener {
 
     //vars
-    private InflatingFragment mInflatingFragment;
+    private InflateFragment mInflatingFragment;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mInflatingFragment = (InflatingFragment) context;
+        mInflatingFragment = (InflateFragment) context;
     }
 
     @Nullable

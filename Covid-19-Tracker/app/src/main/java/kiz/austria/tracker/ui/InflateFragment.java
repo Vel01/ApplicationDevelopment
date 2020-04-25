@@ -1,6 +1,6 @@
 package kiz.austria.tracker.ui;
 
-public interface InflatingFragment {
+public interface InflateFragment {
 
     void inflateCountriesFragment();
 

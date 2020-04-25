@@ -32,12 +32,13 @@ import java.util.ArrayList;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.data.Addresses;
-import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.data.JSONRawData;
+import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TextCountAnimation;
 
-public class GlobalFragment extends BaseFragment implements NationDataParser.OnDataAvailable, OnChartValueSelectedListener, View.OnClickListener {
+public class GlobalFragment extends BaseFragment implements NationDataParser.OnDataAvailable,
+        OnChartValueSelectedListener, View.OnClickListener {
 
     private static final String TAG = "GlobalFragment";
 
@@ -52,9 +53,13 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
             disDeaths = Integer.parseInt(global.getDeaths());
             disRecovered = Integer.parseInt(global.getRecovered());
 
-
+            TextCountAnimation.Display.countNumber(tvCases, disCases);
+            TextCountAnimation.Display.countNumber(tvDeaths, disDeaths);
+            TextCountAnimation.Display.countNumber(tvRecovered, disRecovered);
+            initPieChart();
         } else Log.d(TAG, "onDownloadComplete: status " + status);
     }
+
 
     //widgets
     private PieChart chart;
@@ -66,18 +71,24 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
 
     //vars
     private int disCases, disDeaths, disRecovered;
-    private InflatingFragment mInflatingFragment;
-
+    private InflateFragment mInflatingFragment;
 
     @Override
     public void onAttach(@NonNull Context context) {
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
-        NationDataParser<Nation> nationDataParser = NationDataParser.getInstance(this);
-        nationDataParser.execute(Addresses.Link.DATA_GLOBAL);
 
-        mInflatingFragment = (InflatingFragment) context;
+        NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
+        nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+
+        mInflatingFragment = (InflateFragment) context;
         Log.d(TAG, "onAttach: ended");
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Nullable
@@ -113,13 +124,10 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
                     mShimmerFrameLayout.hideShimmer();
                     mChildShimmer.setVisibility(View.GONE);
                     mChildMain.setVisibility(View.VISIBLE);
-                    TextCountAnimation.Display.countNumber(tvCases, disCases);
-                    TextCountAnimation.Display.countNumber(tvDeaths, disDeaths);
-                    TextCountAnimation.Display.countNumber(tvRecovered, disRecovered);
-                    initPieChart();
+
                 }
             }
-        }, 1000);
+        }, 700);
 
         Log.d(TAG, "onCreateView: ended");
         return view;
@@ -190,7 +198,6 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
         chart.invalidate();
     }
 
-
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         if (e == null)
@@ -209,6 +216,5 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
     public void onClick(View v) {
         mInflatingFragment.inflateCountriesFragment();
     }
-
 
 }

@@ -26,7 +26,7 @@ public class TextCountAnimation {
                     mTextField.setText(NumberFormat.getNumberInstance(Locale.US).format(animation.getAnimatedValue()));
                 }
             });
-            animator.setDuration(1000);
+            animator.setDuration(1200);
             animator.start();
         }
     }

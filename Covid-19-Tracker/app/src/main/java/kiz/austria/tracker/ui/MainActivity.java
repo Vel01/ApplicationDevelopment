@@ -11,9 +11,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import kiz.austria.tracker.R;
 
-public class MainActivity extends AppCompatActivity implements InflatingFragment {
+public class MainActivity extends AppCompatActivity implements InflateFragment {
 
     private static final String TAG = "MainActivity";
+
 
     @Override
     public void inflateCountriesFragment() {
