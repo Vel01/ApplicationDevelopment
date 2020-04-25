@@ -5,28 +5,30 @@ import android.os.AsyncTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import kiz.austria.tracker.model.Country;
 import kiz.austria.tracker.model.Global;
+import kiz.austria.tracker.model.Nation;
 
-public class GlobalDataParser extends AsyncTask<String, Void, Global> implements JSONRawData.OnDownloadComplete {
+public class NationDataParser<T extends Nation> extends AsyncTask<String, Void, Nation> implements JSONRawData.OnDownloadComplete {
 
     private static final String TAG = "RawDataParser";
 
     private OnDataAvailable mOnDataAvailable;
     private JSONRawData.DownloadStatus mDownloadStatus;
 
-    private Global mGlobal;
+    private Nation mNation;
     private String destinationUri;
 
     public interface OnDataAvailable {
-        void onDataAvailable(Global coverage, final JSONRawData.DownloadStatus status);
+        void onDataAvailable(Nation coverage, final JSONRawData.DownloadStatus status);
     }
 
-    private GlobalDataParser(OnDataAvailable onDataAvailable) {
+    private NationDataParser(OnDataAvailable onDataAvailable) {
         mOnDataAvailable = onDataAvailable;
     }
 
-    public static GlobalDataParser getInstance(OnDataAvailable onDataAvailable) {
-        return new GlobalDataParser(onDataAvailable);
+    public static NationDataParser<Nation> getInstance(OnDataAvailable onDataAvailable) {
+        return new NationDataParser<>(onDataAvailable);
     }
 
     public void setOnDataAvailable(OnDataAvailable onDataAvailable) {
@@ -35,17 +37,17 @@ public class GlobalDataParser extends AsyncTask<String, Void, Global> implements
 
 
     @Override
-    protected Global doInBackground(String... path) {
+    protected Nation doInBackground(String... path) {
         destinationUri = path[0];
         JSONRawData JSONRawData = new JSONRawData(this);
         JSONRawData.runInTheSameThread(destinationUri);
-        return mGlobal;
+        return mNation;
     }
 
     @Override
-    protected void onPostExecute(Global countriesListModel) {
+    protected void onPostExecute(Nation nationListModel) {
         if (mOnDataAvailable != null) {
-            mOnDataAvailable.onDataAvailable(countriesListModel, mDownloadStatus);
+            mOnDataAvailable.onDataAvailable(nationListModel, mDownloadStatus);
         }
     }
 
@@ -77,26 +79,25 @@ public class GlobalDataParser extends AsyncTask<String, Void, Global> implements
 //                }
 //            }
 
-//            if (destinationUri.equals(PathContract.Link.DATA_COUNTRY)) {
-//                try {
-//                    JSONObject currentCovered = new JSONObject(data);
-//                    String country = currentCovered.getString("country");
-//                    String cases = currentCovered.getString("cases");
-//                    String todayCases = currentCovered.getString("todayCases");
-//                    String deaths = currentCovered.getString("deaths");
-//                    String todayDeaths = currentCovered.getString("todayDeaths");
-//                    String recovered = currentCovered.getString("recovered");
-//                    String active = currentCovered.getString("active");
-//                    String critical = currentCovered.getString("critical");
-//                    Country coverage = new Country(country, cases, deaths, todayCases, todayDeaths, recovered, active, critical);
-//                    mGlobal.addCoverage(coverage);
-//                    mDownloadStatus = RawData.DownloadStatus.OK;
-//
-//                } catch (JSONException e) {
-//                    e.getMessage();
-//                    e.printStackTrace();
-//                }
-//            }
+            if (destinationUri.equals(Addresses.Link.DATA_COUNTRY)) {
+                try {
+                    JSONObject currentCovered = new JSONObject(data);
+                    String country = currentCovered.getString("country");
+                    String cases = currentCovered.getString("cases");
+                    String todayCases = currentCovered.getString("todayCases");
+                    String deaths = currentCovered.getString("deaths");
+                    String todayDeaths = currentCovered.getString("todayDeaths");
+                    String recovered = currentCovered.getString("recovered");
+                    String active = currentCovered.getString("active");
+                    String critical = currentCovered.getString("critical");
+                    mNation = new Country(country, cases, deaths, todayCases, todayDeaths, recovered, active, critical);
+                    mDownloadStatus = JSONRawData.DownloadStatus.OK;
+
+                } catch (JSONException e) {
+                    e.getMessage();
+                    e.printStackTrace();
+                }
+            }
 
 
             if (destinationUri.equals(Addresses.Link.DATA_GLOBAL)) {
@@ -105,7 +106,7 @@ public class GlobalDataParser extends AsyncTask<String, Void, Global> implements
                     String cases = jsonObject.getString("cases");
                     String deaths = jsonObject.getString("deaths");
                     String recovered = jsonObject.getString("recovered");
-                    mGlobal = new Global(cases, deaths, recovered);
+                    mNation = new Global(cases, deaths, recovered);
                     mDownloadStatus = JSONRawData.DownloadStatus.OK;
                 } catch (JSONException e) {
                     e.printStackTrace();

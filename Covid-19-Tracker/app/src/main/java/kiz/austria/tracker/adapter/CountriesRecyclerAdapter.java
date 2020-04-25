@@ -9,15 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import kiz.austria.tracker.model.Countries;
+import kiz.austria.tracker.model.Nation;
 
 public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecyclerAdapter.ViewHolder> {
     //TODO: Complete Adapter Implementation.
 
-    private ArrayList<Countries> mCountries;
+    private ArrayList<Nation> mCountries;
     private Context mContext;
 
-    public CountriesRecyclerAdapter(Context context, ArrayList<Countries> countries) {
+    public CountriesRecyclerAdapter(Context context, ArrayList<Nation> countries) {
         mContext = context;
         mCountries = countries;
     }

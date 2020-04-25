@@ -32,17 +32,17 @@ import java.util.ArrayList;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.data.Addresses;
-import kiz.austria.tracker.data.GlobalDataParser;
+import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.data.JSONRawData;
-import kiz.austria.tracker.model.Global;
+import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TextCountAnimation;
 
-public class GlobalFragment extends BaseFragment implements GlobalDataParser.OnDataAvailable, OnChartValueSelectedListener, View.OnClickListener {
+public class GlobalFragment extends BaseFragment implements NationDataParser.OnDataAvailable, OnChartValueSelectedListener, View.OnClickListener {
 
     private static final String TAG = "GlobalFragment";
 
     @Override
-    public void onDataAvailable(Global global, JSONRawData.DownloadStatus status) {
+    public void onDataAvailable(Nation global, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK) {
             Log.d(TAG, "onDataAvailable: started");
 
@@ -68,12 +68,13 @@ public class GlobalFragment extends BaseFragment implements GlobalDataParser.OnD
     private int disCases, disDeaths, disRecovered;
     private InflatingFragment mInflatingFragment;
 
+
     @Override
     public void onAttach(@NonNull Context context) {
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
-        GlobalDataParser globalDataParser = GlobalDataParser.getInstance(this);
-        globalDataParser.execute(Addresses.Link.DATA_GLOBAL);
+        NationDataParser<Nation> nationDataParser = NationDataParser.getInstance(this);
+        nationDataParser.execute(Addresses.Link.DATA_GLOBAL);
 
         mInflatingFragment = (InflatingFragment) context;
         Log.d(TAG, "onAttach: ended");

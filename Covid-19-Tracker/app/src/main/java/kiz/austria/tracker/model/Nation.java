@@ -1,6 +1,6 @@
 package kiz.austria.tracker.model;
 
-public class Countries {
+public class Nation {
 
     private String mCountry;
     private String mCases;
@@ -11,7 +11,7 @@ public class Countries {
     private String mActive;
     private String mCritical;
 
-    public Countries(String country, String cases, String deaths, String todayCases, String todayDeaths, String recovered, String active, String critical) {
+    public Nation(String country, String cases, String deaths, String todayCases, String todayDeaths, String recovered, String active, String critical) {
         mCountry = country;
         mCases = cases;
         mDeaths = deaths;
@@ -68,4 +68,6 @@ public class Countries {
                 ", mCritical='" + mCritical + '\'' +
                 '}';
     }
+
+
 }
