@@ -16,7 +16,6 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
 
     private ArrayList<Countries> mCountries;
     private Context mContext;
-    private ICountriesListener mListener;
 
     public CountriesRecyclerAdapter(Context context, ArrayList<Countries> countries) {
         mContext = context;
@@ -37,12 +36,6 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     @Override
     public int getItemCount() {
         return 0;
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        mListener = (ICountriesListener) mContext;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

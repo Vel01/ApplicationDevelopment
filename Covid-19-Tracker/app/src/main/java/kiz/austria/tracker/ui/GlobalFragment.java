@@ -1,5 +1,6 @@
 package kiz.austria.tracker.ui;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,52 +31,79 @@ import com.github.mikephil.charting.utils.MPPointF;
 import java.util.ArrayList;
 
 import kiz.austria.tracker.R;
-import kiz.austria.tracker.data.DataParser;
-import kiz.austria.tracker.data.PathContract;
-import kiz.austria.tracker.data.RawData;
-import kiz.austria.tracker.list.ListModel;
-import kiz.austria.tracker.model.Countries;
-import kiz.austria.tracker.util.AnimationContract;
-import kiz.austria.tracker.util.BaseFragment;
+import kiz.austria.tracker.data.Addresses;
+import kiz.austria.tracker.data.GlobalDataParser;
+import kiz.austria.tracker.data.JSONRawData;
+import kiz.austria.tracker.model.Global;
+import kiz.austria.tracker.util.TextCountAnimation;
 
-public class GlobalFragment extends BaseFragment implements DataParser.OnDataAvailable, OnChartValueSelectedListener, View.OnClickListener {
+public class GlobalFragment extends BaseFragment implements GlobalDataParser.OnDataAvailable, OnChartValueSelectedListener, View.OnClickListener {
 
     private static final String TAG = "GlobalFragment";
 
+    @Override
+    public void onDataAvailable(Global global, JSONRawData.DownloadStatus status) {
+        if (status == JSONRawData.DownloadStatus.OK) {
+            Log.d(TAG, "onDataAvailable: started");
+
+
+            Log.d(TAG, "onDownloadComplete: data is " + global.toString());
+            disCases = Integer.parseInt(global.getCases());
+            disDeaths = Integer.parseInt(global.getDeaths());
+            disRecovered = Integer.parseInt(global.getRecovered());
+
+
+        } else Log.d(TAG, "onDownloadComplete: status " + status);
+    }
+
+    //widgets
+    private PieChart chart;
     private TextView tvCases;
     private TextView tvDeaths;
     private TextView tvRecovered;
-    private int disCases, disDeaths, disRecovered;
-    private PieChart chart;
-
     private ShimmerFrameLayout mShimmerFrameLayout;
     private LinearLayout mChildShimmer, mChildMain;
-    private DataParser.OnDataAvailable mOnDataAvailable;
+
+    //vars
+    private int disCases, disDeaths, disRecovered;
+    private InflatingFragment mInflatingFragment;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        DataParser dataParser = DataParser.getInstance(this);
-        dataParser.execute(PathContract.Link.DATA_GLOBAL);
+    public void onAttach(@NonNull Context context) {
+        Log.d(TAG, "onAttach: started");
+        super.onAttach(context);
+        GlobalDataParser globalDataParser = GlobalDataParser.getInstance(this);
+        globalDataParser.execute(Addresses.Link.DATA_GLOBAL);
+
+        mInflatingFragment = (InflatingFragment) context;
+        Log.d(TAG, "onAttach: ended");
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: started");
         final View view = inflater.inflate(R.layout.fragment_global, container, false);
+
+        //shimmer widgets
         mShimmerFrameLayout = view.findViewById(R.id.layout_global_shimmer);
         mChildShimmer = view.findViewById(R.id.child_layout_global_shimmer);
         mChildMain = view.findViewById(R.id.child_layout_global_main);
+
+        //update widget
         TextView tvUpdate = view.findViewById(R.id.tv_update_date);
         tvUpdate.setText(getCurrentDate());
+
+        //go to countries widget
+        LinearLayout btnViewAllCountries = view.findViewById(R.id.btn_view_all_countries);
+        btnViewAllCountries.setOnClickListener(this);
+
+        //global result widgets
         tvCases = view.findViewById(R.id.tv_cases);
         tvDeaths = view.findViewById(R.id.tv_deaths);
         tvRecovered = view.findViewById(R.id.tv_recovered);
-        LinearLayout btnViewAllCountries = view.findViewById(R.id.btn_view_all_countries);
-        btnViewAllCountries.setOnClickListener(this);
+
         chart = view.findViewById(R.id.chart_global_cases);
-
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -84,36 +112,24 @@ public class GlobalFragment extends BaseFragment implements DataParser.OnDataAva
                     mShimmerFrameLayout.hideShimmer();
                     mChildShimmer.setVisibility(View.GONE);
                     mChildMain.setVisibility(View.VISIBLE);
-                    AnimationContract.Display.countNumber(tvCases, disCases);
-                    AnimationContract.Display.countNumber(tvDeaths, disDeaths);
-                    AnimationContract.Display.countNumber(tvRecovered, disRecovered);
-                    setPieChart();
+                    TextCountAnimation.Display.countNumber(tvCases, disCases);
+                    TextCountAnimation.Display.countNumber(tvDeaths, disDeaths);
+                    TextCountAnimation.Display.countNumber(tvRecovered, disRecovered);
+                    initPieChart();
                 }
             }
         }, 1000);
 
+        Log.d(TAG, "onCreateView: ended");
         return view;
     }
 
-    @Override
-    public void onDataAvailable(ListModel<Countries> data, RawData.DownloadStatus status) {
-        if (status == RawData.DownloadStatus.OK) {
-            for (Countries countries : data.getCoverages()) {
-                Log.d(TAG, "onDownloadComplete: data is " + countries.toString());
-                disCases = Integer.parseInt(countries.getCases());
-                disDeaths = Integer.parseInt(countries.getDeaths());
-                disRecovered = Integer.parseInt(countries.getRecovered());
-            }
-
-        } else Log.d(TAG, "onDownloadComplete: status " + status);
-    }
-
-    private void setPieChart() {
+    private void initPieChart() {
 
         chart.setUsePercentValues(true);
         chart.getDescription().setEnabled(false);
         chart.setExtraOffsets(5, 5, 5, 5);
-        chart.setDragDecelerationFrictionCoef(0.95f);
+        chart.setDragDecelerationFrictionCoef(0.90f);
         chart.setDrawHoleEnabled(true);
         chart.setHoleColor(Color.WHITE);
         chart.setTransparentCircleColor(Color.WHITE);
@@ -173,6 +189,7 @@ public class GlobalFragment extends BaseFragment implements DataParser.OnDataAva
         chart.invalidate();
     }
 
+
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         if (e == null)
@@ -189,8 +206,8 @@ public class GlobalFragment extends BaseFragment implements DataParser.OnDataAva
 
     @Override
     public void onClick(View v) {
-        assert getFragmentManager() != null;
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new CountriesFragment()).commit();
+        mInflatingFragment.inflateCountriesFragment();
     }
+
 
 }

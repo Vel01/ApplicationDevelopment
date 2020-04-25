@@ -1,5 +1,6 @@
 package kiz.austria.tracker.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +15,19 @@ import kiz.austria.tracker.R;
 
 public class CountriesFragment extends Fragment implements View.OnClickListener {
 
+    //vars
+    private InflatingFragment mInflatingFragment;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mInflatingFragment = (InflatingFragment) context;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_countries, container, false);
-
         ImageView btnBack = view.findViewById(R.id.btn_countries_back);
         btnBack.setOnClickListener(this);
         return view;
@@ -26,8 +35,6 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        assert getFragmentManager() != null;
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new GlobalFragment()).commit();
-
+        mInflatingFragment.inflateGlobalFragment();
     }
 }

@@ -1,6 +1,6 @@
 package kiz.austria.tracker.data;
 
-public class PathContract {
+public class Addresses {
 
     public static class Link {
 
@@ -17,7 +17,7 @@ public class PathContract {
 
     }
 
-    private PathContract() {
+    private Addresses() {
         //empty constructor
     }
 

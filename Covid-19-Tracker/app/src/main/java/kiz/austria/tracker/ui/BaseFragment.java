@@ -1,4 +1,4 @@
-package kiz.austria.tracker.util;
+package kiz.austria.tracker.ui;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
