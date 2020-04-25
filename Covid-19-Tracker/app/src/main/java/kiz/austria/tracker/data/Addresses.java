@@ -7,7 +7,7 @@ public class Addresses {
         public static final String DATA_GLOBAL = "https://coronavirus-19-api.herokuapp.com/all";
         public static final String DATA_COUNTRIES = "https://coronavirus-19-api.herokuapp.com/countries";
         public static String DATA_COUNTRY;
-        public static void buildLink(String link, String postfix) {
+        public static void buildCountryLink(String link, String postfix) {
             DATA_COUNTRY = link + postfix;
         }
 

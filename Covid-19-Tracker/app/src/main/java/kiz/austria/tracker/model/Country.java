@@ -5,5 +5,4 @@ public class Country extends Nation {
         super(country, cases, deaths, todayCases, todayDeaths, recovered, active, critical);
     }
 
-
 }
