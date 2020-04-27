@@ -1,5 +1,6 @@
 package kiz.austria.tracker.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,13 +25,15 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
 
     private static final String TAG = "CountriesFragment";
 
+    //events
     @Override
     public void onClick(View v) {
-        mInflatingFragment.onInflateGlobalFragment();
+        //onClick() navigation back to global fragment
+        mListener.onInflateGlobalFragment();
     }
 
     //vars
-    private OnInflateFragmentListener mInflatingFragment;
+    private OnInflateFragmentListener mListener;
     private ArrayList<Nation> mNations = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
@@ -38,8 +41,21 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mInflatingFragment = (OnInflateFragmentListener) context;
+        initInterface();
+        getBundleArguments();
+    }
 
+    private void initInterface() {
+        Activity activity = getActivity();
+        if (!(activity instanceof OnInflateFragmentListener) && activity != null) {
+            throw new ClassCastException(activity.getClass().getSimpleName()
+                    + " must implement OnInflateFragmentListener interface");
+        }
+        mListener = (OnInflateFragmentListener) activity;
+
+    }
+
+    private void getBundleArguments() {
         Bundle args = this.getArguments();
         if (args != null) {
             ArrayList<Nation> nations = args.getParcelableArrayList(getString(R.string.intent_countries));
@@ -53,11 +69,21 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_countries, container, false);
+
         mRecyclerView = view.findViewById(R.id.rv_countries_list);
+
         ImageView btnBack = view.findViewById(R.id.btn_countries_back);
         btnBack.setOnClickListener(this);
+
         initRecyclerView();
+
         return view;
+    }
+
+    private void initRecyclerView() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mCountriesRecyclerAdapter = new CountriesRecyclerAdapter(mNations);
+        mRecyclerView.setAdapter(mCountriesRecyclerAdapter);
     }
 
     @Override
@@ -66,10 +92,10 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         mCountriesRecyclerAdapter.notifyDataSetChanged();
     }
 
-    private void initRecyclerView() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mCountriesRecyclerAdapter = new CountriesRecyclerAdapter(mNations);
-        mRecyclerView.setAdapter(mCountriesRecyclerAdapter);
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package kiz.austria.tracker.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -39,9 +40,25 @@ public class GlobalFragment extends BaseFragment implements
 
     private static final String TAG = "GlobalFragment";
 
+    //events
     @Override
     public void onClick(View v) {
+        //onClick() - View All Countries
         mListener.onInflateCountriesFragment();
+    }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        if (e == null)
+            return;
+        Log.i("VAL SELECTED",
+                "Value: " + e.getY() + ", index: " + h.getX()
+                        + ", DataSet index: " + h.getDataSetIndex());
+    }
+
+    @Override
+    public void onNothingSelected() {
+        Log.i("PieChart", "nothing selected");
     }
 
     //widgets
@@ -61,8 +78,22 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
 
-        mListener = (OnInflateFragmentListener) context;
+        iniInterface();
+        getBundleArguments();
 
+        Log.d(TAG, "onAttach: ended");
+    }
+
+    private void iniInterface() {
+        Activity activity = getActivity();
+        if (!(activity instanceof OnInflateFragmentListener) && activity != null) {
+            throw new ClassCastException(activity.getClass().getSimpleName()
+                    + " must implement OnInflateFragmentListener interface");
+        }
+        mListener = (OnInflateFragmentListener) activity;
+    }
+
+    private void getBundleArguments() {
         Bundle args = this.getArguments();
         if (args != null) {
             Nation nation = args.getParcelable(getString(R.string.intent_global));
@@ -72,7 +103,6 @@ public class GlobalFragment extends BaseFragment implements
                 disRecovered = Integer.parseInt(nation.getRecovered());
             }
         }
-        Log.d(TAG, "onAttach: ended");
     }
 
     @Nullable
@@ -103,28 +133,6 @@ public class GlobalFragment extends BaseFragment implements
 
         Log.d(TAG, "onCreateView: ended");
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: was called!");
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mChildShimmer.getVisibility() == View.VISIBLE) {
-                    mShimmerFrameLayout.stopShimmer();
-                    mShimmerFrameLayout.hideShimmer();
-                    mChildShimmer.setVisibility(View.GONE);
-                    mChildMain.setVisibility(View.VISIBLE);
-                    TextCountAnimation.Display.countNumber(tvCases, disCases);
-                    TextCountAnimation.Display.countNumber(tvDeaths, disDeaths);
-                    TextCountAnimation.Display.countNumber(tvRecovered, disRecovered);
-                    initPieChart();
-                }
-            }
-        }, 700);
-
     }
 
     private void initPieChart() {
@@ -193,17 +201,31 @@ public class GlobalFragment extends BaseFragment implements
     }
 
     @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        if (e == null)
-            return;
-        Log.i("VAL SELECTED",
-                "Value: " + e.getY() + ", index: " + h.getX()
-                        + ", DataSet index: " + h.getDataSetIndex());
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: was called!");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mChildShimmer.getVisibility() == View.VISIBLE) {
+                    mShimmerFrameLayout.stopShimmer();
+                    mShimmerFrameLayout.hideShimmer();
+                    mChildShimmer.setVisibility(View.GONE);
+                    mChildMain.setVisibility(View.VISIBLE);
+                    TextCountAnimation.Display.countNumber(tvCases, disCases);
+                    TextCountAnimation.Display.countNumber(tvDeaths, disDeaths);
+                    TextCountAnimation.Display.countNumber(tvRecovered, disRecovered);
+                    initPieChart();
+                }
+            }
+        }, 700);
     }
 
+
     @Override
-    public void onNothingSelected() {
-        Log.i("PieChart", "nothing selected");
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
 }
