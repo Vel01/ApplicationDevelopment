@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.util.SearchTextWatcher;
 
 public class CountriesFragment extends Fragment implements View.OnClickListener, //CountriesDataParser.OnDataAvailable,
         OnBackPressed {
@@ -35,8 +37,11 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
     //vars
     private OnInflateFragmentListener mListener;
     private ArrayList<Nation> mNations = new ArrayList<>();
-    private RecyclerView mRecyclerView;
     private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
+
+    //widgets
+    private RecyclerView mRecyclerView;
+    private EditText mSearch;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -71,19 +76,26 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         View view = inflater.inflate(R.layout.fragment_countries, container, false);
 
         mRecyclerView = view.findViewById(R.id.rv_countries_list);
+        mSearch = view.findViewById(R.id.edt_country_search);
 
         ImageView btnBack = view.findViewById(R.id.btn_countries_back);
         btnBack.setOnClickListener(this);
 
-        initRecyclerView();
 
+        initRecyclerView();
         return view;
     }
 
     private void initRecyclerView() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mCountriesRecyclerAdapter = new CountriesRecyclerAdapter(mNations, getActivity());
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(manager);
+        mCountriesRecyclerAdapter = new CountriesRecyclerAdapter(mNations, getActivity(), manager);
         mRecyclerView.setAdapter(mCountriesRecyclerAdapter);
+        initSearchText();
+    }
+
+    private void initSearchText() {
+        mSearch.addTextChangedListener(new SearchTextWatcher(mNations, mCountriesRecyclerAdapter, getActivity()));
     }
 
     @Override

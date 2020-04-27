@@ -9,21 +9,25 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.hendraanggrian.recyclerview.widget.ExpandableRecyclerView;
 
 import java.util.ArrayList;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.model.Nation;
 
-public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecyclerAdapter.ViewHolder> {
+public class CountriesRecyclerAdapter extends ExpandableRecyclerView.Adapter<CountriesRecyclerAdapter.ViewHolder> {
 
     private static final String TAG = "CountriesRecyclerAdapte";
 
     private ArrayList<Nation> mNations;
     private Context mContext;
 
-    public CountriesRecyclerAdapter(ArrayList<Nation> nations, Context context) {
+    public CountriesRecyclerAdapter(ArrayList<Nation> nations, Context context, LinearLayoutManager manager) {
+        super(manager);
         mNations = nations;
         mContext = context;
     }
@@ -37,7 +41,7 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
+        super.onBindViewHolder(holder, position);
         Nation nation = mNations.get(position);
 
         holder.mContainer.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_scale_animation));
@@ -55,6 +59,11 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     @Override
     public int getItemCount() {
         return mNations.size();
+    }
+
+    public void addFilter(ArrayList<Nation> nations) {
+        mNations = nations;
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

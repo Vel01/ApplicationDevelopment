@@ -9,14 +9,12 @@
     android:elevation="5dp"
     app:cardCornerRadius="5dp">
 
-    <LinearLayout
-
+    <com.hendraanggrian.recyclerview.widget.ExpandableItem
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:duration="200"
+        app:layoutContent="@layout/layout_countries_item_content"
+        app:layoutHeader="@layout/layout_countries_item_header" />
 
-        <include layout="@layout/layout_countries_item_header" />
-
-        <include layout="@layout/layout_countries_item_content" />
-    </LinearLayout>
 </androidx.cardview.widget.CardView>
