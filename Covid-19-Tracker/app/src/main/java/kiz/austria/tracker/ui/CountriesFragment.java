@@ -2,7 +2,6 @@ package kiz.austria.tracker.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,47 +17,36 @@ import java.util.ArrayList;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
-import kiz.austria.tracker.data.Addresses;
-import kiz.austria.tracker.data.CountriesDataParser;
-import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.model.Nation;
 
-public class CountriesFragment extends Fragment implements View.OnClickListener, CountriesDataParser.OnDataAvailable, OnBackPressed {
+public class CountriesFragment extends Fragment implements View.OnClickListener, //CountriesDataParser.OnDataAvailable,
+        OnBackPressed {
 
     private static final String TAG = "CountriesFragment";
 
     @Override
     public void onClick(View v) {
-        mInflatingFragment.inflateGlobalFragment();
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        //TODO: AlertDialog, ask user if he/she want's to quit the app.
-        getActivity().finish();
-        return true;
-    }
-
-    @Override
-    public void onDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK) {
-            Log.d(TAG, "onDataAvailable: started with " + nations.toString());
-            mNations.addAll(nations);
-            mCountriesRecyclerAdapter.notifyDataSetChanged();
-        }
+        mInflatingFragment.onInflateGlobalFragment();
     }
 
     //vars
-    private InflateFragment mInflatingFragment;
+    private OnInflateFragmentListener mInflatingFragment;
     private ArrayList<Nation> mNations = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
-        countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mInflatingFragment = (OnInflateFragmentListener) context;
+
+        Bundle args = this.getArguments();
+        if (args != null) {
+            ArrayList<Nation> nations = args.getParcelableArrayList(getString(R.string.intent_countries));
+            if (nations != null) {
+                mNations.addAll(nations);
+            }
+        }
     }
 
     @Nullable
@@ -72,6 +60,12 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCountriesRecyclerAdapter.notifyDataSetChanged();
+    }
+
     private void initRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mCountriesRecyclerAdapter = new CountriesRecyclerAdapter(mNations);
@@ -79,10 +73,10 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mInflatingFragment = (InflateFragment) context;
+    public boolean onBackPressed() {
+        //TODO: AlertDialog, ask user if he/she want's to quit the app.
+        getActivity().finish();
+        return true;
     }
-
 
 }

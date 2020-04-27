@@ -10,38 +10,76 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import kiz.austria.tracker.R;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements InflateFragment {
+import kiz.austria.tracker.R;
+import kiz.austria.tracker.data.Addresses;
+import kiz.austria.tracker.data.CountriesDataParser;
+import kiz.austria.tracker.data.JSONRawData;
+import kiz.austria.tracker.data.NationDataParser;
+import kiz.austria.tracker.model.Nation;
+
+public class MainActivity extends AppCompatActivity implements CountriesDataParser.OnDataAvailable,
+        NationDataParser.OnDataAvailable,
+        OnInflateFragmentListener {
 
     private static final String TAG = "MainActivity";
 
     @Override
-    public void inflateCountriesFragment() {
+    public void onDataAvailable(Nation coverage, JSONRawData.DownloadStatus status) {
+        GlobalFragment fragment = new GlobalFragment();
+        args.putParcelable(getString(R.string.intent_global), coverage);
+        fragment.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_global));
+        transaction.addToBackStack(getString(R.string.tag_fragment_global));
+        transaction.commit();
+    }
+
+    @Override
+    public void onDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
+        args.putParcelableArrayList(getString(R.string.intent_countries),  nations);
+    }
+
+    @Override
+    public void onInflateCountriesFragment() {
         Log.d(TAG, "inflateCountriesFragment: inflate CountriesFragment");
         initCountriesFragment();
     }
 
     @Override
-    public void inflateGlobalFragment() {
+    public void onInflateGlobalFragment() {
         Log.d(TAG, "inflateCountriesFragment: inflate GlobalFragment");
         initGlobalFragment();
     }
+
+    //vars
+    private Bundle args = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            initGlobalFragment();
-        }
+
         Log.d(TAG, "onCreate: ended");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: was called!");
+        NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
+        nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+
+        CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
+        countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
     }
 
     private void initGlobalFragment() {
         Log.d(TAG, "onCreate: initGlobalFragment");
         GlobalFragment fragment = new GlobalFragment();
+        fragment.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_global));
         transaction.addToBackStack(getString(R.string.tag_fragment_global));
@@ -50,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements InflateFragment {
 
     private void initCountriesFragment() {
         CountriesFragment fragment = new CountriesFragment();
+        fragment.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_countries));
         transaction.addToBackStack(getString(R.string.tag_fragment_countries));

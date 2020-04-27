@@ -1,6 +1,9 @@
 package kiz.austria.tracker.model;
 
-public class Nation {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Nation implements Parcelable {
 
     private String mCountry;
     private String mCases;
@@ -21,6 +24,29 @@ public class Nation {
         mActive = active;
         mCritical = critical;
     }
+
+    protected Nation(Parcel in) {
+        mCountry = in.readString();
+        mCases = in.readString();
+        mDeaths = in.readString();
+        mTodayCases = in.readString();
+        mTodayDeaths = in.readString();
+        mRecovered = in.readString();
+        mActive = in.readString();
+        mCritical = in.readString();
+    }
+
+    public static final Creator<Nation> CREATOR = new Creator<Nation>() {
+        @Override
+        public Nation createFromParcel(Parcel in) {
+            return new Nation(in);
+        }
+
+        @Override
+        public Nation[] newArray(int size) {
+            return new Nation[size];
+        }
+    };
 
     public String getCountry() {
         return mCountry;
@@ -70,4 +96,20 @@ public class Nation {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mCountry);
+        dest.writeString(mCases);
+        dest.writeString(mDeaths);
+        dest.writeString(mTodayCases);
+        dest.writeString(mTodayDeaths);
+        dest.writeString(mRecovered);
+        dest.writeString(mActive);
+        dest.writeString(mCritical);
+    }
 }

@@ -31,38 +31,17 @@ import com.github.mikephil.charting.utils.MPPointF;
 import java.util.ArrayList;
 
 import kiz.austria.tracker.R;
-import kiz.austria.tracker.data.Addresses;
-import kiz.austria.tracker.data.JSONRawData;
-import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TextCountAnimation;
 
-public class GlobalFragment extends BaseFragment implements NationDataParser.OnDataAvailable,
+public class GlobalFragment extends BaseFragment implements
         OnChartValueSelectedListener, View.OnClickListener {
 
     private static final String TAG = "GlobalFragment";
 
     @Override
-    public void onDataAvailable(Nation global, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK) {
-            Log.d(TAG, "onDataAvailable: started");
-
-
-            Log.d(TAG, "onDownloadComplete: data is " + global.toString());
-            disCases = Integer.parseInt(global.getCases());
-            disDeaths = Integer.parseInt(global.getDeaths());
-            disRecovered = Integer.parseInt(global.getRecovered());
-
-            TextCountAnimation.Display.countNumber(tvCases, disCases);
-            TextCountAnimation.Display.countNumber(tvDeaths, disDeaths);
-            TextCountAnimation.Display.countNumber(tvRecovered, disRecovered);
-            initPieChart();
-        } else Log.d(TAG, "onDownloadComplete: status " + status);
-    }
-
-    @Override
     public void onClick(View v) {
-        mInflatingFragment.inflateCountriesFragment();
+        mListener.onInflateCountriesFragment();
     }
 
     //widgets
@@ -75,24 +54,25 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
 
     //vars
     private int disCases, disDeaths, disRecovered;
-    private InflateFragment mInflatingFragment;
+    private OnInflateFragmentListener mListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
 
-        NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
-        nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+        mListener = (OnInflateFragmentListener) context;
 
-        mInflatingFragment = (InflateFragment) context;
+        Bundle args = this.getArguments();
+        if (args != null) {
+            Nation nation = args.getParcelable(getString(R.string.intent_global));
+            if (nation != null) {
+                disCases = Integer.parseInt(nation.getCases());
+                disDeaths = Integer.parseInt(nation.getDeaths());
+                disRecovered = Integer.parseInt(nation.getRecovered());
+            }
+        }
         Log.d(TAG, "onAttach: ended");
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Nullable
@@ -120,6 +100,15 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
         tvRecovered = view.findViewById(R.id.tv_recovered);
 
         chart = view.findViewById(R.id.chart_global_cases);
+
+        Log.d(TAG, "onCreateView: ended");
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: was called!");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -128,13 +117,14 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
                     mShimmerFrameLayout.hideShimmer();
                     mChildShimmer.setVisibility(View.GONE);
                     mChildMain.setVisibility(View.VISIBLE);
-
+                    TextCountAnimation.Display.countNumber(tvCases, disCases);
+                    TextCountAnimation.Display.countNumber(tvDeaths, disDeaths);
+                    TextCountAnimation.Display.countNumber(tvRecovered, disRecovered);
+                    initPieChart();
                 }
             }
         }, 700);
 
-        Log.d(TAG, "onCreateView: ended");
-        return view;
     }
 
     private void initPieChart() {
@@ -147,8 +137,8 @@ public class GlobalFragment extends BaseFragment implements NationDataParser.OnD
         chart.setHoleColor(Color.WHITE);
         chart.setTransparentCircleColor(Color.WHITE);
         chart.setTransparentCircleAlpha(110);
-        chart.setHoleRadius(30f);
-        chart.setTransparentCircleRadius(35f);
+        chart.setHoleRadius(20f);
+        chart.setTransparentCircleRadius(25f);
         chart.setRotationAngle(50);
         chart.setRotationEnabled(true);
         chart.setHighlightPerTapEnabled(true);
