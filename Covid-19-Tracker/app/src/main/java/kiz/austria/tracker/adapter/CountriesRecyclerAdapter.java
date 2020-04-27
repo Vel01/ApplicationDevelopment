@@ -1,11 +1,14 @@
 package kiz.austria.tracker.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -18,9 +21,11 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     private static final String TAG = "CountriesRecyclerAdapte";
 
     private ArrayList<Nation> mNations;
+    private Context mContext;
 
-    public CountriesRecyclerAdapter(ArrayList<Nation> nations) {
+    public CountriesRecyclerAdapter(ArrayList<Nation> nations, Context context) {
         mNations = nations;
+        mContext = context;
     }
 
     @NonNull
@@ -34,6 +39,8 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         Nation nation = mNations.get(position);
+
+        holder.mContainer.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_scale_animation));
         holder.mCountry.setText(nation.getCountry());
         holder.mCases.setText(nation.getCases());
         holder.mDeaths.setText(nation.getDeaths());
@@ -52,6 +59,7 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        private CardView mContainer;
         private TextView mCountry;
         private TextView mCases;
         private TextView mDeaths;
@@ -71,6 +79,7 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
             mTodayDeaths = itemView.findViewById(R.id.tv_countries_content_today_deaths);
             mCritical = itemView.findViewById(R.id.tv_countries_content_critical);
             mActive = itemView.findViewById(R.id.tv_countries_content_active);
+            mContainer = itemView.findViewById(R.id.layout_countries_container);
 
         }
     }

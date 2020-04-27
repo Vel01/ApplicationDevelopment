@@ -82,7 +82,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
 
     private void initRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mCountriesRecyclerAdapter = new CountriesRecyclerAdapter(mNations);
+        mCountriesRecyclerAdapter = new CountriesRecyclerAdapter(mNations, getActivity());
         mRecyclerView.setAdapter(mCountriesRecyclerAdapter);
     }
 
