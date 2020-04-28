@@ -5,9 +5,9 @@
     android:id="@+id/layout_countries_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    android:elevation="5dp"
-    app:cardCornerRadius="5dp">
+    android:layout_margin="8dp"
+    android:elevation="10dp"
+    app:cardCornerRadius="2dp">
 
     <com.hendraanggrian.recyclerview.widget.ExpandableItem
         android:layout_width="match_parent"

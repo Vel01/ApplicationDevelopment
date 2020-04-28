@@ -4,10 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_countries_container"
     android:layout_width="match_parent"
+    android:layout_margin="8dp"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-
-    app:cardCornerRadius="5dp">
+    app:cardCornerRadius="2dp">
 
 
     <com.hendraanggrian.recyclerview.widget.ExpandableItem
