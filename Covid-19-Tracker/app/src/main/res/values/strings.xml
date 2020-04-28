@@ -23,5 +23,9 @@
     <string name="intent_global">"intent_global"</string>
     <string name="intent_countries">"intent_countries"</string>
 
+    <string name="label_dialog_ok">Ok</string>
+    <string name="label_dialog_cancel">Cancel</string>
+    <string name="label_dialog_continue">Continue</string>
+    <string name="label_dialog_exit">Exit</string>
 
 </resources>

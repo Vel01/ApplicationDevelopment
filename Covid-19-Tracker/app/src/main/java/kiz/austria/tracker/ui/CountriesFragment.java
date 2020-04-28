@@ -20,17 +20,28 @@ import java.util.ArrayList;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.model.Nation;
-import kiz.austria.tracker.util.SearchTextWatcher;
+import kiz.austria.tracker.util.TrackerTextWatcher;
 
-public class CountriesFragment extends Fragment implements View.OnClickListener, //CountriesDataParser.OnDataAvailable,
-        OnBackPressed {
+public class CountriesFragment extends Fragment implements View.OnClickListener,
+        OnBackPressedFragment {
 
     private static final String TAG = "CountriesFragment";
 
-    //events
+    /**
+     * Calling OnBackPressed() method of host activity
+     * @return true - return the instance of OnBackPressedFragment
+     */
+    @Override
+    public boolean onBackPressedFragment() {
+        return true;
+    }
+
+    /**
+     * Navigate back to GlobalFragment using navigation
+     * back button.
+     */
     @Override
     public void onClick(View v) {
-        //onClick() navigation back to global fragment
         mListener.onInflateGlobalFragment();
     }
 
@@ -81,7 +92,6 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         ImageView btnBack = view.findViewById(R.id.btn_countries_back);
         btnBack.setOnClickListener(this);
 
-
         initRecyclerView();
         return view;
     }
@@ -95,7 +105,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
     }
 
     private void initSearchText() {
-        mSearch.addTextChangedListener(new SearchTextWatcher(mNations, mCountriesRecyclerAdapter, getActivity()));
+        mSearch.addTextChangedListener(new TrackerTextWatcher(mNations, mCountriesRecyclerAdapter, getActivity()));
     }
 
     @Override
@@ -109,12 +119,4 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         super.onDetach();
         mListener = null;
     }
-
-    @Override
-    public boolean onBackPressed() {
-        //TODO: AlertDialog, ask user if he/she want's to quit the app.
-        getActivity().finish();
-        return true;
-    }
-
 }

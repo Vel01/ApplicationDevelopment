@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.model.Nation;
-import kiz.austria.tracker.util.TextCountAnimation;
+import kiz.austria.tracker.util.TrackerCountAnimation;
 
 public class GlobalFragment extends BaseFragment implements
         OnChartValueSelectedListener, View.OnClickListener {
@@ -212,9 +212,9 @@ public class GlobalFragment extends BaseFragment implements
                     mShimmerFrameLayout.hideShimmer();
                     mChildShimmer.setVisibility(View.GONE);
                     mChildMain.setVisibility(View.VISIBLE);
-                    TextCountAnimation.Display.countNumber(tvCases, disCases);
-                    TextCountAnimation.Display.countNumber(tvDeaths, disDeaths);
-                    TextCountAnimation.Display.countNumber(tvRecovered, disRecovered);
+                    TrackerCountAnimation.Display.countNumber(tvCases, disCases);
+                    TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
+                    TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);
                     initPieChart();
                 }
             }

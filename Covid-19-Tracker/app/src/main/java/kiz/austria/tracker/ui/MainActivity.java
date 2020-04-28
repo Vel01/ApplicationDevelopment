@@ -18,12 +18,51 @@ import kiz.austria.tracker.data.CountriesDataParser;
 import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.util.TrackerDialog;
+import kiz.austria.tracker.util.TrackerKeys;
 
-public class MainActivity extends AppCompatActivity implements CountriesDataParser.OnDataAvailable,
+public class MainActivity extends AppCompatActivity implements
+        TrackerDialog.OnDialogEventListener,
+        CountriesDataParser.OnDataAvailable,
         NationDataParser.OnDataAvailable,
         OnInflateFragmentListener {
 
     private static final String TAG = "MainActivity";
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: called");
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (!(fragment instanceof OnBackPressedFragment) || !((OnBackPressedFragment) fragment).onBackPressedFragment()) {
+            finish();
+        } else {
+
+            TrackerDialog dialog = new TrackerDialog();
+
+            Bundle args = new Bundle();
+            args.putString(TrackerKeys.KEY_DIALOG_TITLE, "Do you want to exit?");
+            args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, "Use the back navigation instead.");
+            args.putInt(TrackerKeys.KEY_DIALOG_POSITIVE_RID, R.string.label_dialog_continue);
+            args.putInt(TrackerKeys.KEY_DIALOG_NEGATIVE_RID, R.string.label_dialog_exit);
+
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), null);
+        }
+    }
+
+    @Override
+    public void onDialogPositiveEvent() {
+    }
+
+    @Override
+    public void onDialogNegativeEvent() {
+        finish();
+    }
+
+    @Override
+    public void onDialogCancelEvent() {
+
+    }
 
     @Override
     public void onDataAvailable(Nation coverage, JSONRawData.DownloadStatus status) {
@@ -38,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements CountriesDataPars
 
     @Override
     public void onDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
-        args.putParcelableArrayList(getString(R.string.intent_countries),  nations);
+        args.putParcelableArrayList(getString(R.string.intent_countries), nations);
     }
 
     @Override
@@ -111,14 +150,5 @@ public class MainActivity extends AppCompatActivity implements CountriesDataPars
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (!(fragment instanceof OnBackPressed) || !((OnBackPressed) fragment).onBackPressed()) {
-            //TODO: AlertDialog, ask user if he/she want's to quit the app.
-            finish();
-        }
     }
 }

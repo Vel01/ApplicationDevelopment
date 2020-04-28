@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.model.Nation;
 
-public class SearchTextWatcher implements TextWatcher {
-
+public class TrackerTextWatcher implements TextWatcher {
 
     private final int DELAY = 3000;
 
@@ -23,7 +22,7 @@ public class SearchTextWatcher implements TextWatcher {
     private Handler mHandler = new Handler();
     private Activity mActivity;
 
-    public SearchTextWatcher(ArrayList<Nation> nations, CountriesRecyclerAdapter adapter, Activity activity) {
+    public TrackerTextWatcher(ArrayList<Nation> nations, CountriesRecyclerAdapter adapter, Activity activity) {
         mNations = nations;
         mAdapter = adapter;
         mActivity = activity;

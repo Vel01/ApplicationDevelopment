@@ -6,9 +6,9 @@ import android.widget.TextView;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-public class TextCountAnimation {
+public class TrackerCountAnimation {
 
-    private TextCountAnimation() {
+    private TrackerCountAnimation() {
         //empty constructor
     }
 
