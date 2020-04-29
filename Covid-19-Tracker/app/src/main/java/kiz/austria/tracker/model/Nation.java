@@ -14,15 +14,20 @@ public class Nation implements Parcelable {
     private String mActive;
     private String mCritical;
 
-    public Nation(String country, String cases, String deaths, String todayCases, String todayDeaths, String recovered, String active, String critical) {
-        mCountry = country;
-        mCases = cases;
-        mDeaths = deaths;
-        mTodayCases = todayCases;
-        mTodayDeaths = todayDeaths;
-        mRecovered = recovered;
-        mActive = active;
-        mCritical = critical;
+    public Nation(String country, String cases, String deaths, String todayCases,
+                  String todayDeaths, String recovered, String active, String critical) {
+        mCountry = validate(country);
+        mCases = validate(cases);
+        mDeaths = validate(deaths);
+        mTodayCases = validate(todayCases);
+        mTodayDeaths = validate(todayDeaths);
+        mRecovered = validate(recovered);
+        mActive = validate(active);
+        mCritical = validate(critical);
+    }
+
+    private String validate(String value) {
+        return (value.equals("null")) ? "0" : value;
     }
 
     protected Nation(Parcel in) {

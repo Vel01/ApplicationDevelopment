@@ -80,8 +80,8 @@ public class TrackerDialog extends DialogFragment {
             mTitle = args.getString(KEY_DIALOG_TITLE);
             mMessage = args.getString(KEY_DIALOG_MESSAGE);
 
-            if (mDialogId == 0 || mMessage == null || dialog_style == null) {
-                throw new IllegalArgumentException("must passed KEY_DIALOG_ID, KEY_STYLE and KEY_DIALOG_MESSAGE");
+            if (mDialogId == 0 || dialog_style == null) {
+                throw new IllegalArgumentException("must passed KEY_DIALOG_ID and KEY_STYLE");
             }
 
             mPositiveId = args.getInt(KEY_DIALOG_POSITIVE_RID);
@@ -106,6 +106,11 @@ public class TrackerDialog extends DialogFragment {
     private void setStyle(String style, AlertDialog.Builder builder, final Bundle args) {
         switch (style) {
             case STYLE_DIALOG_NORMAL:
+
+                if (mDialogId == 0 || mMessage == null) {
+                    throw new IllegalArgumentException("must passed KEY_DIALOG_ID, KEY_STYLE and KEY_DIALOG_MESSAGE");
+                }
+
                 builder.setMessage(mMessage).setTitle(mTitle)
                         .setPositiveButton(mPositiveId, new DialogInterface.OnClickListener() {
                             @Override
