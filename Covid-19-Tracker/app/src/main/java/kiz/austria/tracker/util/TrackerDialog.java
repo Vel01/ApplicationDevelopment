@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,11 +18,24 @@ import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_MESSAGE;
 import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_NEGATIVE_RID;
 import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_POSITIVE_RID;
 import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_TITLE;
+import static kiz.austria.tracker.util.TrackerKeys.KEY_STYLE;
+import static kiz.austria.tracker.util.TrackerKeys.STYLE_DIALOG_CUSTOM;
+import static kiz.austria.tracker.util.TrackerKeys.STYLE_DIALOG_NORMAL;
 
 public class TrackerDialog extends DialogFragment {
 
 
+    //variable
     private OnDialogEventListener mListener;
+    private View mView;
+
+    //primitives and text
+    private String mTitle;
+    private String mMessage;
+    private int mDialogId;
+    private int mPositiveId;
+    private int mNegativeId;
+
 
     public interface OnDialogEventListener {
         void onDialogPositiveEvent(int id, Bundle args);
@@ -56,56 +70,69 @@ public class TrackerDialog extends DialogFragment {
         /*
             Customize dialog depending on the argument passed on the bundle
          */
-        final Bundle args = getArguments();
-        final int dialog_id;
-        String title;
-        String message;
-        int positive_id;
-        int negative_id;
+        Bundle args = getArguments();
+
+        String dialog_style;
 
         if (args != null) {
+            dialog_style = args.getString(KEY_STYLE);
+            mDialogId = args.getInt(KEY_DIALOG_ID);
+            mTitle = args.getString(KEY_DIALOG_TITLE);
+            mMessage = args.getString(KEY_DIALOG_MESSAGE);
 
-
-            dialog_id = args.getInt(KEY_DIALOG_ID);
-            title = args.getString(KEY_DIALOG_TITLE);
-            message = args.getString(KEY_DIALOG_MESSAGE);
-
-            if (dialog_id == 0 || message == null) {
-                throw new IllegalArgumentException("must passed KEY_DIALOG_ID and KEY_DIALOG_MESSAGE");
+            if (mDialogId == 0 || mMessage == null || dialog_style == null) {
+                throw new IllegalArgumentException("must passed KEY_DIALOG_ID, KEY_STYLE and KEY_DIALOG_MESSAGE");
             }
 
-            positive_id = args.getInt(KEY_DIALOG_POSITIVE_RID);
-            if (positive_id == 0) {
-                positive_id = R.string.label_dialog_ok;
+            mPositiveId = args.getInt(KEY_DIALOG_POSITIVE_RID);
+            if (mPositiveId == 0) {
+                mPositiveId = R.string.label_dialog_ok;
             }
 
-            negative_id = args.getInt(KEY_DIALOG_NEGATIVE_RID);
-            if (negative_id == 0) {
-                negative_id = R.string.label_dialog_cancel;
+            mNegativeId = args.getInt(KEY_DIALOG_NEGATIVE_RID);
+            if (mNegativeId == 0) {
+                mNegativeId = R.string.label_dialog_cancel;
             }
 
         } else {
             throw new IllegalArgumentException("must passed KEY_DIALOG_MESSAGE");
         }
 
-        builder.setMessage(message).setTitle(title)
-                .setPositiveButton(positive_id, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (mListener != null) {
-                            mListener.onDialogPositiveEvent(dialog_id, args);
-                        }
-                    }
-                })
-                .setNegativeButton(negative_id, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (mListener != null) {
-                            mListener.onDialogNegativeEvent(dialog_id, args);
-                        }
-                    }
-                });
+        setStyle(dialog_style, builder, args);
+
         return builder.create();
+    }
+
+    private void setStyle(String style, AlertDialog.Builder builder, final Bundle args) {
+        switch (style) {
+            case STYLE_DIALOG_NORMAL:
+                builder.setMessage(mMessage).setTitle(mTitle)
+                        .setPositiveButton(mPositiveId, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (mListener != null) {
+                                    mListener.onDialogPositiveEvent(mDialogId, args);
+                                }
+                            }
+                        })
+                        .setNegativeButton(mNegativeId, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (mListener != null) {
+                                    mListener.onDialogNegativeEvent(mDialogId, args);
+                                }
+                            }
+                        });
+                break;
+
+            case STYLE_DIALOG_CUSTOM:
+                builder.setView(mView);
+                break;
+        }
+    }
+
+    public void setView(View view) {
+        mView = view;
     }
 
     @Override

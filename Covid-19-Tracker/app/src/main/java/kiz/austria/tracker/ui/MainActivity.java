@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements
             TrackerDialog dialog = new TrackerDialog();
 
             Bundle args = new Bundle();
-            args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.KEY_DIALOG_ON_BACK_PRESSED);
+            args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_NORMAL);
+            args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_ON_BACK_PRESSED);
             args.putString(TrackerKeys.KEY_DIALOG_TITLE, "Do you want to exit?");
             args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, "Use the back navigation instead.");
             args.putInt(TrackerKeys.KEY_DIALOG_POSITIVE_RID, R.string.label_dialog_continue);
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onDialogNegativeEvent(int id, Bundle args) {
         switch (id) {
-            case TrackerKeys.KEY_DIALOG_ON_BACK_PRESSED:
+            case TrackerKeys.ACTION_DIALOG_ON_BACK_PRESSED:
                 finish();
                 break;
         }

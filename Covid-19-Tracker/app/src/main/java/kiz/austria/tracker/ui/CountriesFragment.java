@@ -6,8 +6,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,10 +25,11 @@ import java.util.ArrayList;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.util.TrackerDialog;
+import kiz.austria.tracker.util.TrackerKeys;
 import kiz.austria.tracker.util.TrackerTextWatcher;
 
-public class CountriesFragment extends Fragment implements View.OnClickListener
-{
+public class CountriesFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "CountriesFragment";
 
@@ -33,7 +39,24 @@ public class CountriesFragment extends Fragment implements View.OnClickListener
      */
     @Override
     public void onClick(View v) {
-        mListener.onInflateGlobalFragment();
+        int id = v.getId();
+        switch (id) {
+            case R.id.imb_countries_back:
+                mListener.onInflateGlobalFragment();
+                break;
+            case R.id.imb_countries_sort:
+                TrackerDialog dialog = new TrackerDialog();
+
+                Bundle args = new Bundle();
+                args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_CUSTOM);
+                args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, "Default");
+                args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_SORT_MENU);
+                dialog.setView(initSortView());
+                dialog.setArguments(args);
+                assert getFragmentManager() != null;
+                dialog.show(getFragmentManager(), null);
+                break;
+        }
     }
 
     //vars
@@ -80,8 +103,11 @@ public class CountriesFragment extends Fragment implements View.OnClickListener
         mRecyclerView = view.findViewById(R.id.rv_countries_list);
         mSearch = view.findViewById(R.id.edt_country_search);
 
-        ImageView btnBack = view.findViewById(R.id.btn_countries_back);
+        ImageView btnBack = view.findViewById(R.id.imb_countries_back);
         btnBack.setOnClickListener(this);
+
+        ImageButton btnSort = view.findViewById(R.id.imb_countries_sort);
+        btnSort.setOnClickListener(this);
 
         initRecyclerView();
         return view;
@@ -97,6 +123,22 @@ public class CountriesFragment extends Fragment implements View.OnClickListener
 
     private void initSearchText() {
         mSearch.addTextChangedListener(new TrackerTextWatcher(mNations, mCountriesRecyclerAdapter, getActivity()));
+    }
+
+    private View initSortView() {
+        View view = getLayoutInflater().inflate(R.layout.layout_countries_sort_dialog_container, null);
+        ListView categories = view.findViewById(R.id.rv_countries_sort_list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.layout_countries_sort_dialog_item, new String[]{
+                "Confirmed", "Deaths", "Recovered"});
+        categories.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        categories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getActivity(), "position " + position, Toast.LENGTH_SHORT).show();
+            }
+        });
+        return view;
     }
 
     @Override
