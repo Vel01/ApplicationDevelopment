@@ -7,7 +7,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
@@ -32,14 +31,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed: called");
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (!(fragment instanceof OnBackPressedFragment) || !((OnBackPressedFragment) fragment).onBackPressedFragment()) {
-            finish();
+        CountriesFragment fragment = (CountriesFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if ((fragment == null)) {
+            super.onBackPressed();
         } else {
-
             TrackerDialog dialog = new TrackerDialog();
 
             Bundle args = new Bundle();
+            args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.KEY_DIALOG_ON_BACK_PRESSED);
             args.putString(TrackerKeys.KEY_DIALOG_TITLE, "Do you want to exit?");
             args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, "Use the back navigation instead.");
             args.putInt(TrackerKeys.KEY_DIALOG_POSITIVE_RID, R.string.label_dialog_continue);
@@ -51,16 +50,21 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDialogPositiveEvent() {
+    public void onDialogPositiveEvent(int id, Bundle args) {
+
     }
 
     @Override
-    public void onDialogNegativeEvent() {
-        finish();
+    public void onDialogNegativeEvent(int id, Bundle args) {
+        switch (id) {
+            case TrackerKeys.KEY_DIALOG_ON_BACK_PRESSED:
+                finish();
+                break;
+        }
     }
 
     @Override
-    public void onDialogCancelEvent() {
+    public void onDialogCancelEvent(int id) {
 
     }
 
@@ -151,4 +155,5 @@ public class MainActivity extends AppCompatActivity implements
 
         return super.onOptionsItemSelected(item);
     }
+
 }

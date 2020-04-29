@@ -163,6 +163,7 @@
             android:textColorHint="@android:color/secondary_text_light" />
 
         <ImageButton
+            android:id="@+id/imb_countries_sort"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignParentEnd="true"

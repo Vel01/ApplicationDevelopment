@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment;
 
 import kiz.austria.tracker.R;
 
+import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_ID;
 import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_MESSAGE;
 import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_NEGATIVE_RID;
 import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_POSITIVE_RID;
@@ -19,14 +20,15 @@ import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_TITLE;
 
 public class TrackerDialog extends DialogFragment {
 
+
     private OnDialogEventListener mListener;
 
     public interface OnDialogEventListener {
-        void onDialogPositiveEvent();
+        void onDialogPositiveEvent(int id, Bundle args);
 
-        void onDialogNegativeEvent();
+        void onDialogNegativeEvent(int id, Bundle args);
 
-        void onDialogCancelEvent();
+        void onDialogCancelEvent(int id);
     }
 
     @Override
@@ -54,7 +56,8 @@ public class TrackerDialog extends DialogFragment {
         /*
             Customize dialog depending on the argument passed on the bundle
          */
-        Bundle args = getArguments();
+        final Bundle args = getArguments();
+        final int dialog_id;
         String title;
         String message;
         int positive_id;
@@ -62,8 +65,14 @@ public class TrackerDialog extends DialogFragment {
 
         if (args != null) {
 
+
+            dialog_id = args.getInt(KEY_DIALOG_ID);
             title = args.getString(KEY_DIALOG_TITLE);
             message = args.getString(KEY_DIALOG_MESSAGE);
+
+            if (dialog_id == 0 || message == null) {
+                throw new IllegalArgumentException("must passed KEY_DIALOG_ID and KEY_DIALOG_MESSAGE");
+            }
 
             positive_id = args.getInt(KEY_DIALOG_POSITIVE_RID);
             if (positive_id == 0) {
@@ -84,7 +93,7 @@ public class TrackerDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (mListener != null) {
-                            mListener.onDialogPositiveEvent();
+                            mListener.onDialogPositiveEvent(dialog_id, args);
                         }
                     }
                 })
@@ -92,7 +101,7 @@ public class TrackerDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (mListener != null) {
-                            mListener.onDialogNegativeEvent();
+                            mListener.onDialogNegativeEvent(dialog_id, args);
                         }
                     }
                 });
@@ -103,7 +112,9 @@ public class TrackerDialog extends DialogFragment {
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
         if (mListener != null) {
-            mListener.onDialogCancelEvent();
+            assert getArguments() != null;
+            int dialog_id = getArguments().getInt(KEY_DIALOG_ID);
+            mListener.onDialogCancelEvent(dialog_id);
         }
     }
 }

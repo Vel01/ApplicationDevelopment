@@ -22,19 +22,10 @@ import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerTextWatcher;
 
-public class CountriesFragment extends Fragment implements View.OnClickListener,
-        OnBackPressedFragment {
+public class CountriesFragment extends Fragment implements View.OnClickListener
+{
 
     private static final String TAG = "CountriesFragment";
-
-    /**
-     * Calling OnBackPressed() method of host activity
-     * @return true - return the instance of OnBackPressedFragment
-     */
-    @Override
-    public boolean onBackPressedFragment() {
-        return true;
-    }
 
     /**
      * Navigate back to GlobalFragment using navigation
