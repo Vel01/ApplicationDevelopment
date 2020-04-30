@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements
         initGlobalFragment();
     }
 
-    //vars
+    //reference
     private Bundle args = new Bundle();
 
     @Override
@@ -107,6 +107,11 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         Log.d(TAG, "onCreate: ended");
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override

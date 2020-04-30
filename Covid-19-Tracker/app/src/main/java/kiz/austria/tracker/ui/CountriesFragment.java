@@ -46,16 +46,15 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
                 mListener.onInflateGlobalFragment();
                 break;
             case R.id.imb_countries_sort:
-                TrackerDialog dialog = new TrackerDialog();
-
+                mDialog = new TrackerDialog();
                 Bundle args = new Bundle();
                 args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_CUSTOM);
                 args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, null);
                 args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_SORT_MENU);
-                dialog.setView(initSortView(dialog));
-                dialog.setArguments(args);
+                mDialog.setView(initSortView());
+                mDialog.setArguments(args);
                 assert getFragmentManager() != null;
-                dialog.show(getFragmentManager(), null);
+                mDialog.show(getFragmentManager(), null);
                 break;
         }
     }
@@ -64,6 +63,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     private OnInflateFragmentListener mListener;
     private ArrayList<Nation> mNations = new ArrayList<>();
     private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
+    private TrackerDialog mDialog = null;
 
     //widgets
     private RecyclerView mRecyclerView;
@@ -145,8 +145,8 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
         mCountriesRecyclerAdapter.notifyDataSetChanged();
     }
 
-    private View initSortView(final TrackerDialog dialog) {
-        View view = getLayoutInflater().inflate(R.layout.layout_countries_sort_dialog_container, null);
+    private View initSortView() {
+        View view = getLayoutInflater().inflate(R.layout.layout_countries_sort_dialog_container, null, false);
         ListView categories = view.findViewById(R.id.rv_countries_sort_list);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.layout_countries_sort_dialog_item, new String[]{
                 "Confirmed", "Deaths", "Recovered"});
@@ -164,7 +164,9 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
                             }
                         });
                         notifyChangedAdapter();
-                        dialog.dismiss();
+                        if (mDialog != null) {
+                            mDialog.dismiss();
+                        }
                         break;
                     case TrackerKeys.MENU_SORT_CATEGORY_DEATHS:
                         Collections.sort(mNations, new Comparator<Nation>() {
@@ -174,7 +176,9 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
                             }
                         });
                         notifyChangedAdapter();
-                        dialog.dismiss();
+                        if (mDialog != null) {
+                            mDialog.dismiss();
+                        }
                         break;
                     case TrackerKeys.MENU_SORT_CATEGORY_RECOVERED:
                         Collections.sort(mNations, new Comparator<Nation>() {
@@ -184,7 +188,9 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
                             }
                         });
                         notifyChangedAdapter();
-                        dialog.dismiss();
+                        if (mDialog != null) {
+                            mDialog.dismiss();
+                        }
                         break;
                 }
             }
@@ -196,6 +202,11 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     public void onResume() {
         super.onResume();
         mCountriesRecyclerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override
