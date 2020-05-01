@@ -27,5 +27,10 @@
     <string name="label_dialog_cancel">Cancel</string>
     <string name="label_dialog_continue">Continue</string>
     <string name="label_dialog_exit">Exit</string>
+    <string name="label_collapse_arrow">Collapse Arrow</string>
+    <string name="label_today_deaths">Today\'s Deaths:</string>
+    <string name="label_today_cases">Today\'s Cases:</string>
+    <string name="label_critical">Critical:</string>
+    <string name="label_active">Active:</string>
 
 </resources>

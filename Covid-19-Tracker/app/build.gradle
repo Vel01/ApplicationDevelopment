@@ -12,6 +12,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        android.defaultConfig.vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -36,7 +37,5 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     //Shimmer effect
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    //expandable recyclerview library
-    implementation 'com.hendraanggrian.recyclerview:recyclerview-expandable:0.1'
 
 }

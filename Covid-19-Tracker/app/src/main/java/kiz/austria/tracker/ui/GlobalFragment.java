@@ -98,7 +98,7 @@ public class GlobalFragment extends BaseFragment implements
         if (args != null) {
             Nation nation = args.getParcelable(getString(R.string.intent_global));
             if (nation != null) {
-                disCases = Integer.parseInt(nation.getCases());
+                disCases = Integer.parseInt(nation.getConfirmed());
                 disDeaths = Integer.parseInt(nation.getDeaths());
                 disRecovered = Integer.parseInt(nation.getRecovered());
             }

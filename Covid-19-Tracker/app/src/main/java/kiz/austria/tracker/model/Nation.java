@@ -6,24 +6,26 @@ import android.os.Parcelable;
 public class Nation implements Parcelable {
 
     private String mCountry;
-    private String mCases;
+    private String mConfirmed;
     private String mDeaths;
     private String mTodayCases;
     private String mTodayDeaths;
     private String mRecovered;
     private String mActive;
     private String mCritical;
+    private boolean mExpanded;
 
-    public Nation(String country, String cases, String deaths, String todayCases,
+    public Nation(String country, String confirmed, String deaths, String todayCases,
                   String todayDeaths, String recovered, String active, String critical) {
         mCountry = validate(country);
-        mCases = validate(cases);
+        mConfirmed = validate(confirmed);
         mDeaths = validate(deaths);
         mTodayCases = validate(todayCases);
         mTodayDeaths = validate(todayDeaths);
         mRecovered = validate(recovered);
         mActive = validate(active);
         mCritical = validate(critical);
+        mExpanded = false;
     }
 
     private String validate(String value) {
@@ -32,13 +34,14 @@ public class Nation implements Parcelable {
 
     protected Nation(Parcel in) {
         mCountry = in.readString();
-        mCases = in.readString();
+        mConfirmed = in.readString();
         mDeaths = in.readString();
         mTodayCases = in.readString();
         mTodayDeaths = in.readString();
         mRecovered = in.readString();
         mActive = in.readString();
         mCritical = in.readString();
+        mExpanded = in.readByte() != 0;
     }
 
     public static final Creator<Nation> CREATOR = new Creator<Nation>() {
@@ -57,8 +60,8 @@ public class Nation implements Parcelable {
         return mCountry;
     }
 
-    public String getCases() {
-        return mCases;
+    public String getConfirmed() {
+        return mConfirmed;
     }
 
     public String getDeaths() {
@@ -85,12 +88,20 @@ public class Nation implements Parcelable {
         return mCritical;
     }
 
+    public boolean isExpanded() {
+        return mExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        mExpanded = expanded;
+    }
+
     @androidx.annotation.NonNull
     @Override
     public String toString() {
         return "Countries{" +
                 "mCountry='" + mCountry + '\'' +
-                ", mCases='" + mCases + '\'' +
+                ", mCases='" + mConfirmed + '\'' +
                 ", mDeaths='" + mDeaths + '\'' +
                 ", mTodayCases='" + mTodayCases + '\'' +
                 ", mTodayDeaths='" + mTodayDeaths + '\'' +
@@ -100,7 +111,6 @@ public class Nation implements Parcelable {
                 '}';
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -109,12 +119,14 @@ public class Nation implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mCountry);
-        dest.writeString(mCases);
+        dest.writeString(mConfirmed);
         dest.writeString(mDeaths);
         dest.writeString(mTodayCases);
         dest.writeString(mTodayDeaths);
         dest.writeString(mRecovered);
         dest.writeString(mActive);
         dest.writeString(mCritical);
+        dest.writeByte((byte) (mExpanded ? 1 : 0));
     }
+
 }

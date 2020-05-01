@@ -1,5 +1,6 @@
 package kiz.austria.tracker.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -146,7 +147,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     }
 
     private View initSortView() {
-        View view = getLayoutInflater().inflate(R.layout.layout_countries_sort_dialog_container, null, false);
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.layout_countries_sort_dialog_container, null, false);
         ListView categories = view.findViewById(R.id.rv_countries_sort_list);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.layout_countries_sort_dialog_item, new String[]{
                 "Confirmed", "Deaths", "Recovered"});
@@ -160,7 +161,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
                         Collections.sort(mNations, new Comparator<Nation>() {
                             @Override
                             public int compare(Nation o1, Nation o2) {
-                                return sort(Integer.parseInt(o2.getCases()), Integer.parseInt(o1.getCases()));
+                                return sort(Integer.parseInt(o2.getConfirmed()), Integer.parseInt(o1.getConfirmed()));
                             }
                         });
                         notifyChangedAdapter();

@@ -22,7 +22,7 @@
             android:clickable="true"
             android:contentDescription="@string/label_back_to_global_window"
             android:focusable="true"
-            android:src="@drawable/ic_arrow_back" />
+            app:srcCompat="@drawable/ic_arrow_back" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -153,8 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_edittext"
-            android:drawableEnd="@drawable/ic_sort_transparent"
-            android:drawableRight="@drawable/ic_sort_transparent"
+            app:drawableRightCompat="@drawable/ic_sort_transparent"
             android:hint="Search"
             android:importantForAutofill="no"
             android:inputType="text"
@@ -178,7 +177,7 @@
             android:clickable="true"
             android:contentDescription="Search Countries"
             android:focusable="true"
-            android:src="@drawable/ic_sort" />
+            app:srcCompat="@drawable/ic_sort" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
