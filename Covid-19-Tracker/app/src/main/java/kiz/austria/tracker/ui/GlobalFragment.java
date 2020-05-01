@@ -27,7 +27,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.MPPointF;
 
 import java.util.ArrayList;
 
@@ -141,60 +140,57 @@ public class GlobalFragment extends BaseFragment implements
         chart.getDescription().setEnabled(false);
         chart.setExtraOffsets(5, 5, 5, 5);
         chart.setDragDecelerationFrictionCoef(0.90f);
-        chart.setDrawHoleEnabled(true);
-        chart.setHoleColor(Color.WHITE);
-        chart.setTransparentCircleColor(Color.WHITE);
-        chart.setTransparentCircleAlpha(110);
-        chart.setHoleRadius(20f);
-        chart.setTransparentCircleRadius(25f);
-        chart.setRotationAngle(50);
+        chart.setDrawHoleEnabled(false);
         chart.setRotationEnabled(true);
+        chart.setRotationAngle(50);
         chart.setHighlightPerTapEnabled(true);
         // add a selection listener
         chart.setOnChartValueSelectedListener(this);
         chart.animateY(1400, Easing.EaseInOutQuad);
-
-        Legend l = chart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setXEntrySpace(7f);
-        l.setYEntrySpace(0f);
-        l.setYOffset(10f);
-
         // entry label styling
-        chart.setEntryLabelColor(Color.WHITE);
+        chart.setEntryLabelColor(Color.BLACK);
         chart.setEntryLabelTypeface(tfRegular);
-        chart.setEntryLabelTextSize(12f);
+        chart.setEntryLabelTextSize(10f);
+
+
+        Legend legend = chart.getLegend();
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setXEntrySpace(7f);
+        legend.setYOffset(10f);
 
         ArrayList<PieEntry> entries = new ArrayList<>();
         entries.add(new PieEntry(disCases, "Confirmed"));
         entries.add(new PieEntry(disDeaths, "Deaths"));
         entries.add(new PieEntry(disRecovered, "Recovered"));
 
+        //data arrows style
         PieDataSet dataSet = new PieDataSet(entries, null);
-
-        dataSet.setDrawIcons(false);
-        dataSet.setSliceSpace(3f);
-        dataSet.setIconsOffset(new MPPointF(0, 40));
-        dataSet.setSelectionShift(10f);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setValueLinePart1OffsetPercentage(90.f);
+        dataSet.setValueLinePart1Length(.7f);
+        dataSet.setValueLinePart2Length(.5f);
+        dataSet.setSliceSpace(2f);
+        dataSet.setSelectionShift(4f);
 
         // add a lot of colors
         ArrayList<Integer> colors = new ArrayList<>();
-
         for (int c : ColorTemplate.JOYFUL_COLORS)
             colors.add(c);
         colors.add(ColorTemplate.getHoloBlue());
+
         dataSet.setColors(colors);
 
+        //label arrows style
         PieData data = new PieData(dataSet);
         data.setValueFormatter(new PercentFormatter(chart));
         data.setValueTextSize(10f);
         data.setValueTextColor(Color.BLACK);
         data.setValueTypeface(tfLight);
-        chart.setData(data);
 
+        chart.setData(data);
         // undo all highlights
         chart.highlightValues(null);
         chart.invalidate();
