@@ -155,11 +155,11 @@
             android:background="@drawable/rounded_edittext"
             app:drawableRightCompat="@drawable/ic_sort_transparent"
             android:hint="Search"
-            android:importantForAutofill="no"
             android:inputType="text"
             android:singleLine="true"
             android:textAppearance="@android:style/TextAppearance.Small"
-            android:textColorHint="@android:color/secondary_text_light" />
+            android:textColorHint="@android:color/secondary_text_light"
+            android:autofillHints="Search Country" />
 
         <ImageButton
             android:id="@+id/imb_countries_sort"

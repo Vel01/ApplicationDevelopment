@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -14,6 +15,8 @@ import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.model.Nation;
 
 public class TrackerTextWatcher implements TextWatcher {
+
+    private static final String TAG = "TrackerTextWatcher";
 
     private final int DELAY = 3000;
 
@@ -48,6 +51,7 @@ public class TrackerTextWatcher implements TextWatcher {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d(TAG, "run: manager here...");
                     InputMethodManager manager = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
                     View view = mActivity.getCurrentFocus();
                     if (manager != null && view != null) {
