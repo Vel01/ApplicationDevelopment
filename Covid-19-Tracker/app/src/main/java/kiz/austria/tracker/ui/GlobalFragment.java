@@ -34,7 +34,7 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerCountAnimation;
 
-public class GlobalFragment extends BaseFragment implements MainActivity.OnDownloadCompletedListener,
+public class GlobalFragment extends BaseFragment implements OnGlobalDownloadCompletedListener,
         OnChartValueSelectedListener, View.OnClickListener {
 
     private static final String TAG = "GlobalFragment";
@@ -244,6 +244,4 @@ public class GlobalFragment extends BaseFragment implements MainActivity.OnDownl
         Log.d(TAG, "onDetach() data was erased!");
         mListener = null;
     }
-
-
 }

@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "onBackPressed: called");
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))) {
-//            super.onBackPressed();
             finish();
         } else {
             TrackerDialog dialog = new TrackerDialog();
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onDataAvailable(Nation nation, JSONRawData.DownloadStatus status) {
-        mOnDownloadCompletedListener.onDataAvailable(nation);
+        mOnGlobalDownloadCompletedListener.onDataAvailable(nation);
     }
 
     @Override
@@ -96,13 +95,9 @@ public class MainActivity extends AppCompatActivity implements
 
     //reference
     private Bundle args = new Bundle();
-    private OnDownloadCompletedListener mOnDownloadCompletedListener;
+    private OnGlobalDownloadCompletedListener mOnGlobalDownloadCompletedListener;
 
     private boolean isRecreated = false;
-
-    public interface OnDownloadCompletedListener {
-        void onDataAvailable(Nation nation);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onAttachFragment(@NonNull Fragment fragment) {
         super.onAttachFragment(fragment);
-        mOnDownloadCompletedListener = (OnDownloadCompletedListener) getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global));//cast the implementer
+        mOnGlobalDownloadCompletedListener = (OnGlobalDownloadCompletedListener) getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global));//cast the implementer
     }
 
 

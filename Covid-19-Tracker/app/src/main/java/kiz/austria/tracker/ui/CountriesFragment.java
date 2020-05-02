@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,11 +48,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
 
                 FragmentManager manager = getFragmentManager();
                 assert manager != null;
-                boolean fragmentPopped = manager.popBackStackImmediate(getString(R.string.tag_fragment_global), 0);
-                if (!fragmentPopped) {
-                    Log.d(TAG, "onClick()");
-                    mListener.onInflateGlobalFragment();
-                }
+                manager.popBackStackImmediate(getString(R.string.tag_fragment_global), 0);
 
                 break;
             case R.id.imb_countries_sort:
@@ -208,16 +203,6 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
             }
         });
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     @Override
