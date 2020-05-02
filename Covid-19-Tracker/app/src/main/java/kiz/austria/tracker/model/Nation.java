@@ -99,7 +99,7 @@ public class Nation implements Parcelable {
     @androidx.annotation.NonNull
     @Override
     public String toString() {
-        return "Countries{" +
+        return "Nation{" +
                 "mCountry='" + mCountry + '\'' +
                 ", mCases='" + mConfirmed + '\'' +
                 ", mDeaths='" + mDeaths + '\'' +

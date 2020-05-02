@@ -34,10 +34,24 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerCountAnimation;
 
-public class GlobalFragment extends BaseFragment implements
+public class GlobalFragment extends BaseFragment implements MainActivity.OnDownloadCompletedListener,
         OnChartValueSelectedListener, View.OnClickListener {
 
     private static final String TAG = "GlobalFragment";
+
+    private boolean isDisplayed = false;
+
+    @Override
+    public void onDataAvailable(Nation nation) {
+        if (nation != null) {
+            Log.d(TAG, "onDataAvailable() data received from host: " + nation.toString());
+            disCases = Integer.parseInt(nation.getConfirmed());
+            disDeaths = Integer.parseInt(nation.getDeaths());
+            disRecovered = Integer.parseInt(nation.getRecovered());
+            displayData();
+            isDisplayed = true;
+        }
+    }
 
     //events
     @Override
@@ -70,17 +84,14 @@ public class GlobalFragment extends BaseFragment implements
 
     //vars
     private int disCases, disDeaths, disRecovered;
+    private Handler mHandler = new Handler();
     private OnInflateFragmentListener mListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
-
         iniInterface();
-        getBundleArguments();
-
-        Log.d(TAG, "onAttach: ended");
     }
 
     private void iniInterface() {
@@ -92,17 +103,6 @@ public class GlobalFragment extends BaseFragment implements
         mListener = (OnInflateFragmentListener) activity;
     }
 
-    private void getBundleArguments() {
-        Bundle args = this.getArguments();
-        if (args != null) {
-            Nation nation = args.getParcelable(getString(R.string.intent_global));
-            if (nation != null) {
-                disCases = Integer.parseInt(nation.getConfirmed());
-                disDeaths = Integer.parseInt(nation.getDeaths());
-                disRecovered = Integer.parseInt(nation.getRecovered());
-            }
-        }
-    }
 
     @Nullable
     @Override
@@ -129,8 +129,6 @@ public class GlobalFragment extends BaseFragment implements
         tvRecovered = view.findViewById(R.id.tv_recovered);
 
         chart = view.findViewById(R.id.chart_global_cases);
-
-        Log.d(TAG, "onCreateView: ended");
         return view;
     }
 
@@ -200,14 +198,26 @@ public class GlobalFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
-        displayData();
+        if (isDisplayed) {
+            Log.d(TAG, "onResume() re-display");
+            displayData();
+        }
     }
 
+
     private void displayData() {
-        new Handler().postDelayed(new Runnable() {
+
+        Log.d(TAG, "displayData() preparing to display");
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mChildShimmer.getVisibility() == View.VISIBLE) {
+                Log.d(TAG, "run() setting up data for display ");
+
+                if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE
+                        && disCases != 0
+                        && disDeaths != 0
+                        && disRecovered != 0) {
+                    Log.d(TAG, "run() data is displayed!");
                     mShimmerFrameLayout.stopShimmer();
                     mShimmerFrameLayout.hideShimmer();
                     mChildShimmer.setVisibility(View.GONE);
@@ -222,9 +232,18 @@ public class GlobalFragment extends BaseFragment implements
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView() data retained! (may not if onDetach() is called)");
+        mHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
+        Log.d(TAG, "onDetach() data was erased!");
         mListener = null;
     }
+
 
 }

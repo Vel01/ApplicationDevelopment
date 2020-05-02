@@ -29,12 +29,14 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "MainActivity";
 
+
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed: called");
-        CountriesFragment fragment = (CountriesFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if ((fragment == null)) {
-            super.onBackPressed();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))) {
+//            super.onBackPressed();
+            finish();
         } else {
             TrackerDialog dialog = new TrackerDialog();
 
@@ -71,12 +73,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDataAvailable(Nation coverage, JSONRawData.DownloadStatus status) {
-        args.putParcelable(getString(R.string.intent_global), coverage);
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if ((fragment == null)) {
-            initGlobalFragment();
-        }
+    public void onDataAvailable(Nation nation, JSONRawData.DownloadStatus status) {
+        mOnDownloadCompletedListener.onDataAvailable(nation);
     }
 
     @Override
@@ -98,22 +96,46 @@ public class MainActivity extends AppCompatActivity implements
 
     //reference
     private Bundle args = new Bundle();
+    private OnDownloadCompletedListener mOnDownloadCompletedListener;
+
+    private boolean isRecreated = false;
+
+    public interface OnDownloadCompletedListener {
+        void onDataAvailable(Nation nation);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
 
+        if (savedInstanceState == null) {//home(GlobalFragment) first initialization
+            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
+            nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+            initGlobalFragment();
+        } else {
+            isRecreated = true;
+        }
         setContentView(R.layout.activity_main);
     }
 
     @Override
+    public void onAttachFragment(@NonNull Fragment fragment) {
+        super.onAttachFragment(fragment);
+        mOnDownloadCompletedListener = (OnDownloadCompletedListener) getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global));//cast the implementer
+    }
+
+
+    @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume: was called!");
+        Log.e(TAG, "onResume() was called!");
 
-        NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
-        nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+        if (isRecreated) {
+            Log.e(TAG, "onResume() re-download");
+            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
+            nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+        }
 
         CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
         countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
@@ -122,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void initGlobalFragment() {
         GlobalFragment fragment = new GlobalFragment();
-        fragment.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_global));
         transaction.addToBackStack(getString(R.string.tag_fragment_global));
@@ -156,4 +177,9 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy()");
+    }
 }

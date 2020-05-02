@@ -20,7 +20,7 @@ public class NationDataParser<T extends Nation> extends AsyncTask<String, Void, 
     private String destinationUri;
 
     public interface OnDataAvailable {
-        void onDataAvailable(Nation coverage, final JSONRawData.DownloadStatus status);
+        void onDataAvailable(Nation nation, final JSONRawData.DownloadStatus status);
     }
 
     private NationDataParser(OnDataAvailable onDataAvailable) {

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,7 +46,15 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
         int id = v.getId();
         switch (id) {
             case R.id.imb_countries_back:
-                mListener.onInflateGlobalFragment();
+
+                FragmentManager manager = getFragmentManager();
+                assert manager != null;
+                boolean fragmentPopped = manager.popBackStackImmediate(getString(R.string.tag_fragment_global), 0);
+                if (!fragmentPopped) {
+                    Log.d(TAG, "onClick()");
+                    mListener.onInflateGlobalFragment();
+                }
+
                 break;
             case R.id.imb_countries_sort:
                 mDialog = new TrackerDialog();
@@ -77,6 +87,16 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
         getBundleArguments();
     }
 
+    private void initInterface() {
+        Activity activity = getActivity();
+        if (!(activity instanceof OnInflateFragmentListener) && activity != null) {
+            throw new ClassCastException(activity.getClass().getSimpleName()
+                    + " must implement OnInflateFragmentListener interface");
+        }
+        mListener = (OnInflateFragmentListener) activity;
+
+    }
+
     private void getBundleArguments() {
         Bundle args = this.getArguments();
         if (args != null) {
@@ -105,15 +125,6 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
         return view;
     }
 
-    private void initInterface() {
-        Activity activity = getActivity();
-        if (!(activity instanceof OnInflateFragmentListener) && activity != null) {
-            throw new ClassCastException(activity.getClass().getSimpleName()
-                    + " must implement OnInflateFragmentListener interface");
-        }
-        mListener = (OnInflateFragmentListener) activity;
-
-    }
 
     private void initRecyclerView() {
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
