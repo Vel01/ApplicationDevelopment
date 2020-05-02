@@ -213,7 +213,6 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onResume() {
         super.onResume();
-        mCountriesRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
