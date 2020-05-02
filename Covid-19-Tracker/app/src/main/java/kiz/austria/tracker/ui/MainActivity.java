@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
@@ -71,13 +72,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onDataAvailable(Nation coverage, JSONRawData.DownloadStatus status) {
-        GlobalFragment fragment = new GlobalFragment();
         args.putParcelable(getString(R.string.intent_global), coverage);
-        fragment.setArguments(args);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_global));
-        transaction.addToBackStack(getString(R.string.tag_fragment_global));
-        transaction.commit();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if ((fragment == null)) {
+            initGlobalFragment();
+        }
     }
 
     @Override
@@ -87,13 +86,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onInflateCountriesFragment() {
-        Log.d(TAG, "inflateCountriesFragment: inflate CountriesFragment");
+        Log.e(TAG, "inflateCountriesFragment: inflate CountriesFragment");
         initCountriesFragment();
     }
 
     @Override
     public void onInflateGlobalFragment() {
-        Log.d(TAG, "inflateCountriesFragment: inflate GlobalFragment");
+        Log.e(TAG, "inflateCountriesFragment: inflate GlobalFragment");
         initGlobalFragment();
     }
 
@@ -102,31 +101,26 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: started");
+        Log.e(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-
-        Log.d(TAG, "onCreate: ended");
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: was called!");
+        Log.e(TAG, "onResume: was called!");
+
         NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
         nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
 
         CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
         countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+
     }
 
     private void initGlobalFragment() {
-        Log.d(TAG, "onCreate: initGlobalFragment");
         GlobalFragment fragment = new GlobalFragment();
         fragment.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

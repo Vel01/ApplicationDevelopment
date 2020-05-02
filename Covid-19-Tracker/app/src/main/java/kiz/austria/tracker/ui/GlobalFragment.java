@@ -200,6 +200,10 @@ public class GlobalFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
+        displayData();
+    }
+
+    private void displayData() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -216,7 +220,6 @@ public class GlobalFragment extends BaseFragment implements
             }
         }, 700);
     }
-
 
     @Override
     public void onDetach() {
