@@ -24,11 +24,9 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     private static final String TAG = "CountriesRecyclerAdapte";
 
     private ArrayList<Nation> mNations;
-//    private Context mContext;
 
-    public CountriesRecyclerAdapter(ArrayList<Nation> nations) {//, Context context) {
+    public CountriesRecyclerAdapter(ArrayList<Nation> nations) {
         mNations = nations;
-//        mContext = context;
     }
 
     @NonNull

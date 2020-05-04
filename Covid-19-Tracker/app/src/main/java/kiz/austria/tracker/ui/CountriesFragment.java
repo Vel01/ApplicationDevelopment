@@ -30,6 +30,7 @@ import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
+import kiz.austria.tracker.util.TrackerPlate;
 import kiz.austria.tracker.util.TrackerTextWatcher;
 
 public class CountriesFragment extends Fragment implements View.OnClickListener {
@@ -66,7 +67,6 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     }
 
     //vars
-//    private OnInflateFragmentListener mListener;
     private ArrayList<Nation> mNations = new ArrayList<>();
     private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
     private TrackerDialog mDialog = null;
@@ -78,19 +78,8 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-//        initInterface();
         getBundleArguments();
     }
-
-//    private void initInterface() {
-//        Activity activity = getActivity();
-//        if (!(activity instanceof OnInflateFragmentListener) && activity != null) {
-//            throw new ClassCastException(activity.getClass().getSimpleName()
-//                    + " must implement OnInflateFragmentListener interface");
-//        }
-//        mListener = (OnInflateFragmentListener) activity;
-//
-//    }
 
     private void getBundleArguments() {
         Bundle args = this.getArguments();
@@ -151,58 +140,61 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
         //scroll back to top
         manager.scrollToPositionWithOffset(0, 0);
         mCountriesRecyclerAdapter.notifyDataSetChanged();
+        TrackerPlate.hideSoftKeyboard(getActivity());
     }
 
     private View initSortView() {
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.layout_countries_sort_dialog_container, null, false);
         ListView categories = view.findViewById(R.id.rv_countries_sort_list);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.layout_countries_sort_dialog_item, new String[]{
-                "Confirmed", "Deaths", "Recovered"});
-        categories.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        categories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case TrackerKeys.MENU_SORT_CATEGORY_CONFIRMED:
-                        Collections.sort(mNations, new Comparator<Nation>() {
-                            @Override
-                            public int compare(Nation o1, Nation o2) {
-                                return sort(Integer.parseInt(o2.getConfirmed()), Integer.parseInt(o1.getConfirmed()));
+        if (getActivity() != null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.layout_countries_sort_dialog_item, new String[]{
+                    "Confirmed", "Deaths", "Recovered"});
+            categories.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            categories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    switch (position) {
+                        case TrackerKeys.MENU_SORT_CATEGORY_CONFIRMED:
+                            Collections.sort(mNations, new Comparator<Nation>() {
+                                @Override
+                                public int compare(Nation o1, Nation o2) {
+                                    return sort(Integer.parseInt(o2.getConfirmed()), Integer.parseInt(o1.getConfirmed()));
+                                }
+                            });
+                            notifyChangedAdapter();
+                            if (mDialog != null) {
+                                mDialog.dismiss();
                             }
-                        });
-                        notifyChangedAdapter();
-                        if (mDialog != null) {
-                            mDialog.dismiss();
-                        }
-                        break;
-                    case TrackerKeys.MENU_SORT_CATEGORY_DEATHS:
-                        Collections.sort(mNations, new Comparator<Nation>() {
-                            @Override
-                            public int compare(Nation o1, Nation o2) {
-                                return sort(Integer.parseInt(o2.getDeaths()), Integer.parseInt(o1.getDeaths()));
+                            break;
+                        case TrackerKeys.MENU_SORT_CATEGORY_DEATHS:
+                            Collections.sort(mNations, new Comparator<Nation>() {
+                                @Override
+                                public int compare(Nation o1, Nation o2) {
+                                    return sort(Integer.parseInt(o2.getDeaths()), Integer.parseInt(o1.getDeaths()));
+                                }
+                            });
+                            notifyChangedAdapter();
+                            if (mDialog != null) {
+                                mDialog.dismiss();
                             }
-                        });
-                        notifyChangedAdapter();
-                        if (mDialog != null) {
-                            mDialog.dismiss();
-                        }
-                        break;
-                    case TrackerKeys.MENU_SORT_CATEGORY_RECOVERED:
-                        Collections.sort(mNations, new Comparator<Nation>() {
-                            @Override
-                            public int compare(Nation o1, Nation o2) {
-                                return sort(Integer.parseInt(o2.getRecovered()), Integer.parseInt(o1.getRecovered()));
+                            break;
+                        case TrackerKeys.MENU_SORT_CATEGORY_RECOVERED:
+                            Collections.sort(mNations, new Comparator<Nation>() {
+                                @Override
+                                public int compare(Nation o1, Nation o2) {
+                                    return sort(Integer.parseInt(o2.getRecovered()), Integer.parseInt(o1.getRecovered()));
+                                }
+                            });
+                            notifyChangedAdapter();
+                            if (mDialog != null) {
+                                mDialog.dismiss();
                             }
-                        });
-                        notifyChangedAdapter();
-                        if (mDialog != null) {
-                            mDialog.dismiss();
-                        }
-                        break;
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
         return view;
     }
 
@@ -210,7 +202,6 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     public void onDetach() {
         super.onDetach();
         Log.d(TAG, "onDetach()");
-//        mListener = null;
     }
 
     @Override

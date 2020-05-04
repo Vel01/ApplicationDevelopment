@@ -1,13 +1,10 @@
 package kiz.austria.tracker.util;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
 
@@ -17,8 +14,6 @@ import kiz.austria.tracker.model.Nation;
 public class TrackerTextWatcher implements TextWatcher {
 
     private static final String TAG = "TrackerTextWatcher";
-
-    private final int DELAY = 3000;
 
     private ArrayList<Nation> mNations;
     private CountriesRecyclerAdapter mAdapter;
@@ -48,15 +43,12 @@ public class TrackerTextWatcher implements TextWatcher {
         filter(s.toString());
         if (s.length() >= 2) {
             mHandler = new Handler();
+            final int DELAY = 3000;
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     Log.d(TAG, "run: manager here...");
-                    InputMethodManager manager = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    View view = mActivity.getCurrentFocus();
-                    if (manager != null && view != null) {
-                        manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                    }
+                    TrackerPlate.hideSoftKeyboard(mActivity);
                 }
             }, DELAY);
         }

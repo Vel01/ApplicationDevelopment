@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     android:orientation="vertical">
 
     <LinearLayout
@@ -152,14 +153,14 @@
             android:id="@+id/edt_country_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints="Search Country"
             android:background="@drawable/rounded_edittext"
-            app:drawableRightCompat="@drawable/ic_sort_transparent"
             android:hint="Search"
             android:inputType="text"
             android:singleLine="true"
             android:textAppearance="@android:style/TextAppearance.Small"
             android:textColorHint="@android:color/secondary_text_light"
-            android:autofillHints="Search Country" />
+            app:drawableRightCompat="@drawable/ic_sort_transparent" />
 
         <ImageButton
             android:id="@+id/imb_countries_sort"
