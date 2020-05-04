@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements
         if (savedInstanceState == null) {//home(GlobalFragment) first initialization
             NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
             nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+
             initGlobalFragment();
         }
 //        else {

@@ -1,6 +1,5 @@
 package kiz.austria.tracker.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -26,11 +24,11 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     private static final String TAG = "CountriesRecyclerAdapte";
 
     private ArrayList<Nation> mNations;
-    private Context mContext;
+//    private Context mContext;
 
-    public CountriesRecyclerAdapter(ArrayList<Nation> nations, Context context, LinearLayoutManager manager) {
+    public CountriesRecyclerAdapter(ArrayList<Nation> nations) {//, Context context) {
         mNations = nations;
-        mContext = context;
+//        mContext = context;
     }
 
     @NonNull
@@ -79,11 +77,11 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     }
 
     private void setFadeScaleAnimation(View view) {
-        view.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_scale_animation));
+        view.setAnimation(AnimationUtils.loadAnimation(view.getContext(), R.anim.fade_scale_animation));
     }
 
     private void setFadeInAnimation(View view) {
-        view.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_in_animation));
+        view.setAnimation(AnimationUtils.loadAnimation(view.getContext(), R.anim.fade_in_animation));
     }
 
     @Override

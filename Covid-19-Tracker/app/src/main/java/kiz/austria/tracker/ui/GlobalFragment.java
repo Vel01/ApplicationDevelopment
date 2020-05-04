@@ -84,7 +84,6 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
 
     //vars
     private int disCases, disDeaths, disRecovered;
-//    private Handler mHandler = new Handler();
     private OnInflateFragmentListener mListener;
 
     @Override
@@ -240,20 +239,19 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d(TAG, "onDestroyView() data retained! (may not if onDetach() is called)");
-//        mHandler.removeCallbacksAndMessages(null);
+        Log.d(TAG, "onDestroyView() data retained!");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy()");
+        Log.d(TAG, "onDestroy() data was completely erased!");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG, "onDetach() data was erased!");
+        Log.d(TAG, "onDetach() data is still retained! (may not if onDestroy() is called)");
         mListener = null;
     }
 }

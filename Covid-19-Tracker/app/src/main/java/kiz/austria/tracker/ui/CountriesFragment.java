@@ -1,9 +1,9 @@
 package kiz.austria.tracker.ui;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +66,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     }
 
     //vars
-    private OnInflateFragmentListener mListener;
+//    private OnInflateFragmentListener mListener;
     private ArrayList<Nation> mNations = new ArrayList<>();
     private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
     private TrackerDialog mDialog = null;
@@ -78,19 +78,19 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        initInterface();
+//        initInterface();
         getBundleArguments();
     }
 
-    private void initInterface() {
-        Activity activity = getActivity();
-        if (!(activity instanceof OnInflateFragmentListener) && activity != null) {
-            throw new ClassCastException(activity.getClass().getSimpleName()
-                    + " must implement OnInflateFragmentListener interface");
-        }
-        mListener = (OnInflateFragmentListener) activity;
-
-    }
+//    private void initInterface() {
+//        Activity activity = getActivity();
+//        if (!(activity instanceof OnInflateFragmentListener) && activity != null) {
+//            throw new ClassCastException(activity.getClass().getSimpleName()
+//                    + " must implement OnInflateFragmentListener interface");
+//        }
+//        mListener = (OnInflateFragmentListener) activity;
+//
+//    }
 
     private void getBundleArguments() {
         Bundle args = this.getArguments();
@@ -120,11 +120,12 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
         return view;
     }
 
-
     private void initRecyclerView() {
-        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(manager);
-        mCountriesRecyclerAdapter = new CountriesRecyclerAdapter(mNations, getActivity(), manager);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        if (mCountriesRecyclerAdapter == null) {
+            Log.d(TAG, "initRecyclerView() re-allocate adapter instance");
+            mCountriesRecyclerAdapter = new CountriesRecyclerAdapter(mNations);
+        }
         mRecyclerView.setAdapter(mCountriesRecyclerAdapter);
         initSearchText();
     }
@@ -208,6 +209,19 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        Log.d(TAG, "onDetach()");
+//        mListener = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView()");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy()");
     }
 }
