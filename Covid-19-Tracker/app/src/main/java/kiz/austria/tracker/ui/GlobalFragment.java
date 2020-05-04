@@ -84,7 +84,7 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
 
     //vars
     private int disCases, disDeaths, disRecovered;
-    private Handler mHandler = new Handler();
+//    private Handler mHandler = new Handler();
     private OnInflateFragmentListener mListener;
 
     @Override
@@ -103,6 +103,12 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
         mListener = (OnInflateFragmentListener) activity;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //retain fragment instance to retain its states and avoid re-downloading data.
+        setRetainInstance(true);
+    }
 
     @Nullable
     @Override
@@ -208,7 +214,7 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
     private void displayData() {
 
         Log.d(TAG, "displayData() preparing to display");
-        mHandler.postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Log.d(TAG, "run() setting up data for display ");
@@ -235,7 +241,13 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView() data retained! (may not if onDetach() is called)");
-        mHandler.removeCallbacksAndMessages(null);
+//        mHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy()");
     }
 
     @Override

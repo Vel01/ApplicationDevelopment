@@ -108,9 +108,10 @@ public class MainActivity extends AppCompatActivity implements
             NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
             nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
             initGlobalFragment();
-        } else {
-            isRecreated = true;
         }
+//        else {
+//            isRecreated = true;
+//        }
         setContentView(R.layout.activity_main);
     }
 
@@ -126,11 +127,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         Log.e(TAG, "onResume() was called!");
 
-        if (isRecreated) {
-            Log.e(TAG, "onResume() re-download");
-            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
-            nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
-        }
+//        if (isRecreated) {
+//            Log.e(TAG, "onResume() re-download");
+//            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
+//            nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+//        }
 
         CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
         countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
@@ -175,6 +176,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy()");
+        Log.e(TAG, "onDestroy()");
     }
 }
