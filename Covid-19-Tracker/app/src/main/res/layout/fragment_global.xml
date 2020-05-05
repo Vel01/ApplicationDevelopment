@@ -1,265 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="#fff"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#fff">
 
+    <include
+        android:id="@+id/child_layout_global_shimmer"
+        layout="@layout/shimmer_global"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/layout_global_shimmer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <include
+        android:id="@+id/child_layout_global_main"
+        layout="@layout/layout_global"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <LinearLayout
-            android:id="@+id/child_layout_global_shimmer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:visibility="visible">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/rounded_shimmer"
-                android:orientation="horizontal" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginBottom="4dp"
-                android:background="@drawable/rounded_shimmer"
-                android:orientation="horizontal" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginBottom="4dp"
-                android:background="@drawable/rounded_shimmer"
-                android:orientation="horizontal" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:background="@drawable/rounded_shimmer"
-                android:orientation="horizontal" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_global_shimmer_pie"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:background="@drawable/rounded_shimmer" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/rounded_shimmer" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/rounded_shimmer" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/child_layout_global_main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:visibility="gone">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_global_cases"
-                android:textColor="@android:color/primary_text_light"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/title_cases"
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:text="@string/label_confirmed"
-                    android:textColor="@android:color/secondary_text_light"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/tv_cases"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_toEndOf="@+id/title_cases"
-                    android:layout_toRightOf="@+id/title_cases"
-                    android:gravity="end"
-                    android:hint="@string/label_default_number"
-                    android:textAlignment="textEnd"
-                    android:textColor="@android:color/secondary_text_light"
-                    android:textSize="14sp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/title_deaths"
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:text="@string/label_deaths"
-                    android:textColor="@android:color/secondary_text_light"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/tv_deaths"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_toEndOf="@+id/title_deaths"
-                    android:layout_toRightOf="@+id/title_deaths"
-                    android:gravity="end"
-                    android:hint="@string/label_default_number"
-                    android:textAlignment="textEnd"
-                    android:textColor="@android:color/secondary_text_light"
-                    android:textSize="14sp"
-                    tools:ignore="RelativeOverlap" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/title_recovered"
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:text="@string/label_recovered"
-                    android:textColor="@android:color/secondary_text_light"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/tv_recovered"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_toEndOf="@+id/title_recovered"
-                    android:layout_toRightOf="@+id/title_recovered"
-                    android:gravity="end"
-                    android:hint="@string/label_default_number"
-                    android:textAlignment="textEnd"
-                    android:textColor="@android:color/secondary_text_light"
-                    android:textSize="14sp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                android:layout_marginTop="16dp">
-
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/chart_global_cases"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerInParent="true" />
-
-                <TextView
-                    android:id="@+id/tv_update_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/chart_global_cases"
-                    android:layout_centerInParent="true"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/roboto"
-                    android:textColor="@android:color/secondary_text_light"
-                    android:textSize="12sp" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_update_date"
-                    android:layout_marginTop="16dp"
-                    android:theme="?attr/windowActionBarOverlay"
-                    app:cardCornerRadius="2dp"
-                    app:cardElevation="4dp">
-
-                    <LinearLayout
-                        android:id="@+id/btn_view_all_countries"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="2dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_view_all_countries"
-                            android:textColor="@android:color/secondary_text_light"
-                            android:textSize="10sp"
-                            tools:ignore="SmallSp" />
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

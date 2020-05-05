@@ -9,11 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.mikephil.charting.animation.Easing;
@@ -79,7 +79,8 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
     private TextView tvDeaths;
     private TextView tvRecovered;
     private ShimmerFrameLayout mShimmerFrameLayout;
-    private LinearLayout mChildShimmer, mChildMain;
+    private View mChildMain;
+    private View mChildShimmer;
 
     //vars
     private int disCases, disDeaths, disRecovered;
@@ -119,21 +120,43 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
         mChildShimmer = view.findViewById(R.id.child_layout_global_shimmer);
         mChildMain = view.findViewById(R.id.child_layout_global_main);
 
+        //design
+        initDesign(view);
+
         //update widget
         TextView tvUpdate = view.findViewById(R.id.tv_update_date);
         tvUpdate.setText(getCurrentDate());
 
         //go to countries widget
-        LinearLayout btnViewAllCountries = view.findViewById(R.id.btn_view_all_countries);
+        CardView btnViewAllCountries = view.findViewById(R.id.btn_view_all_countries);
         btnViewAllCountries.setOnClickListener(this);
 
         //global result widgets
         tvCases = view.findViewById(R.id.tv_cases);
         tvDeaths = view.findViewById(R.id.tv_deaths);
         tvRecovered = view.findViewById(R.id.tv_recovered);
+        setTextViewTypeface(tvCases, tfRoboto);
+        setTextViewTypeface(tvDeaths, tfRoboto);
+        setTextViewTypeface(tvRecovered, tfRoboto);
 
         chart = view.findViewById(R.id.chart_global_cases);
         return view;
+    }
+
+    private void initDesign(View view) {
+        //design
+        TextView globalTitle = view.findViewById(R.id.title_global);
+        TextView globalConfirmed = view.findViewById(R.id.title_confirmed);
+        TextView globalDeaths = view.findViewById(R.id.title_deaths);
+        TextView globalRecovered = view.findViewById(R.id.title_recovered);
+        TextView globalViewAll = view.findViewById(R.id.btn_view_all_countries_title);
+        setTextViewTypeface(globalTitle, tfRoboto);
+        setTextViewTypeface(globalConfirmed, tfRoboto);
+        setTextViewTypeface(globalDeaths, tfRoboto);
+        setTextViewTypeface(globalRecovered, tfRoboto);
+        setTextViewTypeface(globalViewAll, tfRoboto);
+
+
     }
 
     private void initPieChart() {
