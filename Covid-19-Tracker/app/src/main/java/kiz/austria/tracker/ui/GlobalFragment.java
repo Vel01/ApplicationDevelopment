@@ -20,10 +20,8 @@ import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -33,6 +31,7 @@ import java.util.ArrayList;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerCountAnimation;
+import kiz.austria.tracker.util.TrackerPieChart;
 
 public class GlobalFragment extends BaseFragment implements OnGlobalDownloadCompletedListener,
         OnChartValueSelectedListener, View.OnClickListener {
@@ -155,48 +154,29 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
         chart.setEntryLabelTypeface(tfRegular);
         chart.setEntryLabelTextSize(10f);
 
-
-        Legend legend = chart.getLegend();
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        legend.setXEntrySpace(7f);
-        legend.setYOffset(10f);
-
         ArrayList<PieEntry> entries = new ArrayList<>();
         entries.add(new PieEntry(disCases, "Confirmed"));
         entries.add(new PieEntry(disDeaths, "Deaths"));
         entries.add(new PieEntry(disRecovered, "Recovered"));
+        TrackerPieChart pieChart = new TrackerPieChart(chart, entries, null);
 
-        //data arrows style
-        PieDataSet dataSet = new PieDataSet(entries, null);
-        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        dataSet.setValueLinePart1OffsetPercentage(90.f);
-        dataSet.setValueLinePart1Length(.7f);
-        dataSet.setValueLinePart2Length(.5f);
-        dataSet.setSliceSpace(2f);
-        dataSet.setSelectionShift(4f);
-
+        pieChart.setLegend(Legend.LegendVerticalAlignment.BOTTOM,
+                Legend.LegendHorizontalAlignment.CENTER,
+                Legend.LegendOrientation.HORIZONTAL);
+        pieChart.setLegend(7f, 10f);
+        pieChart.dataSetValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE,
+                PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        pieChart.dataSetLinePart1OffsetPercentage(90.0f);
+        pieChart.dataSetValuePartLength(.7f, .5f);
+        pieChart.dataSetSliceSpace(2f);
+        pieChart.dataSetSelectionShift(4f);
         // add a lot of colors
         ArrayList<Integer> colors = new ArrayList<>();
         for (int c : ColorTemplate.JOYFUL_COLORS)
             colors.add(c);
-        colors.add(ColorTemplate.getHoloBlue());
+        pieChart.dataSetColorTemplate(colors);
+        pieChart.dataSetAttributes(chart, 10f, Color.BLACK, tfLight);
 
-        dataSet.setColors(colors);
-
-        //label arrows style
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter(chart));
-        data.setValueTextSize(10f);
-        data.setValueTextColor(Color.BLACK);
-        data.setValueTypeface(tfLight);
-
-        chart.setData(data);
-        // undo all highlights
-        chart.highlightValues(null);
-        chart.invalidate();
     }
 
     @Override

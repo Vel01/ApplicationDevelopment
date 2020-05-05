@@ -8,6 +8,7 @@
         <item name="colorPrimary">#fff</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="titleTextColor">@android:color/black</item>
+        <item name="fontFamily">@font/roboto</item>
         <item name="actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
     </style>
 

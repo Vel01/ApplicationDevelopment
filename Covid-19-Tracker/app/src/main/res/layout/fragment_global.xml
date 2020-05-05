@@ -26,27 +26,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:layout_marginBottom="8dp"
-                android:background="@color/shimmer_bg"
+                android:background="@drawable/rounded_shimmer"
                 android:orientation="horizontal" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginBottom="4dp"
-                android:background="@color/shimmer_bg"
+                android:background="@drawable/rounded_shimmer"
                 android:orientation="horizontal" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginBottom="4dp"
-                android:background="@color/shimmer_bg"
+                android:background="@drawable/rounded_shimmer"
                 android:orientation="horizontal" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:background="@color/shimmer_bg"
+                android:background="@drawable/rounded_shimmer"
                 android:orientation="horizontal" />
 
             <LinearLayout
@@ -59,20 +59,20 @@
                     android:id="@+id/tv_global_shimmer_pie"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    android:background="@color/shimmer_bg" />
+                    android:background="@drawable/rounded_shimmer" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/shimmer_bg" />
+                    android:background="@drawable/rounded_shimmer" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@color/shimmer_bg" />
+                    android:background="@drawable/rounded_shimmer" />
 
             </LinearLayout>
 
@@ -220,6 +220,7 @@
                     android:layout_below="@+id/chart_global_cases"
                     android:layout_centerInParent="true"
                     android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/roboto"
                     android:textColor="@android:color/secondary_text_light"
                     android:textSize="12sp" />
 
