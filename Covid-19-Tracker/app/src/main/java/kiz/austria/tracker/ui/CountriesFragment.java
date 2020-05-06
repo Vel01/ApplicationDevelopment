@@ -3,6 +3,7 @@ package kiz.austria.tracker.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,6 +76,11 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     private RecyclerView mRecyclerView;
     private EditText mSearch;
 
+    //layouts
+    private View mChildShimmer;
+    private View mChildMain;
+    private ShimmerFrameLayout mShimmerFrameLayout;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -89,13 +97,45 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        displayData();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+    }
+
+    private void displayData() {
+        Log.d(TAG, "displayData() preparing to display");
+        new Handler().postDelayed(() -> {
+            Log.d(TAG, "run() setting up data for display ");
+            if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE) {
+                Log.d(TAG, "run() data is displayed!");
+                //add all
+                mShimmerFrameLayout.stopShimmer();
+                mShimmerFrameLayout.hideShimmer();
+                mChildShimmer.setVisibility(View.GONE);
+                mChildMain.setVisibility(View.VISIBLE);
+            }
+        }, 700);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_countries, container, false);
 
+        mChildShimmer = view.findViewById(R.id.child_layout_countries_shimmer);
+        mChildMain = view.findViewById(R.id.child_layout_countries_main);
+        mShimmerFrameLayout = view.findViewById(R.id.layout_countries_shimmer);
+
         mRecyclerView = view.findViewById(R.id.rv_countries_list);
-        mSearch = view.findViewById(R.id.edt_country_search);
+        mSearch = view.findViewById(R.id.edt_countries_search);
+
 
         ImageView btnBack = view.findViewById(R.id.imb_countries_back);
         btnBack.setOnClickListener(this);

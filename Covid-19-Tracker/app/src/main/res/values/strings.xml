@@ -32,5 +32,10 @@
     <string name="label_today_cases">Today\'s Cases:</string>
     <string name="label_critical">Critical:</string>
     <string name="label_active">Active:</string>
+    <string name="label_color_for_deaths">Color for Deaths</string>
+    <string name="label_color_for_recovered">Color for recovered</string>
+    <string name="label_color_for_confirmed">Color for Confirmed</string>
+    <string name="label_sort_countries">Sort Countries</string>
+    <string name="label_search">Search</string>
 
 </resources>

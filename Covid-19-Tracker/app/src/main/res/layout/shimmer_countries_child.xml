@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:background="@drawable/shadow_background"
+    app:layout_constraintEnd_toEndOf="@+id/edt_countries_search"
+    app:layout_constraintStart_toStartOf="@+id/edt_countries_search"
+    app:layout_constraintTop_toBottomOf="@+id/edt_countries_search"
+    android:layout_marginLeft="16dp">
+
+    <TextView
+        android:id="@+id/textview1"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_shimmer"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:textColorHint="@android:color/secondary_text_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textview4"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/rounded_shimmer"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:textColorHint="@android:color/secondary_text_light"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview3"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textview2"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:background="@drawable/rounded_shimmer"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:textColorHint="@android:color/secondary_text_light"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textview3"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textview3"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/rounded_shimmer"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:textColorHint="@android:color/secondary_text_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
