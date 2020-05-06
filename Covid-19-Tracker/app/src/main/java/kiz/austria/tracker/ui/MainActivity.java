@@ -16,7 +16,6 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.data.Addresses;
 import kiz.austria.tracker.data.CountriesDataParser;
 import kiz.austria.tracker.data.JSONRawData;
-import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
@@ -24,7 +23,7 @@ import kiz.austria.tracker.util.TrackerKeys;
 public class MainActivity extends AppCompatActivity implements
         TrackerDialog.OnDialogEventListener,
         CountriesDataParser.OnDataAvailable,
-        NationDataParser.OnDataAvailable,
+//        NationDataParser.OnDataAvailable,
         OnInflateFragmentListener {
 
     private static final String TAG = "MainActivity";
@@ -71,10 +70,10 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    @Override
-    public void onDataAvailable(Nation nation, JSONRawData.DownloadStatus status) {
-        mOnGlobalDownloadCompletedListener.onDataAvailable(nation);
-    }
+//    @Override
+//    public void onDataAvailable(Nation nation, JSONRawData.DownloadStatus status) {
+//        mOnGlobalDownloadCompletedListener.onDataAvailable(nation);
+//    }
 
     @Override
     public void onDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
@@ -95,9 +94,9 @@ public class MainActivity extends AppCompatActivity implements
 
     //reference
     private Bundle args = new Bundle();
-    private OnGlobalDownloadCompletedListener mOnGlobalDownloadCompletedListener;
+//    private OnGlobalDownloadCompletedListener mOnGlobalDownloadCompletedListener;
 
-    private boolean isRecreated = false;
+//    private boolean isRecreated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {//home(GlobalFragment) first initialization
-            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
-            nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+//            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
+//            nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
 
             initGlobalFragment();
         }
@@ -119,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onAttachFragment(@NonNull Fragment fragment) {
         super.onAttachFragment(fragment);
-        mOnGlobalDownloadCompletedListener = (OnGlobalDownloadCompletedListener) getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global));//cast the implementer
+//        mOnGlobalDownloadCompletedListener = (OnGlobalDownloadCompletedListener) getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global));//cast the implementer
     }
 
 

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,28 +28,59 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 
 import kiz.austria.tracker.R;
+import kiz.austria.tracker.data.Addresses;
+import kiz.austria.tracker.data.JSONRawData;
+import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerCountAnimation;
 import kiz.austria.tracker.util.TrackerPieChart;
 
-public class GlobalFragment extends BaseFragment implements OnGlobalDownloadCompletedListener,
-        OnChartValueSelectedListener, View.OnClickListener {
+public class GlobalFragment extends BaseFragment implements
+//        OnGlobalDownloadCompletedListener,
+        OnChartValueSelectedListener,
+        View.OnClickListener, NationDataParser.OnDataAvailable {
 
     private static final String TAG = "GlobalFragment";
 
-    private boolean isDisplayed = false;
+//    private boolean isDisplayed = false;
 
     @Override
-    public void onDataAvailable(Nation nation) {
-        if (nation != null) {
-            Log.d(TAG, "onDataAvailable() data received from host: " + nation.toString());
-            disCases = Integer.parseInt(nation.getConfirmed());
-            disDeaths = Integer.parseInt(nation.getDeaths());
-            disRecovered = Integer.parseInt(nation.getRecovered());
-            displayData();
-            isDisplayed = true;
-        }
+    public void onDataAvailable(Nation nation, JSONRawData.DownloadStatus status) {
+        Log.d(TAG, "onDataAvailable() data received from itself: " + nation.toString());
+        disCases = Integer.parseInt(nation.getConfirmed());
+        disDeaths = Integer.parseInt(nation.getDeaths());
+        disRecovered = Integer.parseInt(nation.getRecovered());
+        mShimmerFrameLayout.stopShimmer();
+        mShimmerFrameLayout.hideShimmer();
+        mChildShimmer.setVisibility(View.GONE);
+        mChildMain.setVisibility(View.VISIBLE);
+        TrackerCountAnimation.Display.countNumber(tvCases, disCases);
+        TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
+        TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);
+        initPieChart();
+
     }
+
+//    @Override
+//    public void onDataAvailable(Nation nation) {
+//        if (nation != null) {
+//            Log.d(TAG, "onDataAvailable() data received from host: " + nation.toString());
+//            disCases = Integer.parseInt(nation.getConfirmed());
+//            disDeaths = Integer.parseInt(nation.getDeaths());
+//            disRecovered = Integer.parseInt(nation.getRecovered());
+//
+//            mShimmerFrameLayout.stopShimmer();
+//            mShimmerFrameLayout.hideShimmer();
+//            mChildShimmer.setVisibility(View.GONE);
+//            mChildMain.setVisibility(View.VISIBLE);
+//            TrackerCountAnimation.Display.countNumber(tvCases, disCases);
+//            TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
+//            TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);
+//            initPieChart();
+////            displayData();
+//            isDisplayed = true;
+//        }
+//    }
 
     //events
     @Override
@@ -205,38 +235,45 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
-        if (isDisplayed) {
-            Log.d(TAG, "onResume() re-display");
-            displayData();
-        }
+        mShimmerFrameLayout.startShimmer();
+        mShimmerFrameLayout.showShimmer(true);
+        mChildShimmer.setVisibility(View.VISIBLE);
+        mChildMain.setVisibility(View.GONE);
+        NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
+        nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
     }
 
-
-    private void displayData() {
-
-        Log.d(TAG, "displayData() preparing to display");
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "run() setting up data for display ");
-
-                if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE
-                        && disCases != 0
-                        && disDeaths != 0
-                        && disRecovered != 0) {
-                    Log.d(TAG, "run() data is displayed!");
-                    mShimmerFrameLayout.stopShimmer();
-                    mShimmerFrameLayout.hideShimmer();
-                    mChildShimmer.setVisibility(View.GONE);
-                    mChildMain.setVisibility(View.VISIBLE);
-                    TrackerCountAnimation.Display.countNumber(tvCases, disCases);
-                    TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
-                    TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);
-                    initPieChart();
-                }
-            }
-        }, 700);
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause()");
     }
+
+//    private void displayData() {
+//
+//        Log.d(TAG, "displayData() preparing to display");
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.d(TAG, "run() setting up data for display ");
+//
+//                if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE
+//                        && disCases != 0
+//                        && disDeaths != 0
+//                        && disRecovered != 0) {
+//                    Log.d(TAG, "run() data is displayed!");
+//                    mShimmerFrameLayout.stopShimmer();
+//                    mShimmerFrameLayout.hideShimmer();
+//                    mChildShimmer.setVisibility(View.GONE);
+//                    mChildMain.setVisibility(View.VISIBLE);
+//                    TrackerCountAnimation.Display.countNumber(tvCases, disCases);
+//                    TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
+//                    TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);
+//                    initPieChart();
+//                }
+//            }
+//        }, 700);
+//    }
 
     @Override
     public void onDestroyView() {
@@ -256,4 +293,6 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
         Log.d(TAG, "onDetach() data is still retained! (may not if onDestroy() is called)");
         mListener = null;
     }
+
+
 }

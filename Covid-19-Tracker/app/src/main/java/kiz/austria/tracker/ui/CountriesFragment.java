@@ -52,6 +52,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
                 assert manager != null;
                 manager.popBackStackImmediate(getString(R.string.tag_fragment_global), 0);
 
+
                 break;
             case R.id.imb_countries_sort:
                 mDialog = new TrackerDialog();
@@ -231,4 +232,6 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
         super.onDestroy();
         Log.d(TAG, "onDestroy()");
     }
+
+
 }
