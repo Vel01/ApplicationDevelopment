@@ -1,9 +1,7 @@
 package kiz.austria.tracker.ui;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,15 +26,33 @@ import java.util.Collections;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
+import kiz.austria.tracker.data.Addresses;
+import kiz.austria.tracker.data.CountriesDataParser;
+import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
 import kiz.austria.tracker.util.TrackerPlate;
 import kiz.austria.tracker.util.TrackerTextWatcher;
 
-public class CountriesFragment extends Fragment implements View.OnClickListener {
+public class CountriesFragment extends Fragment implements View.OnClickListener, CountriesDataParser.OnDataAvailable {
 
     private static final String TAG = "CountriesFragment";
+
+    @Override
+    public void onDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
+        if (status == JSONRawData.DownloadStatus.OK) {
+            Log.d(TAG, "onDataAvailable() data received from itself: " + nations.toString());
+            mNations.addAll(nations);
+            if (mNations != null && mNations.size() > 0) {
+                mCountriesRecyclerAdapter.addList(mNations);
+                mShimmerFrameLayout.stopShimmer();
+                mShimmerFrameLayout.hideShimmer();
+                mChildShimmer.setVisibility(View.GONE);
+                mChildMain.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 
     /**
      * Navigate back to GlobalFragment using navigation
@@ -83,46 +99,15 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
     private ShimmerFrameLayout mShimmerFrameLayout;
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        getBundleArguments();
-    }
-
-    private void getBundleArguments() {
-        Bundle args = this.getArguments();
-        if (args != null) {
-            ArrayList<Nation> nations = args.getParcelableArrayList(getString(R.string.intent_countries));
-            if (nations != null) {
-                mNations.addAll(nations);
-            }
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-        displayData();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-    }
-
-    private void displayData() {
-        Log.d(TAG, "displayData() preparing to display");
-        new Handler().postDelayed(() -> {
-            Log.d(TAG, "run() setting up data for display ");
-            if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE) {
-                Log.d(TAG, "run() data is displayed!");
-                //add all
-                mShimmerFrameLayout.stopShimmer();
-                mShimmerFrameLayout.hideShimmer();
-                mChildShimmer.setVisibility(View.GONE);
-                mChildMain.setVisibility(View.VISIBLE);
-            }
-        }, 700);
+        Log.d(TAG, "onResume: was called!");
+        mShimmerFrameLayout.startShimmer();
+        mShimmerFrameLayout.showShimmer(true);
+        mChildShimmer.setVisibility(View.VISIBLE);
+        mChildMain.setVisibility(View.GONE);
+        CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
+        countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
     }
 
     @Nullable
@@ -155,7 +140,6 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
             mCountriesRecyclerAdapter = new CountriesRecyclerAdapter();
         }
         mRecyclerView.setAdapter(mCountriesRecyclerAdapter);
-        mCountriesRecyclerAdapter.addList(mNations);
         initSearchText();
     }
 

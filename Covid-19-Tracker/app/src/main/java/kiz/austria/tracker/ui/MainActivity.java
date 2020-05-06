@@ -10,24 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import java.util.ArrayList;
-
 import kiz.austria.tracker.R;
-import kiz.austria.tracker.data.Addresses;
-import kiz.austria.tracker.data.CountriesDataParser;
-import kiz.austria.tracker.data.JSONRawData;
-import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
 
 public class MainActivity extends AppCompatActivity implements
         TrackerDialog.OnDialogEventListener,
-        CountriesDataParser.OnDataAvailable,
-//        NationDataParser.OnDataAvailable,
         OnInflateFragmentListener {
 
     private static final String TAG = "MainActivity";
-
 
     @Override
     public void onBackPressed() {
@@ -70,16 +61,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-//    @Override
-//    public void onDataAvailable(Nation nation, JSONRawData.DownloadStatus status) {
-//        mOnGlobalDownloadCompletedListener.onDataAvailable(nation);
-//    }
-
-    @Override
-    public void onDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
-        args.putParcelableArrayList(getString(R.string.intent_countries), nations);
-    }
-
     @Override
     public void onInflateCountriesFragment() {
         Log.e(TAG, "inflateCountriesFragment: inflate CountriesFragment");
@@ -92,50 +73,22 @@ public class MainActivity extends AppCompatActivity implements
         initGlobalFragment();
     }
 
-    //reference
-    private Bundle args = new Bundle();
-//    private OnGlobalDownloadCompletedListener mOnGlobalDownloadCompletedListener;
-
-//    private boolean isRecreated = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {//home(GlobalFragment) first initialization
-//            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
-//            nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
-
             initGlobalFragment();
         }
-//        else {
-//            isRecreated = true;
-//        }
+
         setContentView(R.layout.activity_main);
     }
-
-    @Override
-    public void onAttachFragment(@NonNull Fragment fragment) {
-        super.onAttachFragment(fragment);
-//        mOnGlobalDownloadCompletedListener = (OnGlobalDownloadCompletedListener) getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global));//cast the implementer
-    }
-
 
     @Override
     protected void onResume() {
         super.onResume();
         Log.e(TAG, "onResume() was called!");
-
-//        if (isRecreated) {
-//            Log.e(TAG, "onResume() re-download");
-//            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
-//            nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
-//        }
-
-        CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
-        countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
-
     }
 
     private void initGlobalFragment() {
@@ -148,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void initCountriesFragment() {
         CountriesFragment fragment = new CountriesFragment();
-        fragment.setArguments(args);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_countries));
         transaction.addToBackStack(getString(R.string.tag_fragment_countries));

@@ -36,13 +36,10 @@ import kiz.austria.tracker.util.TrackerCountAnimation;
 import kiz.austria.tracker.util.TrackerPieChart;
 
 public class GlobalFragment extends BaseFragment implements
-//        OnGlobalDownloadCompletedListener,
         OnChartValueSelectedListener,
         View.OnClickListener, NationDataParser.OnDataAvailable {
 
     private static final String TAG = "GlobalFragment";
-
-//    private boolean isDisplayed = false;
 
     @Override
     public void onDataAvailable(Nation nation, JSONRawData.DownloadStatus status) {
@@ -50,37 +47,9 @@ public class GlobalFragment extends BaseFragment implements
         disCases = Integer.parseInt(nation.getConfirmed());
         disDeaths = Integer.parseInt(nation.getDeaths());
         disRecovered = Integer.parseInt(nation.getRecovered());
-        mShimmerFrameLayout.stopShimmer();
-        mShimmerFrameLayout.hideShimmer();
-        mChildShimmer.setVisibility(View.GONE);
-        mChildMain.setVisibility(View.VISIBLE);
-        TrackerCountAnimation.Display.countNumber(tvCases, disCases);
-        TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
-        TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);
-        initPieChart();
 
+        displayData();
     }
-
-//    @Override
-//    public void onDataAvailable(Nation nation) {
-//        if (nation != null) {
-//            Log.d(TAG, "onDataAvailable() data received from host: " + nation.toString());
-//            disCases = Integer.parseInt(nation.getConfirmed());
-//            disDeaths = Integer.parseInt(nation.getDeaths());
-//            disRecovered = Integer.parseInt(nation.getRecovered());
-//
-//            mShimmerFrameLayout.stopShimmer();
-//            mShimmerFrameLayout.hideShimmer();
-//            mChildShimmer.setVisibility(View.GONE);
-//            mChildMain.setVisibility(View.VISIBLE);
-//            TrackerCountAnimation.Display.countNumber(tvCases, disCases);
-//            TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
-//            TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);
-//            initPieChart();
-////            displayData();
-//            isDisplayed = true;
-//        }
-//    }
 
     //events
     @Override
@@ -249,31 +218,24 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onPause()");
     }
 
-//    private void displayData() {
-//
-//        Log.d(TAG, "displayData() preparing to display");
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.d(TAG, "run() setting up data for display ");
-//
-//                if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE
-//                        && disCases != 0
-//                        && disDeaths != 0
-//                        && disRecovered != 0) {
-//                    Log.d(TAG, "run() data is displayed!");
-//                    mShimmerFrameLayout.stopShimmer();
-//                    mShimmerFrameLayout.hideShimmer();
-//                    mChildShimmer.setVisibility(View.GONE);
-//                    mChildMain.setVisibility(View.VISIBLE);
-//                    TrackerCountAnimation.Display.countNumber(tvCases, disCases);
-//                    TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
-//                    TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);
-//                    initPieChart();
-//                }
-//            }
-//        }, 700);
-//    }
+    private void displayData() {
+        Log.d(TAG, "displayData() preparing to display");
+        Log.d(TAG, "setting up data for display ");
+        if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE
+                && disCases != 0
+                && disDeaths != 0
+                && disRecovered != 0) {
+            Log.d(TAG, "data is displayed!");
+            mShimmerFrameLayout.stopShimmer();
+            mShimmerFrameLayout.hideShimmer();
+            mChildShimmer.setVisibility(View.GONE);
+            mChildMain.setVisibility(View.VISIBLE);
+            TrackerCountAnimation.Display.countNumber(tvCases, disCases);
+            TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
+            TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);
+            initPieChart();
+        }
+    }
 
     @Override
     public void onDestroyView() {
