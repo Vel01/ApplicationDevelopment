@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.model.Nation;
 
@@ -40,7 +42,7 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
         if (!payloads.isEmpty()) {
             if (payloads.get(0) instanceof Integer) {
-                bind(holder);
+                holder.onBind(position);
             }
             return;
         }
@@ -49,37 +51,13 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        setFadeScaleAnimation(holder.mLayoutToFadeScale);
-        bind(holder);
-    }
-
-
-    private void bind(ViewHolder holder) {
-        Nation nation = mNations.get(holder.getAdapterPosition());
-
-        holder.mCountry.setText(nation.getCountry());
-        holder.mConfirmed.setText(nation.getConfirmed());
-        holder.mDeaths.setText(nation.getDeaths());
-        holder.mRecovered.setText(nation.getRecovered());
-        holder.mTodayDeaths.setText(nation.getTodayDeaths());
-        holder.mTodayCases.setText(nation.getTodayCases());
-        holder.mCritical.setText(nation.getCritical());
-        holder.mActive.setText(nation.getActive());
-
-        setFadeInAnimation(holder.mLayoutToFadeIn);
-
-        boolean isExpanded = nation.isExpanded();
-        holder.mLayoutToExpand.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
-        holder.mCollapse.setImageResource(isExpanded ? R.drawable.ic_expand_more : R.drawable.ic_expand_less);
-
-    }
-
-    private void setFadeScaleAnimation(View view) {
-        view.setAnimation(AnimationUtils.loadAnimation(view.getContext(), R.anim.fade_scale_animation));
-    }
-
-    private void setFadeInAnimation(View view) {
-        view.setAnimation(AnimationUtils.loadAnimation(view.getContext(), R.anim.fade_in_animation));
+        holder.setFadeScaleAnimation();
+        holder.mExpand.setOnClickListener(v -> {
+            Nation nation = mNations.get(position);
+            nation.setExpanded(!nation.isExpanded());
+            notifyItemChanged(position, position);
+        });
+        holder.onBind(position);
     }
 
     @Override
@@ -92,54 +70,94 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
         notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends BaseViewHolder {
 
         //widgets
-        private TextView mCountry;
-        private TextView mConfirmed;
-        private TextView mDeaths;
-        private TextView mRecovered;
-        private TextView mTodayDeaths;
-        private TextView mTodayCases;
-        private TextView mCritical;
-        private TextView mActive;
-        private ImageView mCollapse;
+        @BindView(R.id.tv_countries_country)
+        protected TextView mCountry;
+        @BindView(R.id.tv_countries_confirmed)
+        protected TextView mConfirmed;
+        @BindView(R.id.tv_countries_deaths)
+        protected TextView mDeaths;
+        @BindView(R.id.tv_countries_recovered)
+        protected TextView mRecovered;
+        @BindView(R.id.tv_countries_deaths_today)
+        protected TextView mTodayDeaths;
+        @BindView(R.id.tv_countries_cases_today)
+        protected TextView mTodayCases;
+        @BindView(R.id.tv_countries_critical)
+        protected TextView mCritical;
+        @BindView(R.id.tv_countries_active)
+        protected TextView mActive;
+        @BindView(R.id.imb_countries_collapse)
+        protected ImageView mCollapse;
 
         //layouts
-        private LinearLayout mLayoutToFadeScale;
-        private LinearLayout mLayoutToExpand;
-        private ConstraintLayout mLayoutToFadeIn;
+        @BindView(R.id.layout_countries_fade_scale)
+        protected LinearLayout mLayoutToFadeScale;
+        @BindView(R.id.layout_countries_expand)
+        protected LinearLayout mLayoutToExpand;
+        @BindView(R.id.constraint_countries_to_fade)
+        protected ConstraintLayout mLayoutToFadeIn;
+
+        @BindView(R.id.card_countries_event)
+        protected CardView mExpand;
+
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            //widgets
-            mCountry = itemView.findViewById(R.id.tv_countries_country);
-            mConfirmed = itemView.findViewById(R.id.tv_countries_confirmed);
-            mDeaths = itemView.findViewById(R.id.tv_countries_deaths);
-            mRecovered = itemView.findViewById(R.id.tv_countries_recovered);
-            mTodayDeaths = itemView.findViewById(R.id.tv_countries_deaths_today);
-            mTodayCases = itemView.findViewById(R.id.tv_countries_cases_today);
-            mCritical = itemView.findViewById(R.id.tv_countries_critical);
-            mActive = itemView.findViewById(R.id.tv_countries_active);
-            mCollapse = itemView.findViewById(R.id.imb_countries_collapse);
+            ButterKnife.bind(this, itemView);
+        }
 
-            //layouts
-            mLayoutToFadeScale = itemView.findViewById(R.id.layout_countries_fade_scale);
-            mLayoutToExpand = itemView.findViewById(R.id.layout_countries_expand);
-            mLayoutToFadeIn = itemView.findViewById(R.id.constraint_countries_to_fade);
+        @Override
+        public void onBind(int position) {
+            super.onBind(position);
 
-            //event
-            CardView update = itemView.findViewById(R.id.card_countries_event);
+            final Nation nation = mNations.get(position);
+            if (nation.getCountry() != null)
+                mCountry.setText(nation.getCountry());
+            if (nation.getConfirmed() != null)
+                mConfirmed.setText(nation.getConfirmed());
+            if (nation.getDeaths() != null)
+                mDeaths.setText(nation.getDeaths());
+            if (nation.getRecovered() != null)
+                mRecovered.setText(nation.getRecovered());
+            if (nation.getTodayDeaths() != null)
+                mTodayDeaths.setText(nation.getTodayDeaths());
+            if (nation.getTodayCases() != null)
+                mTodayCases.setText(nation.getTodayCases());
+            if (nation.getCritical() != null)
+                mCritical.setText(nation.getCritical());
+            if (nation.getActive() != null)
+                mActive.setText(nation.getActive());
 
-            update.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Nation nation = mNations.get(getAdapterPosition());
-                    nation.setExpanded(!nation.isExpanded());
-                    notifyItemChanged(getAdapterPosition(), getAdapterPosition());
-                }
-            });
+            setFadeInAnimation();
 
+            boolean isExpanded = nation.isExpanded();
+            mLayoutToExpand.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            mCollapse.setImageResource(isExpanded ? R.drawable.ic_expand_more : R.drawable.ic_expand_less);
+        }
+
+        @Override
+        protected void setFadeScaleAnimation() {
+            mLayoutToFadeScale.setAnimation(AnimationUtils.loadAnimation(mLayoutToFadeScale.getContext(), R.anim.fade_scale_animation));
+        }
+
+        @Override
+        protected void setFadeInAnimation() {
+            mLayoutToFadeIn.setAnimation(AnimationUtils.loadAnimation(mLayoutToFadeIn.getContext(), R.anim.fade_in_animation));
+        }
+
+        @Override
+        protected void clear() {
+            mCountry.setText("");
+            mConfirmed.setText("");
+            mDeaths.setText("");
+            mRecovered.setText("");
+            mTodayDeaths.setText("");
+            mTodayCases.setText("");
+            mCritical.setText("");
+            mActive.setText("");
         }
     }
 }
