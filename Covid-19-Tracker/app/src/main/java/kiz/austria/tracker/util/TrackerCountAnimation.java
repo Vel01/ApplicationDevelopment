@@ -21,11 +21,7 @@ public class TrackerCountAnimation {
         public static void countNumber(final TextView mTextField, int value) {
             ValueAnimator animator = new ValueAnimator();
             animator.setObjectValues(0, value);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mTextField.setText(NumberFormat.getNumberInstance(Locale.US).format(animation.getAnimatedValue()));
-                }
-            });
+            animator.addUpdateListener(animation -> mTextField.setText(NumberFormat.getNumberInstance(Locale.US).format(animation.getAnimatedValue())));
             animator.setDuration(1200);
             animator.start();
         }

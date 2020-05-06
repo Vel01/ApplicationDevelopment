@@ -19,6 +19,8 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
 
     protected abstract void clear();
 
+    protected abstract String numberFormat(String value);
+
     public void onBind(int position) {
         mCurrentPosition = position;
         clear();

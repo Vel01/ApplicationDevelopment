@@ -13,8 +13,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -120,19 +122,19 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
             if (nation.getCountry() != null)
                 mCountry.setText(nation.getCountry());
             if (nation.getConfirmed() != null)
-                mConfirmed.setText(nation.getConfirmed());
+                mConfirmed.setText(numberFormat(nation.getConfirmed()));
             if (nation.getDeaths() != null)
-                mDeaths.setText(nation.getDeaths());
+                mDeaths.setText(numberFormat(nation.getDeaths()));
             if (nation.getRecovered() != null)
-                mRecovered.setText(nation.getRecovered());
+                mRecovered.setText(numberFormat(nation.getRecovered()));
             if (nation.getTodayDeaths() != null)
-                mTodayDeaths.setText(nation.getTodayDeaths());
+                mTodayDeaths.setText(numberFormat(nation.getTodayDeaths()));
             if (nation.getTodayCases() != null)
-                mTodayCases.setText(nation.getTodayCases());
+                mTodayCases.setText(numberFormat(nation.getTodayCases()));
             if (nation.getCritical() != null)
-                mCritical.setText(nation.getCritical());
+                mCritical.setText(numberFormat(nation.getCritical()));
             if (nation.getActive() != null)
-                mActive.setText(nation.getActive());
+                mActive.setText(numberFormat(nation.getActive()));
 
             setFadeInAnimation();
 
@@ -163,6 +165,11 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
             mActive.setText("");
             mLayoutToFadeIn.setVisibility(View.GONE);
             mCollapse.setImageResource(R.drawable.ic_expand_less);
+        }
+
+        @Override
+        protected String numberFormat(String value) {
+            return NumberFormat.getNumberInstance(Locale.US).format(Integer.parseInt(value));
         }
     }
 }
