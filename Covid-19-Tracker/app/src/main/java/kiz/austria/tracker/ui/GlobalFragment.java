@@ -171,7 +171,7 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
         chart.setHighlightPerTapEnabled(true);
         // add a selection listener
         chart.setOnChartValueSelectedListener(this);
-        chart.animateY(1400, Easing.EaseInOutQuad);
+        chart.animateY(4500, Easing.EaseInOutQuad);
         // entry label styling
         chart.setEntryLabelColor(Color.BLACK);
         chart.setEntryLabelTypeface(tfRegular);

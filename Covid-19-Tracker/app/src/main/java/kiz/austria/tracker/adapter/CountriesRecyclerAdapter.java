@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +41,7 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
         if (!payloads.isEmpty()) {
             if (payloads.get(0) instanceof Integer) {
+                holder.setFadeInAnimation();
                 holder.onBind(position);
             }
             return;
@@ -52,6 +52,7 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.setFadeScaleAnimation();
+        holder.setFadeInAnimation();
         holder.mExpand.setOnClickListener(v -> {
             Nation nation = mNations.get(position);
             nation.setExpanded(!nation.isExpanded());
@@ -93,15 +94,15 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
         protected ImageView mCollapse;
 
         //layouts
-        @BindView(R.id.layout_countries_fade_scale)
-        protected LinearLayout mLayoutToFadeScale;
-        @BindView(R.id.layout_countries_expand)
-        protected LinearLayout mLayoutToExpand;
+        @BindView(R.id.layout_countries_content)
+        protected ConstraintLayout mLayoutToExpand;
+        @BindView(R.id.layout_countries_animated)
+        protected ConstraintLayout mLayoutToAnimate;
         @BindView(R.id.constraint_countries_to_fade)
         protected ConstraintLayout mLayoutToFadeIn;
 
-        @BindView(R.id.card_countries_event)
-        protected CardView mExpand;
+        @BindView(R.id.card_countries_click)
+        protected LinearLayout mExpand;
 
 
         ViewHolder(@NonNull View itemView) {
@@ -134,18 +135,18 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
             setFadeInAnimation();
 
             boolean isExpanded = nation.isExpanded();
-            mLayoutToExpand.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            mLayoutToFadeIn.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             mCollapse.setImageResource(isExpanded ? R.drawable.ic_expand_more : R.drawable.ic_expand_less);
         }
 
         @Override
         protected void setFadeScaleAnimation() {
-            mLayoutToFadeScale.setAnimation(AnimationUtils.loadAnimation(mLayoutToFadeScale.getContext(), R.anim.fade_scale_animation));
+            mLayoutToAnimate.setAnimation(AnimationUtils.loadAnimation(itemView.getContext(), R.anim.fade_scale_animation));
         }
 
         @Override
         protected void setFadeInAnimation() {
-            mLayoutToFadeIn.setAnimation(AnimationUtils.loadAnimation(mLayoutToFadeIn.getContext(), R.anim.fade_in_animation));
+            mLayoutToFadeIn.setAnimation(AnimationUtils.loadAnimation(itemView.getContext(), R.anim.fade_in_animation));
         }
 
         @Override
@@ -158,6 +159,8 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
             mTodayCases.setText("");
             mCritical.setText("");
             mActive.setText("");
+            mLayoutToFadeIn.setVisibility(View.GONE);
+            mCollapse.setImageResource(R.drawable.ic_expand_less);
         }
     }
 }
