@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
@@ -113,9 +111,10 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         if (mCountriesRecyclerAdapter == null) {
             Log.d(TAG, "initRecyclerView() re-allocate adapter instance");
-            mCountriesRecyclerAdapter = new CountriesRecyclerAdapter(mNations);
+            mCountriesRecyclerAdapter = new CountriesRecyclerAdapter();
         }
         mRecyclerView.setAdapter(mCountriesRecyclerAdapter);
+        mCountriesRecyclerAdapter.addList(mNations);
         initSearchText();
     }
 
@@ -139,59 +138,36 @@ public class CountriesFragment extends Fragment implements View.OnClickListener 
         assert manager != null;
         //scroll back to top
         manager.scrollToPositionWithOffset(0, 0);
-        mCountriesRecyclerAdapter.notifyDataSetChanged();
+        mCountriesRecyclerAdapter.addList(mNations);
         TrackerPlate.hideSoftKeyboard(getActivity());
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
     }
 
     private View initSortView() {
-        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.layout_countries_sort_dialog_container, null, false);
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.layout_countries_sort_dialog_container,
+                null, false);
         ListView categories = view.findViewById(R.id.rv_countries_sort_list);
         if (getActivity() != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.layout_countries_sort_dialog_item, new String[]{
                     "Confirmed", "Deaths", "Recovered"});
             categories.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-            categories.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    switch (position) {
-                        case TrackerKeys.MENU_SORT_CATEGORY_CONFIRMED:
-                            Collections.sort(mNations, new Comparator<Nation>() {
-                                @Override
-                                public int compare(Nation o1, Nation o2) {
-                                    return sort(Integer.parseInt(o2.getConfirmed()), Integer.parseInt(o1.getConfirmed()));
-                                }
-                            });
-                            notifyChangedAdapter();
-                            if (mDialog != null) {
-                                mDialog.dismiss();
-                            }
-                            break;
-                        case TrackerKeys.MENU_SORT_CATEGORY_DEATHS:
-                            Collections.sort(mNations, new Comparator<Nation>() {
-                                @Override
-                                public int compare(Nation o1, Nation o2) {
-                                    return sort(Integer.parseInt(o2.getDeaths()), Integer.parseInt(o1.getDeaths()));
-                                }
-                            });
-                            notifyChangedAdapter();
-                            if (mDialog != null) {
-                                mDialog.dismiss();
-                            }
-                            break;
-                        case TrackerKeys.MENU_SORT_CATEGORY_RECOVERED:
-                            Collections.sort(mNations, new Comparator<Nation>() {
-                                @Override
-                                public int compare(Nation o1, Nation o2) {
-                                    return sort(Integer.parseInt(o2.getRecovered()), Integer.parseInt(o1.getRecovered()));
-                                }
-                            });
-                            notifyChangedAdapter();
-                            if (mDialog != null) {
-                                mDialog.dismiss();
-                            }
-                            break;
-                    }
+            categories.setOnItemClickListener((parent, view1, position, id) -> {
+                switch (position) {
+                    case TrackerKeys.MENU_SORT_CATEGORY_CONFIRMED:
+                        Collections.sort(mNations, (o1, o2) -> sort(Integer.parseInt(o2.getConfirmed()), Integer.parseInt(o1.getConfirmed())));
+                        notifyChangedAdapter();
+                        break;
+                    case TrackerKeys.MENU_SORT_CATEGORY_DEATHS:
+                        Collections.sort(mNations, (o1, o2) -> sort(Integer.parseInt(o2.getDeaths()), Integer.parseInt(o1.getDeaths())));
+                        notifyChangedAdapter();
+                        break;
+                    case TrackerKeys.MENU_SORT_CATEGORY_RECOVERED:
+                        Collections.sort(mNations, (o1, o2) -> sort(Integer.parseInt(o2.getRecovered()), Integer.parseInt(o1.getRecovered())));
+                        notifyChangedAdapter();
+                        break;
                 }
             });
         }

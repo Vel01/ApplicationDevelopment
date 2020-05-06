@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -19,16 +20,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.util.TrackerDiffUtil;
 
 public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecyclerAdapter.ViewHolder> {
 
     private static final String TAG = "CountriesRecyclerAdapte";
 
-    private ArrayList<Nation> mNations;
-
-    public CountriesRecyclerAdapter(ArrayList<Nation> nations) {
-        mNations = nations;
-    }
+    private List<Nation> mNationsAdapterList = new ArrayList<>();
 
     @NonNull
     @Override
@@ -54,7 +52,7 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
         holder.setFadeScaleAnimation();
         holder.setFadeInAnimation();
         holder.mExpand.setOnClickListener(v -> {
-            Nation nation = mNations.get(position);
+            Nation nation = mNationsAdapterList.get(position);
             nation.setExpanded(!nation.isExpanded());
             notifyItemChanged(position, position);
         });
@@ -63,12 +61,16 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
 
     @Override
     public int getItemCount() {
-        return mNations.size();
+        return mNationsAdapterList.size();
     }
 
-    public void addFilter(ArrayList<Nation> nations) {
-        mNations = nations;
-        notifyDataSetChanged();
+    public void addList(ArrayList<Nation> nations) {
+        TrackerDiffUtil util = new TrackerDiffUtil(mNationsAdapterList, nations);
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(util);
+
+        mNationsAdapterList.clear();
+        mNationsAdapterList.addAll(nations);
+        result.dispatchUpdatesTo(this);
     }
 
     class ViewHolder extends BaseViewHolder {
@@ -114,7 +116,7 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
         public void onBind(int position) {
             super.onBind(position);
 
-            final Nation nation = mNations.get(position);
+            final Nation nation = mNationsAdapterList.get(position);
             if (nation.getCountry() != null)
                 mCountry.setText(nation.getCountry());
             if (nation.getConfirmed() != null)

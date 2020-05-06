@@ -44,12 +44,9 @@ public class TrackerTextWatcher implements TextWatcher {
         if (s.length() >= 2) {
             mHandler = new Handler();
             final int DELAY = 3000;
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d(TAG, "run: manager here...");
-                    TrackerPlate.hideSoftKeyboard(mActivity);
-                }
+            mHandler.postDelayed(() -> {
+                Log.d(TAG, "run: manager here...");
+                TrackerPlate.hideSoftKeyboard(mActivity);
             }, DELAY);
         }
     }
@@ -62,6 +59,6 @@ public class TrackerTextWatcher implements TextWatcher {
             }
         }
 
-        mAdapter.addFilter(nations);
+        mAdapter.addList(nations);
     }
 }

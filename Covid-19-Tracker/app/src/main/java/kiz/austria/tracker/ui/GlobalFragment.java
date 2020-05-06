@@ -156,7 +156,6 @@ public class GlobalFragment extends BaseFragment implements OnGlobalDownloadComp
         setTextViewTypeface(globalRecovered, tfRoboto);
         setTextViewTypeface(globalViewAll, tfRoboto);
 
-
     }
 
     private void initPieChart() {
