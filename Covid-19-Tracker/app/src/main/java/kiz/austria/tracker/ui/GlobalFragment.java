@@ -112,9 +112,6 @@ public class GlobalFragment extends BaseFragment implements
         mChildShimmer = view.findViewById(R.id.child_layout_global_shimmer);
         mChildMain = view.findViewById(R.id.child_layout_global_main);
 
-        //design
-        initDesign(view);
-
         //update widget
         TextView tvUpdate = view.findViewById(R.id.tv_update_date);
         tvUpdate.setText(getCurrentDate());
@@ -127,27 +124,9 @@ public class GlobalFragment extends BaseFragment implements
         tvCases = view.findViewById(R.id.tv_cases);
         tvDeaths = view.findViewById(R.id.tv_deaths);
         tvRecovered = view.findViewById(R.id.tv_recovered);
-        setTextViewTypeface(tvCases, tfRoboto);
-        setTextViewTypeface(tvDeaths, tfRoboto);
-        setTextViewTypeface(tvRecovered, tfRoboto);
 
         chart = view.findViewById(R.id.chart_global_cases);
         return view;
-    }
-
-    private void initDesign(View view) {
-        //design
-        TextView globalTitle = view.findViewById(R.id.title_global);
-        TextView globalConfirmed = view.findViewById(R.id.title_confirmed);
-        TextView globalDeaths = view.findViewById(R.id.title_deaths);
-        TextView globalRecovered = view.findViewById(R.id.title_recovered);
-        TextView globalViewAll = view.findViewById(R.id.btn_view_all_countries_title);
-        setTextViewTypeface(globalTitle, tfRoboto);
-        setTextViewTypeface(globalConfirmed, tfRoboto);
-        setTextViewTypeface(globalDeaths, tfRoboto);
-        setTextViewTypeface(globalRecovered, tfRoboto);
-        setTextViewTypeface(globalViewAll, tfRoboto);
-
     }
 
     private void initPieChart() {

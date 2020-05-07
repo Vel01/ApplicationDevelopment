@@ -22,7 +22,7 @@ public class TrackerCountAnimation {
             ValueAnimator animator = new ValueAnimator();
             animator.setObjectValues(0, value);
             animator.addUpdateListener(animation -> mTextField.setText(NumberFormat.getNumberInstance(Locale.US).format(animation.getAnimatedValue())));
-            animator.setDuration(1200);
+            animator.setDuration(1800);
             animator.start();
         }
     }

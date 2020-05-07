@@ -12,6 +12,10 @@
     <string name="label_legends">Legends</string>
     <string name="label_list_of_countries_region_sovereignty">List of Countries/Region/Sovereignty</string>
 
+    <!--  Navigation Drawer  -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <!--  Tag Fragments  -->
     <string name="tag_fragment_global">tag_fragment_global</string>
     <string name="tag_fragment_countries">tag_fragment_countries</string>
@@ -37,5 +41,6 @@
     <string name="label_color_for_confirmed">Color for Confirmed</string>
     <string name="label_sort_countries">Sort Countries</string>
     <string name="label_search">Search</string>
+
 
 </resources>

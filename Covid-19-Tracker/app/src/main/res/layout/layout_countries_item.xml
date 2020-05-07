@@ -5,10 +5,9 @@
     android:id="@+id/layout_countries_animated"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
     android:background="@drawable/shadow_background"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <LinearLayout
         android:id="@+id/card_countries_click"
@@ -45,6 +44,8 @@
                 android:padding="8dp"
                 android:text="Philippines"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@android:color/primary_text_light"
+                app:fontFamily="@font/roboto"
                 app:layout_constraintEnd_toStartOf="@+id/imb_countries_collapse"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -86,7 +87,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="3,123,564"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                        android:textColor="@android:color/secondary_text_light"
+                        app:fontFamily="@font/roboto" />
 
 
                     <ImageView
@@ -103,7 +105,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="632,322"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                        android:textColor="@android:color/secondary_text_light"
+                        app:fontFamily="@font/roboto" />
 
 
                     <ImageView
@@ -120,7 +123,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="645,645"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                        android:textColor="@android:color/secondary_text_light"
+                        app:fontFamily="@font/roboto" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -129,10 +133,7 @@
                 android:id="@+id/constraint_countries_to_fade"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingLeft="8dp"
-                android:paddingEnd="8dp"
-                android:paddingBottom="8dp"
+                android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_countries_content">
@@ -142,8 +143,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Today's Deaths:"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@android:color/secondary_text_light"
                     android:textStyle="bold"
+                    app:fontFamily="@font/roboto"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -154,7 +156,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:text="3"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@android:color/secondary_text_light"
+                    app:fontFamily="@font/roboto"
                     app:layout_constraintStart_toEndOf="@id/tv_countries_deaths_today_label"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -163,8 +166,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Today's Cases:"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@android:color/secondary_text_light"
                     android:textStyle="bold"
+                    app:fontFamily="@font/roboto"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_countries_deaths_today_label" />
 
@@ -175,7 +179,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:text="23"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@android:color/secondary_text_light"
+                    app:fontFamily="@font/roboto"
                     app:layout_constraintStart_toEndOf="@id/tv_countries_cases_today_label"
                     app:layout_constraintTop_toBottomOf="@id/tv_countries_deaths_today" />
 
@@ -184,8 +189,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Critical:"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@android:color/secondary_text_light"
                     android:textStyle="bold"
+                    app:fontFamily="@font/roboto"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_countries_cases_today_label" />
 
@@ -197,7 +203,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:text="0"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@android:color/secondary_text_light"
+                    app:fontFamily="@font/roboto"
                     app:layout_constraintStart_toEndOf="@id/tv_countries_critical_label"
                     app:layout_constraintTop_toBottomOf="@id/tv_countries_cases_today" />
 
@@ -206,8 +213,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Active:"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@android:color/secondary_text_light"
                     android:textStyle="bold"
+                    app:fontFamily="@font/roboto"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_countries_critical_label" />
 
@@ -218,7 +226,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:text="6,321"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@android:color/secondary_text_light"
+                    app:fontFamily="@font/roboto"
                     app:layout_constraintStart_toEndOf="@id/tv_countries_active_label"
                     app:layout_constraintTop_toBottomOf="@id/tv_countries_critical" />
 

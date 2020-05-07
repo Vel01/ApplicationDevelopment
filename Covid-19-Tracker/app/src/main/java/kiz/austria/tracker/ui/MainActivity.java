@@ -6,8 +6,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.navigation.NavigationView;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.util.TrackerDialog;
@@ -15,7 +20,7 @@ import kiz.austria.tracker.util.TrackerKeys;
 
 public class MainActivity extends BaseActivity implements
         TrackerDialog.OnDialogListener,
-        Inflatable {
+        Inflatable, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
 
@@ -24,6 +29,10 @@ public class MainActivity extends BaseActivity implements
         Log.d(TAG, "onBackPressed: called");
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                return;
+            }
             finish();
         } else {
             TrackerDialog dialog = new TrackerDialog();
@@ -73,6 +82,15 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return true;
+    }
+
+    //references
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
@@ -81,6 +99,19 @@ public class MainActivity extends BaseActivity implements
         }
         setContentView(R.layout.activity_main);
         activateToolbar(false);
+
+        /*------------Navigation Drawer Instances------------*/
+        mDrawerLayout = findViewById(R.id.layout_drawer);
+        mNavigationView = findViewById(R.id.navigation_view);
+
+        /*------------Navigation Drawer Menu------------*/
+        mNavigationView.bringToFront();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        mNavigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -128,4 +159,6 @@ public class MainActivity extends BaseActivity implements
         super.onDestroy();
         Log.e(TAG, "onDestroy()");
     }
+
+
 }
