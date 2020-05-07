@@ -109,7 +109,7 @@ public class CountriesFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
-        if (!isPaused) {
+        if (!isPausedToStopReDownload()) {
             CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
             countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
         }
@@ -120,11 +120,15 @@ public class CountriesFragment extends Fragment implements
         super.onPause();
         Log.d(TAG, "onPause()");
         stopShimmer();
-        fragmentPaused();
+        pausedToStopReDownload();
     }
 
-    private void fragmentPaused() {
+    private void pausedToStopReDownload() {
         isPaused = true;
+    }
+
+    private boolean isPausedToStopReDownload() {
+        return isPaused;
     }
 
     private void stopShimmer() {

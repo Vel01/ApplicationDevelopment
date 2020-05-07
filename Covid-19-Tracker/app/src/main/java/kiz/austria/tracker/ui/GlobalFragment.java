@@ -197,14 +197,18 @@ public class GlobalFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
-        if (!isPaused) {
+        if (!isPausedToStopReDownload()) {
             NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
             nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
         }
     }
 
-    private void fragmentPaused() {
+    private void pausedToStopReDownload() {
         isPaused = true;
+    }
+
+    private boolean isPausedToStopReDownload() {
+        return isPaused;
     }
 
     private void stopShimmer() {
@@ -219,7 +223,7 @@ public class GlobalFragment extends BaseFragment implements
         super.onPause();
         Log.d(TAG, "onPause()");
         stopShimmer();
-        fragmentPaused();
+        pausedToStopReDownload();
     }
 
     private void displayData() {
