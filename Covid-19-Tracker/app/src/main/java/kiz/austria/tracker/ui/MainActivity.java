@@ -15,8 +15,8 @@ import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
 
 public class MainActivity extends AppCompatActivity implements
-        TrackerDialog.OnDialogEventListener,
-        OnInflateFragmentListener {
+        TrackerDialog.OnDialogListener,
+        Inflatable {
 
     private static final String TAG = "MainActivity";
 

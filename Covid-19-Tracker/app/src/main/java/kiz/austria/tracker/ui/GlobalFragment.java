@@ -47,7 +47,6 @@ public class GlobalFragment extends BaseFragment implements
         disCases = Integer.parseInt(nation.getConfirmed());
         disDeaths = Integer.parseInt(nation.getDeaths());
         disRecovered = Integer.parseInt(nation.getRecovered());
-
         displayData();
     }
 
@@ -83,7 +82,7 @@ public class GlobalFragment extends BaseFragment implements
 
     //vars
     private int disCases, disDeaths, disRecovered;
-    private OnInflateFragmentListener mListener;
+    private Inflatable mListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -94,18 +93,11 @@ public class GlobalFragment extends BaseFragment implements
 
     private void iniInterface() {
         Activity activity = getActivity();
-        if (!(activity instanceof OnInflateFragmentListener) && activity != null) {
+        if (!(activity instanceof Inflatable) && activity != null) {
             throw new ClassCastException(activity.getClass().getSimpleName()
-                    + " must implement OnInflateFragmentListener interface");
+                    + " must implement Inflatable interface");
         }
-        mListener = (OnInflateFragmentListener) activity;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //retain fragment instance to retain its states and avoid re-downloading data.
-        setRetainInstance(true);
+        mListener = (Inflatable) activity;
     }
 
     @Nullable
@@ -169,7 +161,7 @@ public class GlobalFragment extends BaseFragment implements
         chart.setHighlightPerTapEnabled(true);
         // add a selection listener
         chart.setOnChartValueSelectedListener(this);
-        chart.animateY(4500, Easing.EaseInOutQuad);
+        chart.animateY(4000, Easing.EaseInOutQuad);
         // entry label styling
         chart.setEntryLabelColor(Color.BLACK);
         chart.setEntryLabelTypeface(tfRegular);

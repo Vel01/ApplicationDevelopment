@@ -26,7 +26,7 @@ public class TrackerDialog extends DialogFragment {
 
 
     //variable
-    private OnDialogEventListener mListener;
+    private OnDialogListener mListener;
     private View mView;
 
     //primitives and text
@@ -37,7 +37,7 @@ public class TrackerDialog extends DialogFragment {
     private int mNegativeId;
 
 
-    public interface OnDialogEventListener {
+    public interface OnDialogListener {
         void onDialogPositiveEvent(int id, Bundle args);
 
         void onDialogNegativeEvent(int id, Bundle args);
@@ -49,10 +49,10 @@ public class TrackerDialog extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-        if (!(context instanceof OnDialogEventListener)) {
-            throw new ClassCastException(context.toString() + " must implement OnDialogEventListener.");
+        if (!(context instanceof OnDialogListener)) {
+            throw new ClassCastException(context.toString() + " must implement OnDialogListener.");
         }
-        mListener = (OnDialogEventListener) getActivity();
+        mListener = (OnDialogListener) getActivity();
 
     }
 

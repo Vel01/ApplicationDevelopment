@@ -1,6 +1,8 @@
 package kiz.austria.tracker.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +17,6 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,7 +36,9 @@ import kiz.austria.tracker.util.TrackerKeys;
 import kiz.austria.tracker.util.TrackerPlate;
 import kiz.austria.tracker.util.TrackerTextWatcher;
 
-public class CountriesFragment extends Fragment implements View.OnClickListener, CountriesDataParser.OnDataAvailable {
+public class CountriesFragment extends Fragment implements
+        View.OnClickListener,
+        CountriesDataParser.OnDataAvailable {
 
     private static final String TAG = "CountriesFragment";
 
@@ -45,11 +48,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
             Log.d(TAG, "onDataAvailable() data received from itself: " + nations.toString());
             mNations.addAll(nations);
             if (mNations != null && mNations.size() > 0) {
-                mCountriesRecyclerAdapter.addList(mNations);
-                mShimmerFrameLayout.stopShimmer();
-                mShimmerFrameLayout.hideShimmer();
-                mChildShimmer.setVisibility(View.GONE);
-                mChildMain.setVisibility(View.VISIBLE);
+                displayData();
             }
         }
     }
@@ -63,12 +62,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         int id = v.getId();
         switch (id) {
             case R.id.imb_countries_back:
-
-                FragmentManager manager = getFragmentManager();
-                assert manager != null;
-                manager.popBackStackImmediate(getString(R.string.tag_fragment_global), 0);
-
-
+                mListener.onInflateGlobalFragment();
                 break;
             case R.id.imb_countries_sort:
                 mDialog = new TrackerDialog();
@@ -88,6 +82,7 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
     private ArrayList<Nation> mNations = new ArrayList<>();
     private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
     private TrackerDialog mDialog = null;
+    private Inflatable mListener;
 
     //widgets
     private RecyclerView mRecyclerView;
@@ -97,6 +92,17 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
     private View mChildShimmer;
     private View mChildMain;
     private ShimmerFrameLayout mShimmerFrameLayout;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Activity activity = getActivity();
+        if (!(activity instanceof Inflatable) && activity != null) {
+            throw new ClassCastException(activity.getClass().getSimpleName()
+                    + " must implement Inflatable");
+        }
+        mListener = (Inflatable) activity;
+    }
 
     @Override
     public void onResume() {
@@ -109,6 +115,20 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
         countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
     }
+
+    private void displayData() {
+        Log.d(TAG, "displayData() preparing to display");
+        Log.d(TAG, "setting up data for display ");
+        if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE) {
+            Log.d(TAG, "data is displayed!");
+            mShimmerFrameLayout.stopShimmer();
+            mShimmerFrameLayout.hideShimmer();
+            mChildShimmer.setVisibility(View.GONE);
+            mChildMain.setVisibility(View.VISIBLE);
+            mCountriesRecyclerAdapter.addList(mNations);
+        }
+    }
+
 
     @Nullable
     @Override
@@ -131,6 +151,18 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
 
         initRecyclerView();
         return view;
+    }
+
+    private void notifyChangedAdapter() {
+        LinearLayoutManager manager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        assert manager != null;
+        //scroll back to top
+        manager.scrollToPositionWithOffset(0, 0);
+        mCountriesRecyclerAdapter.addList(mNations);
+        TrackerPlate.hideSoftKeyboard(getActivity());
+        if (mDialog != null) {
+            mDialog.dismiss();
+        }
     }
 
     private void initRecyclerView() {
@@ -156,18 +188,6 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         }
         return 0;
 
-    }
-
-    private void notifyChangedAdapter() {
-        LinearLayoutManager manager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-        assert manager != null;
-        //scroll back to top
-        manager.scrollToPositionWithOffset(0, 0);
-        mCountriesRecyclerAdapter.addList(mNations);
-        TrackerPlate.hideSoftKeyboard(getActivity());
-        if (mDialog != null) {
-            mDialog.dismiss();
-        }
     }
 
     private View initSortView() {
@@ -198,24 +218,5 @@ public class CountriesFragment extends Fragment implements View.OnClickListener,
         }
         return view;
     }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d(TAG, "onDetach()");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d(TAG, "onDestroyView()");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy()");
-    }
-
 
 }
