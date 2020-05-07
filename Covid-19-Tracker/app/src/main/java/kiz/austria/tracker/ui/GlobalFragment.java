@@ -83,6 +83,7 @@ public class GlobalFragment extends BaseFragment implements
     //vars
     private int disCases, disDeaths, disRecovered;
     private Inflatable mListener;
+    private boolean isPaused = false;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -196,18 +197,29 @@ public class GlobalFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
-        mShimmerFrameLayout.startShimmer();
-        mShimmerFrameLayout.showShimmer(true);
-        mChildShimmer.setVisibility(View.VISIBLE);
-        mChildMain.setVisibility(View.GONE);
-        NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
-        nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+        if (!isPaused) {
+            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
+            nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+        }
+    }
+
+    private void fragmentPaused() {
+        isPaused = true;
+    }
+
+    private void stopShimmer() {
+        mShimmerFrameLayout.stopShimmer();
+        mShimmerFrameLayout.hideShimmer();
+        mChildShimmer.setVisibility(View.GONE);
+        mChildMain.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause()");
+        stopShimmer();
+        fragmentPaused();
     }
 
     private void displayData() {
@@ -218,10 +230,7 @@ public class GlobalFragment extends BaseFragment implements
                 && disDeaths != 0
                 && disRecovered != 0) {
             Log.d(TAG, "data is displayed!");
-            mShimmerFrameLayout.stopShimmer();
-            mShimmerFrameLayout.hideShimmer();
-            mChildShimmer.setVisibility(View.GONE);
-            mChildMain.setVisibility(View.VISIBLE);
+            stopShimmer();
             TrackerCountAnimation.Display.countNumber(tvCases, disCases);
             TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
             TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);

@@ -112,20 +112,14 @@ public class TrackerDialog extends DialogFragment {
                 }
 
                 builder.setMessage(mMessage).setTitle(mTitle)
-                        .setPositiveButton(mPositiveId, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (mListener != null) {
-                                    mListener.onDialogPositiveEvent(mDialogId, args);
-                                }
+                        .setPositiveButton(mPositiveId, (dialog, which) -> {
+                            if (mListener != null) {
+                                mListener.onDialogPositiveEvent(mDialogId, args);
                             }
                         })
-                        .setNegativeButton(mNegativeId, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (mListener != null) {
-                                    mListener.onDialogNegativeEvent(mDialogId, args);
-                                }
+                        .setNegativeButton(mNegativeId, (dialog, which) -> {
+                            if (mListener != null) {
+                                mListener.onDialogNegativeEvent(mDialogId, args);
                             }
                         });
                 break;

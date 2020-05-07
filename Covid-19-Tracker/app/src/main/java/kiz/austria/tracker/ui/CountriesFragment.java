@@ -83,6 +83,7 @@ public class CountriesFragment extends Fragment implements
     private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
     private TrackerDialog mDialog = null;
     private Inflatable mListener;
+    private boolean isPaused = false;
 
     //widgets
     private RecyclerView mRecyclerView;
@@ -108,12 +109,29 @@ public class CountriesFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
-        mShimmerFrameLayout.startShimmer();
-        mShimmerFrameLayout.showShimmer(true);
-        mChildShimmer.setVisibility(View.VISIBLE);
-        mChildMain.setVisibility(View.GONE);
-        CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
-        countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+        if (!isPaused) {
+            CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
+            countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause()");
+        stopShimmer();
+        fragmentPaused();
+    }
+
+    private void fragmentPaused() {
+        isPaused = true;
+    }
+
+    private void stopShimmer() {
+        mShimmerFrameLayout.stopShimmer();
+        mShimmerFrameLayout.hideShimmer();
+        mChildShimmer.setVisibility(View.GONE);
+        mChildMain.setVisibility(View.VISIBLE);
     }
 
     private void displayData() {
@@ -121,14 +139,10 @@ public class CountriesFragment extends Fragment implements
         Log.d(TAG, "setting up data for display ");
         if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE) {
             Log.d(TAG, "data is displayed!");
-            mShimmerFrameLayout.stopShimmer();
-            mShimmerFrameLayout.hideShimmer();
-            mChildShimmer.setVisibility(View.GONE);
-            mChildMain.setVisibility(View.VISIBLE);
+            stopShimmer();
             mCountriesRecyclerAdapter.addList(mNations);
         }
     }
-
 
     @Nullable
     @Override
@@ -158,6 +172,7 @@ public class CountriesFragment extends Fragment implements
         assert manager != null;
         //scroll back to top
         manager.scrollToPositionWithOffset(0, 0);
+
         mCountriesRecyclerAdapter.addList(mNations);
         TrackerPlate.hideSoftKeyboard(getActivity());
         if (mDialog != null) {

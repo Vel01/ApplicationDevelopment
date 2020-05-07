@@ -51,7 +51,7 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.setFadeScaleAnimation();
+//        holder.setFadeScaleAnimation();
         holder.setFadeInAnimation();
         holder.mExpand.setOnClickListener(v -> {
             Nation nation = mNationsAdapterList.get(position);

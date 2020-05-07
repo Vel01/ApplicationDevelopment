@@ -77,11 +77,9 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
-
         if (savedInstanceState == null) {//home(GlobalFragment) first initialization
             initGlobalFragment();
         }
-
         setContentView(R.layout.activity_main);
     }
 
