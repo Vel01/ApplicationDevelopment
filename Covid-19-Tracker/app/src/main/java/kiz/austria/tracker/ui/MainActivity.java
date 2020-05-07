@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -14,7 +13,7 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends BaseActivity implements
         TrackerDialog.OnDialogListener,
         Inflatable {
 
@@ -81,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements
             initGlobalFragment();
         }
         setContentView(R.layout.activity_main);
+        activateToolbar(false);
     }
 
     @Override
