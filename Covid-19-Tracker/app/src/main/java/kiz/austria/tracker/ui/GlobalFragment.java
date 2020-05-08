@@ -178,7 +178,7 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onResume: was called!");
         if (!isPausedToStopReDownload()) {
             NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
-            nationNationDataParser.execute(Addresses.Link.DATA_GLOBAL);
+            nationNationDataParser.execute(Addresses.Link.DATA_WORLD);
         }
     }
 

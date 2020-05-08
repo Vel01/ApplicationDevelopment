@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import kiz.austria.tracker.model.Country;
-import kiz.austria.tracker.model.Global;
 import kiz.austria.tracker.model.Nation;
 
 public class NationDataParser<T extends Nation> extends AsyncTask<String, Void, Nation> implements JSONRawData.OnDownloadComplete {
@@ -100,13 +99,20 @@ public class NationDataParser<T extends Nation> extends AsyncTask<String, Void, 
             }
 
 
-            if (destinationUri.equals(Addresses.Link.DATA_GLOBAL)) {
+            if (destinationUri.equals(Addresses.Link.DATA_WORLD)) {
                 try {
                     JSONObject jsonObject = new JSONObject(data);
-                    String cases = jsonObject.getString("cases");
+                    String country = jsonObject.getString("country");
+                    String confirmed = jsonObject.getString("cases");
                     String deaths = jsonObject.getString("deaths");
+                    String today_cases = jsonObject.getString("todayCases");
+                    String today_deaths = jsonObject.getString("todayDeaths");
                     String recovered = jsonObject.getString("recovered");
-                    mNation = new Global(cases, deaths, recovered);
+                    String active = jsonObject.getString("active");
+                    String critical = jsonObject.getString("critical");
+                    mNation = new Nation(country, confirmed,
+                            deaths, today_cases, today_deaths,
+                            recovered, active, critical);
                     mDownloadStatus = JSONRawData.DownloadStatus.OK;
                 } catch (JSONException e) {
                     e.printStackTrace();
