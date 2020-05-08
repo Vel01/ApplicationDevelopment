@@ -50,6 +50,7 @@
     <string name="label_new_cases">New Cases</string>
     <string name="label_actives">Active</string>
     <string name="label_new_deaths">New Deaths</string>
+    <string name="label_chart">Chart</string>
 
 
 </resources>

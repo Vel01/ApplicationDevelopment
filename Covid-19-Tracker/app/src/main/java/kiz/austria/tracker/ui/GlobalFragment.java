@@ -23,6 +23,9 @@ import com.github.mikephil.charting.data.PieEntry;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.data.Addresses;
 import kiz.austria.tracker.data.JSONRawData;
@@ -57,18 +60,36 @@ public class GlobalFragment extends BaseFragment implements
         mListener.onInflateCountriesFragment();
     }
 
-    //widgets
-    private PieChart chart;
-    private TextView tvCases;
-    private TextView tvDeaths;
-    private TextView tvRecovered;
-    private TextView tvNewCases;
-    private TextView tvNewDeaths;
-    private TextView tvActive;
+    //ButterKnife
+    private Unbinder mUnbinder;
 
-    private ShimmerFrameLayout mShimmerFrameLayout;
-    private View mChildMain;
-    private View mChildShimmer;
+    //widgets
+    @BindView(R.id.chart_global_cases)
+    PieChart chart;
+    @BindView(R.id.tv_cases)
+    TextView tvCases;
+    @BindView(R.id.tv_recovered)
+    TextView tvRecovered;
+    @BindView(R.id.tv_deaths)
+    TextView tvDeaths;
+    @BindView(R.id.tv_new_cases)
+    TextView tvNewCases;
+    @BindView(R.id.tv_active)
+    TextView tvActive;
+    @BindView(R.id.tv_new_deaths)
+    TextView tvNewDeaths;
+    @BindView(R.id.tv_update_date)
+    TextView tvUpdate;
+    @BindView(R.id.btn_view_all_countries)
+    CardView btnViewAllCountries;
+
+    //layouts
+    @BindView(R.id.layout_global_shimmer)
+    ShimmerFrameLayout mShimmerFrameLayout;
+    @BindView(R.id.child_layout_global_main)
+    View mChildMain;
+    @BindView(R.id.child_layout_global_shimmer)
+    View mChildShimmer;
 
     //vars
     private int disCases, disDeaths, disRecovered, disActive, disNewCases, disNewDeaths;
@@ -91,34 +112,22 @@ public class GlobalFragment extends BaseFragment implements
         mListener = (Inflatable) activity;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated()");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: started");
         final View view = inflater.inflate(R.layout.fragment_global, container, false);
-
-        //shimmer widgets
-        mShimmerFrameLayout = view.findViewById(R.id.layout_global_shimmer);
-        mChildShimmer = view.findViewById(R.id.child_layout_global_shimmer);
-        mChildMain = view.findViewById(R.id.child_layout_global_main);
-
+        mUnbinder = ButterKnife.bind(this, view);
         //update widget
-        TextView tvUpdate = view.findViewById(R.id.tv_update_date);
         tvUpdate.setText(getCurrentDate());
-
         //go to countries widget
-        CardView btnViewAllCountries = view.findViewById(R.id.btn_view_all_countries);
         btnViewAllCountries.setOnClickListener(this);
-
-        //global result widgets
-        tvCases = view.findViewById(R.id.tv_cases);
-        tvDeaths = view.findViewById(R.id.tv_deaths);
-        tvRecovered = view.findViewById(R.id.tv_recovered);
-        tvActive = view.findViewById(R.id.tv_active);
-        tvNewCases = view.findViewById(R.id.tv_new_cases);
-        tvNewDeaths = view.findViewById(R.id.tv_new_deaths);
-
-        chart = view.findViewById(R.id.chart_global_cases);
         return view;
     }
 
@@ -199,7 +208,7 @@ public class GlobalFragment extends BaseFragment implements
 
     private void displayData() {
         Log.d(TAG, "displayData() preparing to display");
-        Log.d(TAG, "setting up data for display ");
+        Log.d(TAG, "setting up data for display " + mChildShimmer.getVisibility());
         if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE) {
             Log.d(TAG, "data is displayed!");
             stopShimmer();
@@ -217,6 +226,7 @@ public class GlobalFragment extends BaseFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView() data retained!");
+        mUnbinder.unbind();
     }
 
     @Override

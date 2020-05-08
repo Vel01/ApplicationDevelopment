@@ -7,7 +7,7 @@
     android:background="#fff">
 
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/layout_global_scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content">
 
             <include
-                android:id="@+id/include9"
+                android:id="@+id/include_layout_global_results"
                 layout="@layout/layout_global_results"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                 app:fontFamily="@font/roboto"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/include9"
+                app:layout_constraintTop_toBottomOf="@+id/include_layout_global_results"
                 tools:ignore="SmallSp" />
 
             <include

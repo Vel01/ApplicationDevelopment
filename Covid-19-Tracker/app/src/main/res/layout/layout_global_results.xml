@@ -6,15 +6,15 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/materialCardView"
+        android:id="@+id/card_global_confirmed"
         android:layout_width="120dp"
         android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:background="#fff"
         android:elevation="1dp"
-        app:layout_constraintBottom_toBottomOf="@+id/materialCardView2"
+        app:layout_constraintBottom_toBottomOf="@+id/card_global_recovered"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/materialCardView2">
+        app:layout_constraintTop_toTopOf="@+id/card_global_recovered">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -66,7 +66,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/materialCardView2"
+        android:id="@+id/card_global_recovered"
         android:layout_width="120dp"
         android:layout_height="100dp"
         android:layout_marginTop="8dp"
@@ -125,15 +125,15 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/materialCardView3"
+        android:id="@+id/card_global_deaths"
         android:layout_width="120dp"
         android:layout_height="100dp"
         android:layout_marginEnd="8dp"
         android:background="#fff"
         android:elevation="1dp"
-        app:layout_constraintBottom_toBottomOf="@+id/materialCardView2"
+        app:layout_constraintBottom_toBottomOf="@+id/card_global_recovered"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/materialCardView2">
+        app:layout_constraintTop_toTopOf="@+id/card_global_recovered">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -141,7 +141,6 @@
             android:padding="8dp">
 
             <ImageView
-                android:id="@+id/imageView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/deaths_icon"
@@ -186,14 +185,14 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/materialCardView4"
+        android:id="@+id/card_global_new_cases"
         android:layout_width="120dp"
         android:layout_height="100dp"
         android:background="#fff"
         android:elevation="1dp"
-        app:layout_constraintBottom_toBottomOf="@+id/materialCardView5"
-        app:layout_constraintStart_toStartOf="@+id/materialCardView"
-        app:layout_constraintTop_toTopOf="@+id/materialCardView5">
+        app:layout_constraintBottom_toBottomOf="@+id/card_global_active"
+        app:layout_constraintStart_toStartOf="@+id/card_global_confirmed"
+        app:layout_constraintTop_toTopOf="@+id/card_global_active">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -201,7 +200,6 @@
             android:padding="8dp">
 
             <ImageView
-                android:id="@+id/imageView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/new_cases_icon"
@@ -245,7 +243,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/materialCardView5"
+        android:id="@+id/card_global_active"
         android:layout_width="120dp"
         android:layout_height="100dp"
         android:layout_marginTop="16dp"
@@ -255,7 +253,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView2">
+        app:layout_constraintTop_toBottomOf="@+id/card_global_recovered">
 
         <androidx.constraintlayout.widget.ConstraintLayout
 
@@ -264,7 +262,6 @@
             android:padding="8dp">
 
             <ImageView
-                android:id="@+id/imageView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/active_icon"
@@ -308,14 +305,14 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/materialCardView6"
+        android:id="@+id/card_global_new_deaths"
         android:layout_width="120dp"
         android:layout_height="100dp"
         android:background="#fff"
         android:elevation="1dp"
-        app:layout_constraintBottom_toBottomOf="@+id/materialCardView5"
-        app:layout_constraintEnd_toEndOf="@+id/materialCardView3"
-        app:layout_constraintTop_toTopOf="@+id/materialCardView5">
+        app:layout_constraintBottom_toBottomOf="@+id/card_global_active"
+        app:layout_constraintEnd_toEndOf="@+id/card_global_deaths"
+        app:layout_constraintTop_toTopOf="@+id/card_global_active">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
