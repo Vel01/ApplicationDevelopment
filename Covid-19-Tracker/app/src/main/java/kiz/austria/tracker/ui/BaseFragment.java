@@ -15,7 +15,7 @@ import java.util.TimeZone;
 
 public class BaseFragment extends Fragment {
 
-    private static final String DATE_FORMAT_2 = "MMM dd, yyyy";
+    private static final String DATE_FORMAT_2 = "EEEE, MMM d, yyyy";
     protected Typeface tfRegular;
     protected Typeface tfLight;
 
@@ -36,7 +36,7 @@ public class BaseFragment extends Fragment {
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_2, Locale.US);
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date c = Calendar.getInstance().getTime();
-        return "Last Update: " + dateFormat.format(c);
+        return "(Last Updated: " + dateFormat.format(c)+")";
     }
 
 }

@@ -18,12 +18,8 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
@@ -32,11 +28,12 @@ import kiz.austria.tracker.data.Addresses;
 import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.model.Nation;
-import kiz.austria.tracker.util.TrackerCountAnimation;
+import kiz.austria.tracker.util.TrackerNumber;
 import kiz.austria.tracker.util.TrackerPieChart;
 
+import static android.graphics.Color.rgb;
+
 public class GlobalFragment extends BaseFragment implements
-        OnChartValueSelectedListener,
         View.OnClickListener, NationDataParser.OnDataAvailable {
 
     private static final String TAG = "GlobalFragment";
@@ -47,6 +44,9 @@ public class GlobalFragment extends BaseFragment implements
         disCases = Integer.parseInt(nation.getConfirmed());
         disDeaths = Integer.parseInt(nation.getDeaths());
         disRecovered = Integer.parseInt(nation.getRecovered());
+        disNewCases = Integer.parseInt(nation.getTodayCases());
+        disNewDeaths = Integer.parseInt(nation.getTodayDeaths());
+        disActive = Integer.parseInt(nation.getActive());
         displayData();
     }
 
@@ -57,31 +57,21 @@ public class GlobalFragment extends BaseFragment implements
         mListener.onInflateCountriesFragment();
     }
 
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        if (e == null)
-            return;
-        Log.i("VAL SELECTED",
-                "Value: " + e.getY() + ", index: " + h.getX()
-                        + ", DataSet index: " + h.getDataSetIndex());
-    }
-
-    @Override
-    public void onNothingSelected() {
-        Log.i("PieChart", "nothing selected");
-    }
-
     //widgets
     private PieChart chart;
     private TextView tvCases;
     private TextView tvDeaths;
     private TextView tvRecovered;
+    private TextView tvNewCases;
+    private TextView tvNewDeaths;
+    private TextView tvActive;
+
     private ShimmerFrameLayout mShimmerFrameLayout;
     private View mChildMain;
     private View mChildShimmer;
 
     //vars
-    private int disCases, disDeaths, disRecovered;
+    private int disCases, disDeaths, disRecovered, disActive, disNewCases, disNewDeaths;
     private Inflatable mListener;
     private boolean isPaused = false;
 
@@ -124,6 +114,9 @@ public class GlobalFragment extends BaseFragment implements
         tvCases = view.findViewById(R.id.tv_cases);
         tvDeaths = view.findViewById(R.id.tv_deaths);
         tvRecovered = view.findViewById(R.id.tv_recovered);
+        tvActive = view.findViewById(R.id.tv_active);
+        tvNewCases = view.findViewById(R.id.tv_new_cases);
+        tvNewDeaths = view.findViewById(R.id.tv_new_deaths);
 
         chart = view.findViewById(R.id.chart_global_cases);
         return view;
@@ -139,8 +132,6 @@ public class GlobalFragment extends BaseFragment implements
         chart.setRotationEnabled(true);
         chart.setRotationAngle(50);
         chart.setHighlightPerTapEnabled(true);
-        // add a selection listener
-        chart.setOnChartValueSelectedListener(this);
         chart.animateY(4000, Easing.EaseInOutQuad);
         // entry label styling
         chart.setEntryLabelColor(Color.BLACK);
@@ -165,8 +156,9 @@ public class GlobalFragment extends BaseFragment implements
         pieChart.dataSetSelectionShift(4f);
         // add a lot of colors
         ArrayList<Integer> colors = new ArrayList<>();
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
+        colors.add(rgb(244, 67, 54));
+        colors.add(rgb(211, 47, 47));
+        colors.add(rgb(255, 235, 59));
         pieChart.dataSetColorTemplate(colors);
         pieChart.dataSetAttributes(chart, 10f, Color.BLACK, tfLight);
 
@@ -208,15 +200,15 @@ public class GlobalFragment extends BaseFragment implements
     private void displayData() {
         Log.d(TAG, "displayData() preparing to display");
         Log.d(TAG, "setting up data for display ");
-        if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE
-                && disCases != 0
-                && disDeaths != 0
-                && disRecovered != 0) {
+        if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE) {
             Log.d(TAG, "data is displayed!");
             stopShimmer();
-            TrackerCountAnimation.Display.countNumber(tvCases, disCases);
-            TrackerCountAnimation.Display.countNumber(tvDeaths, disDeaths);
-            TrackerCountAnimation.Display.countNumber(tvRecovered, disRecovered);
+            TrackerNumber.display(tvCases, disCases);
+            TrackerNumber.display(tvDeaths, disDeaths);
+            TrackerNumber.display(tvRecovered, disRecovered);
+            TrackerNumber.display(tvActive, disActive);
+            TrackerNumber.display(tvNewCases, disNewCases);
+            TrackerNumber.display(tvNewDeaths, disNewDeaths);
             initPieChart();
         }
     }

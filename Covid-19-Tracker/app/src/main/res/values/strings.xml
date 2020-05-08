@@ -2,7 +2,7 @@
     <string name="app_name">Covid-19 Tracker</string>
     <string name="label_cases">Cases</string>
     <string name="label_settings">Settings</string>
-    <string name="label_global_cases">Global Cases</string>
+    <string name="label_global_cases">Global</string>
     <string name="label_confirmed">Confirmed</string>
     <string name="label_deaths">Deaths</string>
     <string name="label_recovered">Recovered</string>
@@ -41,6 +41,15 @@
     <string name="label_color_for_confirmed">Color for Confirmed</string>
     <string name="label_sort_countries">Sort Countries</string>
     <string name="label_search">Search</string>
+    <string name="confirmed_icon">Confirmed Icon</string>
+    <string name="recovered_icon">Recovered Icon</string>
+    <string name="deaths_icon">Deaths Icon</string>
+    <string name="new_cases_icon">New Cases Icon</string>
+    <string name="active_icon">Active Icon</string>
+    <string name="new_deaths_icon">New Deaths Icon</string>
+    <string name="label_new_cases">New Cases</string>
+    <string name="label_actives">Active</string>
+    <string name="label_new_deaths">New Deaths</string>
 
 
 </resources>

@@ -2,7 +2,6 @@ package kiz.austria.tracker.ui;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -134,24 +133,6 @@ public class MainActivity extends BaseActivity implements
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_countries));
         transaction.addToBackStack(getString(R.string.tag_fragment_countries));
         transaction.commit();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.mnu_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
