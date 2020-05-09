@@ -138,7 +138,9 @@ public class GlobalFragment extends BaseFragment implements
         chart.getDescription().setEnabled(false);
         chart.setExtraOffsets(5, 5, 5, 5);
         chart.setDragDecelerationFrictionCoef(0.90f);
-        chart.setDrawHoleEnabled(false);
+
+        chart.setDrawHoleEnabled(true);
+
         chart.setRotationEnabled(true);
         chart.setRotationAngle(50);
         chart.setHighlightPerTapEnabled(true);
@@ -161,14 +163,15 @@ public class GlobalFragment extends BaseFragment implements
         pieChart.dataSetValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE,
                 PieDataSet.ValuePosition.OUTSIDE_SLICE);
         pieChart.dataSetLinePart1OffsetPercentage(90.0f);
-        pieChart.dataSetValuePartLength(.7f, .5f);
+        pieChart.dataSetValuePartLength(.5f, .4f);
         pieChart.dataSetSliceSpace(2f);
         pieChart.dataSetSelectionShift(4f);
         // add a lot of colors
         ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(rgb(244, 67, 54));
-        colors.add(rgb(211, 47, 47));
-        colors.add(rgb(255, 235, 59));
+        colors.add(rgb(255, 140, 157));
+        colors.add(rgb(192, 255, 140));
+        colors.add(rgb(255, 247, 140));
+
         pieChart.dataSetColorTemplate(colors);
         pieChart.dataSetAttributes(chart, 10f, Color.BLACK, tfLight);
 

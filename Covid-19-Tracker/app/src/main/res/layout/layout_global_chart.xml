@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/label_view_all_countries"
-                android:textColor="@android:color/holo_blue_light"
+                android:textColor="@color/colorLink"
                 android:textSize="12sp"
                 app:fontFamily="@font/roboto" />
         </androidx.cardview.widget.CardView>

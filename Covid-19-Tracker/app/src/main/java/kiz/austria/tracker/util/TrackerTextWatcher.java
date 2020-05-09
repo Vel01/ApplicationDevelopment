@@ -43,7 +43,7 @@ public class TrackerTextWatcher implements TextWatcher {
         filter(s.toString());
         if (s.length() >= 2) {
             mHandler = new Handler();
-            final int DELAY = 3000;
+            final int DELAY = 2000;
             mHandler.postDelayed(() -> {
                 Log.d(TAG, "run: manager here...");
                 TrackerPlate.hideSoftKeyboard(mActivity);

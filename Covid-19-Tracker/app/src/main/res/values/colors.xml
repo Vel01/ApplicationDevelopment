@@ -16,5 +16,12 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
 
+    <color name="colorConfirmed">#FF8C9D</color>
+    <color name="colorDeaths">#C0FF8C</color>
+    <color name="colorRecovered">#FFF78C</color>
+    <color name="colorExpand">#F48B35</color>
+    <color name="colorLink">#008EB4</color>
+    <color name="colorSortTransparent">#0000</color>
+
 
 </resources>
