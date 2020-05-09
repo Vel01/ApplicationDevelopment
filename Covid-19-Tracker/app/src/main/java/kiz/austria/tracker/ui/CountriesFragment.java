@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import kiz.austria.tracker.R;
+import kiz.austria.tracker.adapter.AdapterClickListener;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.data.Addresses;
 import kiz.austria.tracker.data.CountriesDataParser;
@@ -37,6 +38,7 @@ import kiz.austria.tracker.util.TrackerPlate;
 import kiz.austria.tracker.util.TrackerTextWatcher;
 
 public class CountriesFragment extends Fragment implements
+        AdapterClickListener.OnAdapterClickListener,
         View.OnClickListener,
         CountriesDataParser.OnDataAvailable {
 
@@ -76,6 +78,22 @@ public class CountriesFragment extends Fragment implements
                 mDialog.show(getFragmentManager(), null);
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.d(TAG, "onItemClick()" + position);
+        Nation nation = mCountriesRecyclerAdapter.getNationsAdapterList().get(position);
+        nation.setExpanded(!nation.isExpanded());
+        mCountriesRecyclerAdapter.notifyItemChanged(position, position);
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+        Log.d(TAG, "onItemLongClick()");
+        // TODO [May 11, 2020] make a dialog that display statistic from selected nation
+        // Using Chart Presentation
+
     }
 
     //vars
@@ -188,7 +206,10 @@ public class CountriesFragment extends Fragment implements
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         if (mCountriesRecyclerAdapter == null) {
             Log.d(TAG, "initRecyclerView() re-allocate adapter instance");
+            AdapterClickListener listener = new AdapterClickListener(getActivity(), mRecyclerView);
+            listener.setOnAdapterClickListener(this);
             mCountriesRecyclerAdapter = new CountriesRecyclerAdapter();
+            mRecyclerView.addOnItemTouchListener(listener);
         }
         mRecyclerView.setAdapter(mCountriesRecyclerAdapter);
         initSearchText();
