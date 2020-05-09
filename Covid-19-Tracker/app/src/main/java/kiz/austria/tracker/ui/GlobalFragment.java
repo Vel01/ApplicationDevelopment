@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.mikephil.charting.animation.Easing;
@@ -86,8 +87,8 @@ public class GlobalFragment extends BaseFragment implements
     //layouts
     @BindView(R.id.layout_global_shimmer)
     ShimmerFrameLayout mShimmerFrameLayout;
-    @BindView(R.id.child_layout_global_main)
-    View mChildMain;
+    @BindView(R.id.include_layout_global_results)
+    ConstraintLayout mChildMain;
     @BindView(R.id.child_layout_global_shimmer)
     View mChildShimmer;
 
