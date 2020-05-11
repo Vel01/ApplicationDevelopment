@@ -136,7 +136,7 @@ public class GlobalFragment extends BaseFragment implements
 
         chart.setUsePercentValues(true);
         chart.getDescription().setEnabled(false);
-        chart.setExtraOffsets(5, 5, 5, 5);
+        chart.setExtraOffsets(5, 10, 5, 5);
         chart.setDragDecelerationFrictionCoef(0.90f);
 
         chart.setDrawHoleEnabled(true);

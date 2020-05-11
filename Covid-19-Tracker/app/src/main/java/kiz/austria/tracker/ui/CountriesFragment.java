@@ -16,7 +16,6 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,7 +36,8 @@ import kiz.austria.tracker.util.TrackerKeys;
 import kiz.austria.tracker.util.TrackerPlate;
 import kiz.austria.tracker.util.TrackerTextWatcher;
 
-public class CountriesFragment extends Fragment implements
+public class CountriesFragment extends BaseFragment implements
+        TrackerDialog.OnDialogListener,
         AdapterClickListener.OnAdapterClickListener,
         View.OnClickListener,
         CountriesDataParser.OnDataAvailable {
@@ -93,6 +93,35 @@ public class CountriesFragment extends Fragment implements
         Log.d(TAG, "onItemLongClick()");
         // TODO [May 11, 2020] make a dialog that display statistic from selected nation
         // Using Chart Presentation
+
+        Nation nation = mCountriesRecyclerAdapter.getNationsAdapterList().get(position);
+
+        mDialog = new TrackerDialog();
+        Bundle args = new Bundle();
+        args.putString(TrackerKeys.KEY_DIALOG_TITLE, nation.getCountry());
+        args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_CUSTOM_SELECTED_ITEM);
+        args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, null);
+        args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_SELECTED_ITEM);
+        args.putInt(TrackerKeys.KEY_DIALOG_POSITIVE_RID, 0);
+        mDialog.setView(initItemView(nation));
+        mDialog.setArguments(args);
+        assert getFragmentManager() != null;
+        mDialog.show(getFragmentManager(), null);
+
+    }
+
+    @Override
+    public void onDialogPositiveEvent(int id, Bundle args) {
+
+    }
+
+    @Override
+    public void onDialogNegativeEvent(int id, Bundle args) {
+
+    }
+
+    @Override
+    public void onDialogCancelEvent(int id) {
 
     }
 
@@ -231,11 +260,11 @@ public class CountriesFragment extends Fragment implements
     }
 
     private View initSortView() {
-        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.layout_countries_sort_dialog_container,
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.dialog_countries_sort_container,
                 null, false);
         ListView categories = view.findViewById(R.id.rv_countries_sort_list);
         if (getActivity() != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.layout_countries_sort_dialog_item, new String[]{
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.dialog_countries_sort_item, new String[]{
                     "Confirmed", "Deaths", "Recovered"});
             categories.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -258,5 +287,15 @@ public class CountriesFragment extends Fragment implements
         }
         return view;
     }
+
+    private View initItemView(Nation nation) {
+
+        View view = getLayoutInflater().inflate(R.layout.dialog_countries_item_container, null, false);
+
+        //TODO (05/12/2020) layout for dialog
+
+        return view;
+    }
+
 
 }

@@ -20,10 +20,10 @@ import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_POSITIVE_RID;
 import static kiz.austria.tracker.util.TrackerKeys.KEY_DIALOG_TITLE;
 import static kiz.austria.tracker.util.TrackerKeys.KEY_STYLE;
 import static kiz.austria.tracker.util.TrackerKeys.STYLE_DIALOG_CUSTOM;
+import static kiz.austria.tracker.util.TrackerKeys.STYLE_DIALOG_CUSTOM_SELECTED_ITEM;
 import static kiz.austria.tracker.util.TrackerKeys.STYLE_DIALOG_NORMAL;
 
 public class TrackerDialog extends DialogFragment {
-
 
     //variable
     private OnDialogListener mListener;
@@ -67,9 +67,6 @@ public class TrackerDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        /*
-            Customize dialog depending on the argument passed on the bundle
-         */
         Bundle args = getArguments();
 
         String dialog_style;
@@ -127,6 +124,18 @@ public class TrackerDialog extends DialogFragment {
             case STYLE_DIALOG_CUSTOM:
                 builder.setView(mView);
                 break;
+
+            case STYLE_DIALOG_CUSTOM_SELECTED_ITEM:
+                builder.setMessage(mMessage).setTitle(mTitle)
+                        .setPositiveButton(mPositiveId, (dialog, which) -> {
+                            if (mListener != null) {
+                                mListener.onDialogPositiveEvent(mDialogId, args);
+                            }
+                        });
+
+                builder.setView(mView);
+                break;
+
         }
     }
 

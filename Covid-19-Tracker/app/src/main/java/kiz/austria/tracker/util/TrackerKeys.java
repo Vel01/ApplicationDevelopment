@@ -13,21 +13,17 @@ public class TrackerKeys {
     //Dialog Style
     public static final String STYLE_DIALOG_NORMAL = "kiz.austria.tracker.NORMAL";
     public static final String STYLE_DIALOG_CUSTOM = "kiz.austria.tracker.CUSTOM";
+    public static final String STYLE_DIALOG_CUSTOM_SELECTED_ITEM = "kiz.austria.tracker.CUSTOM_SELECTED_ITEM";
 
     //Action Keys
     public static final int ACTION_DIALOG_ON_BACK_PRESSED = 1;
     public static final int ACTION_DIALOG_SORT_MENU = 2;
+    public static final int ACTION_DIALOG_SELECTED_ITEM = 2;
 
     //Select sort categories
     public static final int MENU_SORT_CATEGORY_CONFIRMED = 0;
     public static final int MENU_SORT_CATEGORY_DEATHS = 1;
     public static final int MENU_SORT_CATEGORY_RECOVERED = 2;
-
-    //State Global Fragment Keys
-    public static final String STATE_FRAGMENT_GLOBAL_CONFIRMED = "kiz.austria.tracker.CONFIRMED";
-    public static final String STATE_FRAGMENT_GLOBAL_DEATHS = "kiz.austria.tracker.DEATHS";
-    public static final String STATE_FRAGMENT_GLOBAL_RECOVERED = "kiz.austria.tracker.RECOVERED";
-    public static final String STATE_FRAGMENT_GLOBAL_ARGS = "kiz.austria.tracker.ARGS";
 
 
 }
