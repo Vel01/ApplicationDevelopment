@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="@+id/imb_countries_back">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tv_countries_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -44,13 +44,13 @@
             android:textColor="@android:color/primary_text_light"
             android:textSize="14sp"
             app:fontFamily="@font/roboto_bold"
-            app:layout_constraintBottom_toBottomOf="@+id/view8"
+            app:layout_constraintBottom_toBottomOf="@+id/divider"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/view8" />
+            app:layout_constraintTop_toTopOf="@+id/divider" />
 
 
         <TextView
-            android:id="@+id/view8"
+            android:id="@+id/divider"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_marginStart="24dp"
@@ -58,21 +58,21 @@
             android:layout_marginBottom="12dp"
             android:background="#1f000000"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintStart_toEndOf="@+id/tv_countries_label"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imv_countries_confirmed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/label_color_for_confirmed"
             android:src="@drawable/legends_dotted_one"
-            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintStart_toStartOf="@+id/imv_countries_deaths"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/imv_countries_deaths"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
@@ -80,15 +80,15 @@
             android:layout_weight="1"
             android:contentDescription="@string/label_color_for_deaths"
             android:src="@drawable/legends_dotted_two"
-            app:layout_constraintBottom_toTopOf="@+id/imageView4"
+            app:layout_constraintBottom_toTopOf="@+id/imv_countries_recovered"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.1"
-            app:layout_constraintStart_toEndOf="@+id/view8"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2"
+            app:layout_constraintStart_toEndOf="@+id/divider"
+            app:layout_constraintTop_toBottomOf="@+id/imv_countries_confirmed"
             app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/imv_countries_recovered"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
@@ -96,10 +96,10 @@
             android:contentDescription="@string/label_color_for_recovered"
             android:src="@drawable/legends_dotted_three"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/imageView3" />
+            app:layout_constraintStart_toStartOf="@+id/imv_countries_deaths" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/tv_countries_confirmed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -107,35 +107,35 @@
             android:textColor="@android:color/secondary_text_light"
             android:textSize="10sp"
             app:fontFamily="@font/roboto"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="@+id/imageView2"
+            app:layout_constraintBottom_toBottomOf="@+id/imv_countries_confirmed"
+            app:layout_constraintStart_toEndOf="@+id/imv_countries_confirmed"
+            app:layout_constraintTop_toTopOf="@+id/imv_countries_confirmed"
             tools:ignore="SmallSp" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/tv_countries_deaths"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_deaths"
             android:textColor="@android:color/secondary_text_light"
             android:textSize="10sp"
             app:fontFamily="@font/roboto"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-            app:layout_constraintStart_toStartOf="@+id/textView3"
-            app:layout_constraintTop_toTopOf="@+id/imageView3"
+            app:layout_constraintBottom_toBottomOf="@+id/imv_countries_deaths"
+            app:layout_constraintStart_toStartOf="@+id/tv_countries_confirmed"
+            app:layout_constraintTop_toTopOf="@+id/imv_countries_deaths"
             tools:ignore="SmallSp" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tv_countries_recovered"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_recovered"
             android:textColor="@android:color/secondary_text_light"
             android:textSize="10sp"
             app:fontFamily="@font/roboto"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-            app:layout_constraintStart_toStartOf="@+id/textView4"
-            app:layout_constraintTop_toTopOf="@+id/imageView4"
+            app:layout_constraintBottom_toBottomOf="@+id/imv_countries_recovered"
+            app:layout_constraintStart_toStartOf="@+id/tv_countries_deaths"
+            app:layout_constraintTop_toTopOf="@+id/imv_countries_recovered"
             tools:ignore="SmallSp" />
 
 
@@ -143,7 +143,7 @@
 
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tv_countries_list_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -165,7 +165,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_countries_list_label" />
 
     <include
         android:id="@+id/child_layout_countries_main"
@@ -177,6 +177,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_countries_list_label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
