@@ -37,7 +37,6 @@ import kiz.austria.tracker.util.TrackerPlate;
 import kiz.austria.tracker.util.TrackerTextWatcher;
 
 public class CountriesFragment extends BaseFragment implements
-        TrackerDialog.OnDialogListener,
         AdapterClickListener.OnAdapterClickListener,
         View.OnClickListener,
         CountriesDataParser.OnDataAvailable {
@@ -95,33 +94,6 @@ public class CountriesFragment extends BaseFragment implements
         // Using Chart Presentation
 
         Nation nation = mCountriesRecyclerAdapter.getNationsAdapterList().get(position);
-
-        mDialog = new TrackerDialog();
-        Bundle args = new Bundle();
-        args.putString(TrackerKeys.KEY_DIALOG_TITLE, nation.getCountry());
-        args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_CUSTOM_SELECTED_ITEM);
-        args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, null);
-        args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_SELECTED_ITEM);
-        args.putInt(TrackerKeys.KEY_DIALOG_POSITIVE_RID, 0);
-        mDialog.setView(initItemView(nation));
-        mDialog.setArguments(args);
-        assert getFragmentManager() != null;
-        mDialog.show(getFragmentManager(), null);
-
-    }
-
-    @Override
-    public void onDialogPositiveEvent(int id, Bundle args) {
-
-    }
-
-    @Override
-    public void onDialogNegativeEvent(int id, Bundle args) {
-
-    }
-
-    @Override
-    public void onDialogCancelEvent(int id) {
 
     }
 
@@ -287,15 +259,5 @@ public class CountriesFragment extends BaseFragment implements
         }
         return view;
     }
-
-    private View initItemView(Nation nation) {
-
-        View view = getLayoutInflater().inflate(R.layout.dialog_countries_item_container, null, false);
-
-        //TODO (05/12/2020) layout for dialog
-
-        return view;
-    }
-
 
 }
