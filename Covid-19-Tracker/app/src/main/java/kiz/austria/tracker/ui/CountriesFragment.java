@@ -10,12 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,6 +58,30 @@ public class CountriesFragment extends BaseFragment implements
         }
     }
 
+    private FrameLayout mSelectedFrameLayout;
+    //vars
+    private ArrayList<Nation> mNations = new ArrayList<>();
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.d(TAG, "onItemClick()" + position);
+        Nation nation = mCountriesRecyclerAdapter.getNationsAdapterList().get(position);
+        nation.setExpanded(!nation.isExpanded());
+        mCountriesRecyclerAdapter.notifyItemChanged(position, position);
+    }
+
+    private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
+    private TrackerDialog mDialog = null;
+    private Inflatable mListener;
+    private boolean isPaused = false;
+    //widgets
+    private RecyclerView mRecyclerView;
+    private EditText mSearch;
+    //layouts
+    private View mChildShimmer;
+    private View mChildMain;
+    private ShimmerFrameLayout mShimmerFrameLayout;
+
     /**
      * Navigate back to GlobalFragment using navigation
      * back button.
@@ -63,6 +91,10 @@ public class CountriesFragment extends BaseFragment implements
         int id = v.getId();
         switch (id) {
             case R.id.imb_countries_back:
+                if (mSelectedFrameLayout.getVisibility() == View.VISIBLE) {
+                    initHideSelectedCountry();
+                    break;
+                }
                 mListener.onInflateGlobalFragment();
                 break;
             case R.id.imb_countries_sort:
@@ -79,39 +111,42 @@ public class CountriesFragment extends BaseFragment implements
         }
     }
 
-    @Override
-    public void onItemClick(View view, int position) {
-        Log.d(TAG, "onItemClick()" + position);
-        Nation nation = mCountriesRecyclerAdapter.getNationsAdapterList().get(position);
-        nation.setExpanded(!nation.isExpanded());
-        mCountriesRecyclerAdapter.notifyItemChanged(position, position);
+    private void initHideSelectedCountry() {
+        assert getFragmentManager() != null;
+        FragmentManager manager = getFragmentManager();
+        Fragment fragment = manager.findFragmentByTag(getString(R.string.tag_fragment_selected_country));
+        FragmentTransaction transaction = manager.beginTransaction();
+        assert fragment != null;
+        transaction.remove(fragment);
+        transaction.commit();
+        mChildMain.setVisibility(View.VISIBLE);
+        mSelectedFrameLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void onItemLongClick(View view, int position) {
         Log.d(TAG, "onItemLongClick()");
-        // TODO [May 11, 2020] make a dialog that display statistic from selected nation
+        // TODO [May 11, 2020] make layout for selected country
         // Using Chart Presentation
 
         Nation nation = mCountriesRecyclerAdapter.getNationsAdapterList().get(position);
+        if (mSelectedFrameLayout.getVisibility() == View.GONE) {
+            mChildMain.setVisibility(View.GONE);
+            mSelectedFrameLayout.setVisibility(View.VISIBLE);
+            SelectedNationFragment fragment = new SelectedNationFragment();
+
+            Bundle args = new Bundle();
+            args.putParcelable(TrackerKeys.KEY_SELECTED_COUNTRY, nation);
+            fragment.setArguments(args);
+
+            FragmentManager manager = getFragmentManager();
+            assert manager != null;
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.fragment_container_countries, fragment, getString(R.string.tag_fragment_selected_country));
+            transaction.commit();
+        }
 
     }
-
-    //vars
-    private ArrayList<Nation> mNations = new ArrayList<>();
-    private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
-    private TrackerDialog mDialog = null;
-    private Inflatable mListener;
-    private boolean isPaused = false;
-
-    //widgets
-    private RecyclerView mRecyclerView;
-    private EditText mSearch;
-
-    //layouts
-    private View mChildShimmer;
-    private View mChildMain;
-    private ShimmerFrameLayout mShimmerFrameLayout;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -171,10 +206,10 @@ public class CountriesFragment extends BaseFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_countries, container, false);
-
         mChildShimmer = view.findViewById(R.id.child_layout_countries_shimmer);
         mChildMain = view.findViewById(R.id.child_layout_countries_main);
         mShimmerFrameLayout = view.findViewById(R.id.layout_countries_shimmer);
+        mSelectedFrameLayout = view.findViewById(R.id.fragment_container_countries);
 
         mRecyclerView = view.findViewById(R.id.rv_countries_list);
         mSearch = view.findViewById(R.id.edt_countries_search);

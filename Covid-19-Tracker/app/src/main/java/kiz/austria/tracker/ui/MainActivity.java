@@ -34,6 +34,7 @@ public class MainActivity extends BaseActivity implements
             }
             finish();
         } else {
+
             TrackerDialog dialog = new TrackerDialog();
 
             Bundle args = new Bundle();

@@ -23,5 +23,8 @@ public class TrackerKeys {
     public static final int MENU_SORT_CATEGORY_DEATHS = 1;
     public static final int MENU_SORT_CATEGORY_RECOVERED = 2;
 
+    //Selected Nation
+    public static final String KEY_SELECTED_COUNTRY = "kiz.austria.tracker.SELECTED_COUNTRY";
+
 
 }
