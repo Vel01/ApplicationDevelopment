@@ -24,33 +24,6 @@ public class MainActivity extends BaseActivity implements
     private static final String TAG = "MainActivity";
 
     @Override
-    public void onBackPressed() {
-        Log.d(TAG, "onBackPressed: called");
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))) {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-                return;
-            }
-            finish();
-        } else {
-
-            TrackerDialog dialog = new TrackerDialog();
-
-            Bundle args = new Bundle();
-            args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_NORMAL);
-            args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_ON_BACK_PRESSED);
-            args.putString(TrackerKeys.KEY_DIALOG_TITLE, "Do you want to exit?");
-            args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, "Use the back navigation instead.");
-            args.putInt(TrackerKeys.KEY_DIALOG_POSITIVE_RID, R.string.label_dialog_continue);
-            args.putInt(TrackerKeys.KEY_DIALOG_NEGATIVE_RID, R.string.label_dialog_exit);
-
-            dialog.setArguments(args);
-            dialog.show(getSupportFragmentManager(), null);
-        }
-    }
-
-    @Override
     public void onDialogPositiveEvent(int id, Bundle args) {
 
     }
@@ -142,5 +115,30 @@ public class MainActivity extends BaseActivity implements
         Log.e(TAG, "onDestroy()");
     }
 
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: called");
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                return;
+            }
+            finish();
+        } else {
 
+            TrackerDialog dialog = new TrackerDialog();
+
+            Bundle args = new Bundle();
+            args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_NORMAL);
+            args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_ON_BACK_PRESSED);
+            args.putString(TrackerKeys.KEY_DIALOG_TITLE, "Do you want to exit?");
+            args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, "Use the back navigation instead.");
+            args.putInt(TrackerKeys.KEY_DIALOG_POSITIVE_RID, R.string.label_dialog_continue);
+            args.putInt(TrackerKeys.KEY_DIALOG_NEGATIVE_RID, R.string.label_dialog_exit);
+
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), null);
+        }
+    }
 }

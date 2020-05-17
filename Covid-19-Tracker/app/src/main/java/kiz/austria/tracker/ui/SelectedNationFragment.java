@@ -19,9 +19,11 @@ import com.github.mikephil.charting.data.BarEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.model.Nation;
-import kiz.austria.tracker.util.CustomMarkerView;
 import kiz.austria.tracker.util.TrackerBarChart;
 import kiz.austria.tracker.util.TrackerKeys;
 import kiz.austria.tracker.util.TrackerNumber;
@@ -30,15 +32,21 @@ import kiz.austria.tracker.util.TrackerNumber;
  * A simple {@link Fragment} subclass.
  */
 public class SelectedNationFragment extends BaseFragment {
+    private static final String TAG = "SelectedNationFragment";
+    @BindView(R.id.chart_selected_country)
+    BarChart mChart;
 
     //references
     private Nation mNation;
-    private BarChart mChart;
-
     //widgets
-    private TextView mConfirmed;
-    private TextView mDeaths;
-    private TextView mRecovered;
+    @BindView(R.id.tv_cases)
+    TextView mConfirmed;
+    @BindView(R.id.tv_deaths)
+    TextView mDeaths;
+    @BindView(R.id.tv_recovered)
+    TextView mRecovered;
+    //ButterKnife
+    private Unbinder mUnbinder;
 
     //values
     private int mIntCases;
@@ -66,10 +74,7 @@ public class SelectedNationFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_selected_nation, container, false);
-        mChart = view.findViewById(R.id.chart_selected_country);
-        mConfirmed = view.findViewById(R.id.tv_cases);
-        mDeaths = view.findViewById(R.id.tv_deaths);
-        mRecovered = view.findViewById(R.id.tv_recovered);
+        mUnbinder = ButterKnife.bind(this, view);
         TrackerNumber.display(mConfirmed, Integer.parseInt(mNation.getConfirmed()));
         TrackerNumber.display(mDeaths, Integer.parseInt(mNation.getDeaths()));
         TrackerNumber.display(mRecovered, Integer.parseInt(mNation.getRecovered()));
@@ -96,9 +101,15 @@ public class SelectedNationFragment extends BaseFragment {
 
         TrackerBarChart barChart = new TrackerBarChart(mChart, values, tfLight);
         barChart.initChart();
-        barChart.injectCustomMarkerView(new CustomMarkerView(getActivity(), R.layout.layout_marker_view));
+        barChart.injectCustomMarkerView(new TrackerBarChart.TrackerMarkerView(getActivity(), R.layout.layout_marker_view));
         barChart.barDataSet(yValues, mNation.getCountry());
         barChart.initLegend(entries);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 }
 

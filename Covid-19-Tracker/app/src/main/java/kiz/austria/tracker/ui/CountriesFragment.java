@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.AdapterClickListener;
@@ -43,6 +45,7 @@ import kiz.austria.tracker.util.TrackerPlate;
 import kiz.austria.tracker.util.TrackerTextWatcher;
 
 public class CountriesFragment extends BaseFragment implements
+        Returnable,
         AdapterClickListener.OnAdapterClickListener,
         View.OnClickListener,
         CountriesDataParser.OnDataAvailable {
@@ -89,11 +92,10 @@ public class CountriesFragment extends BaseFragment implements
     @Override
     public void onItemLongClick(View view, int position) {
         Log.d(TAG, "onItemLongClick()");
-        // TODO [May 11, 2020] make layout for selected country
-        // Using Chart Presentation
 
         Nation nation = mCountriesRecyclerAdapter.getNationsAdapterList().get(position);
         if (mSelectedFrameLayout.getVisibility() == View.GONE) {
+            onBackPressed(true);
             mChildMain.setVisibility(View.GONE);
             mSelectedFrameLayout.setVisibility(View.VISIBLE);
             mSimpleLabel.setVisibility(View.INVISIBLE);
@@ -307,6 +309,7 @@ public class CountriesFragment extends BaseFragment implements
         transaction.remove(fragment);
         transaction.commit();
 
+        onBackPressed(false);
         mCountryLabel.setText(getString(R.string.label_countries));
         mChildMain.setVisibility(View.VISIBLE);
         mSelectedFrameLayout.setVisibility(View.GONE);
@@ -315,4 +318,19 @@ public class CountriesFragment extends BaseFragment implements
 
     }
 
+    @Override
+    public void onBackPressed(boolean returnable) {
+        Objects.requireNonNull(getView()).setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            if (returnable) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    // handle back button's click listener
+                    initHideSelectedCountry();
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
 }
