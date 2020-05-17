@@ -12,11 +12,11 @@
         android:layout_gravity="center"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:padding="8dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:contentDescription="@string/label_back_to_global_window"
         android:focusable="true"
+        android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_arrow_back" />
@@ -41,103 +41,113 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
+            android:layout_marginBottom="3dp"
             android:text="@string/label_countries"
             android:textColor="@android:color/primary_text_light"
             android:textSize="14sp"
             app:fontFamily="@font/roboto_bold"
-            app:layout_constraintBottom_toBottomOf="@+id/divider"
+            app:layout_constraintBottom_toBottomOf="@+id/constraint_legend"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/divider" />
+            app:layout_constraintTop_toTopOf="@+id/constraint_legend" />
 
-
-        <TextView
-            android:id="@+id/divider"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
-            android:background="#1f000000"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_countries_label"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imv_countries_confirmed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/label_color_for_confirmed"
-            android:src="@drawable/legends_dotted_one"
-            app:layout_constraintStart_toStartOf="@+id/imv_countries_deaths"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imv_countries_deaths"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_legend"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:contentDescription="@string/label_color_for_deaths"
-            android:src="@drawable/legends_dotted_two"
-            app:layout_constraintBottom_toTopOf="@+id/imv_countries_recovered"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.1"
-            app:layout_constraintStart_toEndOf="@+id/divider"
-            app:layout_constraintTop_toBottomOf="@+id/imv_countries_confirmed"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <ImageView
-            android:id="@+id/imv_countries_recovered"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_weight="1"
-            android:contentDescription="@string/label_color_for_recovered"
-            android:src="@drawable/legends_dotted_three"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/imv_countries_deaths" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_countries_label"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_countries_confirmed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/label_confirmed"
-            android:textColor="@android:color/secondary_text_light"
-            android:textSize="10sp"
-            app:fontFamily="@font/roboto"
-            app:layout_constraintBottom_toBottomOf="@+id/imv_countries_confirmed"
-            app:layout_constraintStart_toEndOf="@+id/imv_countries_confirmed"
-            app:layout_constraintTop_toTopOf="@+id/imv_countries_confirmed"
-            tools:ignore="SmallSp" />
+            <TextView
+                android:id="@+id/divider"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="10dp"
+                android:background="#1f000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_countries_deaths"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_deaths"
-            android:textColor="@android:color/secondary_text_light"
-            android:textSize="10sp"
-            app:fontFamily="@font/roboto"
-            app:layout_constraintBottom_toBottomOf="@+id/imv_countries_deaths"
-            app:layout_constraintStart_toStartOf="@+id/tv_countries_confirmed"
-            app:layout_constraintTop_toTopOf="@+id/imv_countries_deaths"
-            tools:ignore="SmallSp" />
+            <ImageView
+                android:id="@+id/imv_countries_confirmed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:contentDescription="@string/label_color_for_confirmed"
+                android:src="@drawable/legends_dotted_one"
+                app:layout_constraintStart_toStartOf="@+id/imv_countries_deaths"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_countries_recovered"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_recovered"
-            android:textColor="@android:color/secondary_text_light"
-            android:textSize="10sp"
-            app:fontFamily="@font/roboto"
-            app:layout_constraintBottom_toBottomOf="@+id/imv_countries_recovered"
-            app:layout_constraintStart_toStartOf="@+id/tv_countries_deaths"
-            app:layout_constraintTop_toTopOf="@+id/imv_countries_recovered"
-            tools:ignore="SmallSp" />
+            <ImageView
+                android:id="@+id/imv_countries_deaths"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/label_color_for_deaths"
+                android:src="@drawable/legends_dotted_two"
+                app:layout_constraintBottom_toTopOf="@+id/imv_countries_recovered"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toEndOf="@+id/divider"
+                app:layout_constraintTop_toBottomOf="@+id/imv_countries_confirmed"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/imv_countries_recovered"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="4dp"
+                android:contentDescription="@string/label_color_for_recovered"
+                android:src="@drawable/legends_dotted_three"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/imv_countries_deaths" />
+
+            <TextView
+                android:id="@+id/tv_countries_confirmed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/label_confirmed"
+                android:textColor="@android:color/secondary_text_light"
+                android:textSize="10sp"
+                app:fontFamily="@font/roboto"
+                app:layout_constraintBottom_toBottomOf="@+id/imv_countries_confirmed"
+                app:layout_constraintStart_toEndOf="@+id/imv_countries_confirmed"
+                app:layout_constraintTop_toTopOf="@+id/imv_countries_confirmed"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/tv_countries_deaths"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_deaths"
+                android:textColor="@android:color/secondary_text_light"
+                android:textSize="10sp"
+                app:fontFamily="@font/roboto"
+                app:layout_constraintBottom_toBottomOf="@+id/imv_countries_deaths"
+                app:layout_constraintStart_toStartOf="@+id/tv_countries_confirmed"
+                app:layout_constraintTop_toTopOf="@+id/imv_countries_deaths"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/tv_countries_recovered"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_recovered"
+                android:textColor="@android:color/secondary_text_light"
+                android:textSize="10sp"
+                app:fontFamily="@font/roboto"
+                app:layout_constraintBottom_toBottomOf="@+id/imv_countries_recovered"
+                app:layout_constraintStart_toStartOf="@+id/tv_countries_deaths"
+                app:layout_constraintTop_toTopOf="@+id/imv_countries_recovered"
+                tools:ignore="SmallSp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -152,6 +162,7 @@
         android:text="@string/label_list_of_countries_region_sovereignty"
         android:textColor="@android:color/secondary_text_light"
         android:textSize="12sp"
+        android:visibility="visible"
         app:fontFamily="@font/roboto"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />

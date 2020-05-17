@@ -36,7 +36,6 @@ public class SelectedNationFragment extends BaseFragment {
     private BarChart mChart;
 
     //widgets
-    private TextView mCountry;
     private TextView mConfirmed;
     private TextView mDeaths;
     private TextView mRecovered;
@@ -68,11 +67,9 @@ public class SelectedNationFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_selected_nation, container, false);
         mChart = view.findViewById(R.id.chart_selected_country);
-        mCountry = view.findViewById(R.id.tv_country);
         mConfirmed = view.findViewById(R.id.tv_cases);
         mDeaths = view.findViewById(R.id.tv_deaths);
         mRecovered = view.findViewById(R.id.tv_recovered);
-        mCountry.setText(mNation.getCountry());
         TrackerNumber.display(mConfirmed, Integer.parseInt(mNation.getConfirmed()));
         TrackerNumber.display(mDeaths, Integer.parseInt(mNation.getDeaths()));
         TrackerNumber.display(mRecovered, Integer.parseInt(mNation.getRecovered()));

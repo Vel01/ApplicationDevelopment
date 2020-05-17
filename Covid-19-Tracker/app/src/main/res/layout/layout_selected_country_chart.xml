@@ -5,17 +5,6 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/tv_country"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:gravity="center_vertical"
-        android:textColor="@android:color/primary_text_light"
-        app:fontFamily="@font/roboto_bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/div_one"
         android:layout_width="0dp"
         android:layout_height="1dp"
@@ -24,7 +13,7 @@
         app:fontFamily="@font/roboto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_country" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/chart_selected_country"
@@ -36,7 +25,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/div_one" />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

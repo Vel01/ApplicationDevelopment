@@ -14,9 +14,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -58,10 +60,6 @@ public class CountriesFragment extends BaseFragment implements
         }
     }
 
-    private FrameLayout mSelectedFrameLayout;
-    //vars
-    private ArrayList<Nation> mNations = new ArrayList<>();
-
     @Override
     public void onItemClick(View view, int position) {
         Log.d(TAG, "onItemClick()" + position);
@@ -70,6 +68,8 @@ public class CountriesFragment extends BaseFragment implements
         mCountriesRecyclerAdapter.notifyItemChanged(position, position);
     }
 
+    //vars
+    private ArrayList<Nation> mNations = new ArrayList<>();
     private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
     private TrackerDialog mDialog = null;
     private Inflatable mListener;
@@ -77,51 +77,14 @@ public class CountriesFragment extends BaseFragment implements
     //widgets
     private RecyclerView mRecyclerView;
     private EditText mSearch;
+    private TextView mCountryLabel;
+    private TextView mSimpleLabel;
     //layouts
     private View mChildShimmer;
     private View mChildMain;
+    private ConstraintLayout mLegendLayout;
+    private FrameLayout mSelectedFrameLayout;
     private ShimmerFrameLayout mShimmerFrameLayout;
-
-    /**
-     * Navigate back to GlobalFragment using navigation
-     * back button.
-     */
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        switch (id) {
-            case R.id.imb_countries_back:
-                if (mSelectedFrameLayout.getVisibility() == View.VISIBLE) {
-                    initHideSelectedCountry();
-                    break;
-                }
-                mListener.onInflateGlobalFragment();
-                break;
-            case R.id.imb_countries_sort:
-                mDialog = new TrackerDialog();
-                Bundle args = new Bundle();
-                args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_CUSTOM);
-                args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, null);
-                args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_SORT_MENU);
-                mDialog.setView(initSortView());
-                mDialog.setArguments(args);
-                assert getFragmentManager() != null;
-                mDialog.show(getFragmentManager(), null);
-                break;
-        }
-    }
-
-    private void initHideSelectedCountry() {
-        assert getFragmentManager() != null;
-        FragmentManager manager = getFragmentManager();
-        Fragment fragment = manager.findFragmentByTag(getString(R.string.tag_fragment_selected_country));
-        FragmentTransaction transaction = manager.beginTransaction();
-        assert fragment != null;
-        transaction.remove(fragment);
-        transaction.commit();
-        mChildMain.setVisibility(View.VISIBLE);
-        mSelectedFrameLayout.setVisibility(View.GONE);
-    }
 
     @Override
     public void onItemLongClick(View view, int position) {
@@ -133,6 +96,11 @@ public class CountriesFragment extends BaseFragment implements
         if (mSelectedFrameLayout.getVisibility() == View.GONE) {
             mChildMain.setVisibility(View.GONE);
             mSelectedFrameLayout.setVisibility(View.VISIBLE);
+            mSimpleLabel.setVisibility(View.INVISIBLE);
+            mLegendLayout.setVisibility(View.INVISIBLE);
+
+            mCountryLabel.setText(nation.getCountry());
+
             SelectedNationFragment fragment = new SelectedNationFragment();
 
             Bundle args = new Bundle();
@@ -207,6 +175,11 @@ public class CountriesFragment extends BaseFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_countries, container, false);
+
+        mLegendLayout = view.findViewById(R.id.constraint_legend);
+        mCountryLabel = view.findViewById(R.id.tv_countries_label);
+        mSimpleLabel = view.findViewById(R.id.tv_countries_list_label);
+
         mChildShimmer = view.findViewById(R.id.child_layout_countries_shimmer);
         mChildMain = view.findViewById(R.id.child_layout_countries_main);
         mShimmerFrameLayout = view.findViewById(R.id.layout_countries_shimmer);
@@ -294,6 +267,52 @@ public class CountriesFragment extends BaseFragment implements
             });
         }
         return view;
+    }
+
+    /**
+     * Navigate back to GlobalFragment using navigation
+     * back button.
+     */
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.imb_countries_back:
+                if (mSelectedFrameLayout.getVisibility() == View.VISIBLE) {
+                    initHideSelectedCountry();
+                    break;
+                }
+                mListener.onInflateGlobalFragment();
+                break;
+            case R.id.imb_countries_sort:
+                mDialog = new TrackerDialog();
+                Bundle args = new Bundle();
+                args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_CUSTOM);
+                args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, null);
+                args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_SORT_MENU);
+                mDialog.setView(initSortView());
+                mDialog.setArguments(args);
+                assert getFragmentManager() != null;
+                mDialog.show(getFragmentManager(), null);
+                break;
+        }
+    }
+
+    private void initHideSelectedCountry() {
+        assert getFragmentManager() != null;
+        FragmentManager manager = getFragmentManager();
+        Fragment fragment = manager.findFragmentByTag(getString(R.string.tag_fragment_selected_country));
+        FragmentTransaction transaction = manager.beginTransaction();
+        assert fragment != null;
+        transaction.remove(fragment);
+        transaction.commit();
+
+        mCountryLabel.setText(getString(R.string.label_countries));
+        mChildMain.setVisibility(View.VISIBLE);
+        mSelectedFrameLayout.setVisibility(View.GONE);
+        mSimpleLabel.setVisibility(View.VISIBLE);
+        mLegendLayout.setVisibility(View.VISIBLE);
+
     }
 
 }
