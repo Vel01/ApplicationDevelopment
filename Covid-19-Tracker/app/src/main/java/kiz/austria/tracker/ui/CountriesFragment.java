@@ -189,7 +189,8 @@ public class CountriesFragment extends BaseFragment implements
         mShimmerFrameLayout.stopShimmer();
         mShimmerFrameLayout.hideShimmer();
         mChildShimmer.setVisibility(View.GONE);
-        mChildMain.setVisibility(View.VISIBLE);
+        if (mSelectedFrameLayout.getVisibility() == View.GONE)
+            mChildMain.setVisibility(View.VISIBLE);
     }
 
     private void displayData() {

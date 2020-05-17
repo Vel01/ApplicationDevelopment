@@ -5,5 +5,5 @@
     android:layout_height="wrap_content"
     android:gravity="end"
     android:hint="@string/label_default_number"
-    android:textColor="@android:color/secondary_text_light"
-    app:fontFamily="@font/roboto" />
+    android:textColor="@android:color/primary_text_light"
+    app:fontFamily="sans-serif" />

@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fff">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/imb_countries_back"
@@ -13,6 +12,7 @@
         android:layout_gravity="center"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
+        android:padding="8dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:contentDescription="@string/label_back_to_global_window"
@@ -26,7 +26,8 @@
         android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
         android:layout_height="?actionBarSize"
-        android:layout_margin="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/shadow_background"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/imb_countries_back"
@@ -170,7 +171,7 @@
     <include
         android:id="@+id/child_layout_countries_main"
         layout="@layout/layout_countries"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:visibility="gone"
@@ -181,8 +182,10 @@
 
     <FrameLayout
         android:id="@+id/fragment_container_countries"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_top_card"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
