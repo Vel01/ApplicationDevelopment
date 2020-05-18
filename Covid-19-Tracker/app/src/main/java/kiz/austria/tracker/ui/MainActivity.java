@@ -73,6 +73,8 @@ public class MainActivity extends BaseActivity implements
         setContentView(R.layout.activity_main);
         activateToolbar(false);
 
+        //TODO: Google Navigation Drawer (to be replaced by MikePenz MaterialDrawer
+
         /*------------Navigation Drawer Instances------------*/
         mDrawerLayout = findViewById(R.id.layout_drawer);
         mNavigationView = findViewById(R.id.navigation_view);
