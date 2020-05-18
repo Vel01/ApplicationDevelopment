@@ -17,6 +17,7 @@ public class BaseActivity extends AppCompatActivity {
             if (mToolbar != null) {
                 setSupportActionBar(mToolbar);
                 actionBar = getSupportActionBar();
+                getSupportActionBar().setTitle(getString(R.string.app_name));
                 getSupportActionBar().setElevation(0);
             }
 

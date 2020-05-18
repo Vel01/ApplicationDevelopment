@@ -5,13 +5,17 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
+import com.mikepenz.community_material_typeface_library.CommunityMaterial;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.util.TrackerDialog;
@@ -28,14 +32,7 @@ public class MainActivity extends BaseActivity implements
 
     }
 
-    @Override
-    public void onDialogNegativeEvent(int id, Bundle args) {
-        switch (id) {
-            case TrackerKeys.ACTION_DIALOG_ON_BACK_PRESSED:
-                finish();
-                break;
-        }
-    }
+    private Drawer mDrawer;
 
     @Override
     public void onDialogCancelEvent(int id) {
@@ -59,34 +56,59 @@ public class MainActivity extends BaseActivity implements
         return true;
     }
 
-    //references
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mNavigationView;
+    private int mTapToClose = 0;
+
+    @Override
+    public void onDialogNegativeEvent(int id, Bundle args) {
+        if (id == TrackerKeys.ACTION_DIALOG_ON_BACK_PRESSED) {
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {//home(GlobalFragment) first initialization
-            initGlobalFragment();
-        }
+
         setContentView(R.layout.activity_main);
         activateToolbar(false);
 
-        //TODO: Google Navigation Drawer (to be replaced by MikePenz MaterialDrawer
+        initMaterialDrawer();
 
-        /*------------Navigation Drawer Instances------------*/
-        mDrawerLayout = findViewById(R.id.layout_drawer);
-        mNavigationView = findViewById(R.id.navigation_view);
+    }
 
-        /*------------Navigation Drawer Menu------------*/
-        mNavigationView.bringToFront();
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        mNavigationView.setNavigationItemSelectedListener(this);
+    private void initMaterialDrawer() {
+        AccountHeader headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.ic_corona)
+                .build();
+        mDrawer = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(mToolbar)
+                .withAccountHeader(headerResult)
+                .withActionBarDrawerToggleAnimated(true)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withIdentifier(1).withName("Global").withIcon(CommunityMaterial.Icon.cmd_earth),
+                        new PrimaryDrawerItem().withIdentifier(2).withName("Philippines").withIcon(CommunityMaterial.Icon.cmd_flag),
+                        new SectionDrawerItem().withName("Information"),
+                        new PrimaryDrawerItem().withIdentifier(3).withName("What is Covid-19?").withIcon(CommunityMaterial.Icon.cmd_comment_question_outline),
+                        new PrimaryDrawerItem().withIdentifier(4).withName("About").withIcon(CommunityMaterial.Icon2.cmd_information))
+                .withOnDrawerItemClickListener((view, position, drawerItem) -> {
+                    //selected item functionality here...
+                    switch (position) {
+                        case 1:
+                            initGlobalFragment();
+                            break;
+                        case -1:
+                            finish();
+                            break;
+                    }
+                    return false;
+                }).build();
 
+        mDrawer.setSelection(1, true);
+        mDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+        mDrawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Exit").withIcon(CommunityMaterial.Icon.cmd_exit_to_app));
     }
 
     @Override
@@ -96,6 +118,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initGlobalFragment() {
+        onTapToCloseReset();
         GlobalFragment fragment = new GlobalFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_global));
@@ -117,16 +140,27 @@ public class MainActivity extends BaseActivity implements
         Log.e(TAG, "onDestroy()");
     }
 
+    private void onTapToClose() {
+        mTapToClose++;
+    }
+
+    private void onTapToCloseReset() {
+        mTapToClose = 0;
+    }
+
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed: called");
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))) {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-                mDrawerLayout.closeDrawer(GravityCompat.START);
+
+            if (mDrawer.isDrawerOpen()) {
+                mDrawer.closeDrawer();
                 return;
             }
-            finish();
+
+            onTapToClose();
+            if (mTapToClose == 2) finish();
         } else {
 
             TrackerDialog dialog = new TrackerDialog();
