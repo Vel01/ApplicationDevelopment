@@ -35,6 +35,14 @@
 
 
             <include
+                android:id="@+id/child_layout_global_shimmer"
+                layout="@layout/shimmer_global"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
                 layout="@layout/layout_global_chart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
