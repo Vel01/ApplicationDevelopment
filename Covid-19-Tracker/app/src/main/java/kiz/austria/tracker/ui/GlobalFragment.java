@@ -44,14 +44,16 @@ public class GlobalFragment extends BaseFragment implements
 
     @Override
     public void onDataAvailable(Nation nation, JSONRawData.DownloadStatus status) {
-        Log.d(TAG, "onDataAvailable() data received from itself: " + nation.toString());
-        disCases = Integer.parseInt(nation.getConfirmed());
-        disDeaths = Integer.parseInt(nation.getDeaths());
-        disRecovered = Integer.parseInt(nation.getRecovered());
-        disNewCases = Integer.parseInt(nation.getTodayCases());
-        disNewDeaths = Integer.parseInt(nation.getTodayDeaths());
-        disActive = Integer.parseInt(nation.getActive());
-        displayData();
+        if (status == JSONRawData.DownloadStatus.OK) {
+            Log.d(TAG, "onDataAvailable() data received from itself: " + nation.toString());
+            disCases = Integer.parseInt(nation.getConfirmed());
+            disDeaths = Integer.parseInt(nation.getDeaths());
+            disRecovered = Integer.parseInt(nation.getRecovered());
+            disNewCases = Integer.parseInt(nation.getTodayCases());
+            disNewDeaths = Integer.parseInt(nation.getTodayDeaths());
+            disActive = Integer.parseInt(nation.getActive());
+            displayData();
+        }
     }
 
     //events
