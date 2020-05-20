@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:text="@string/label_confirmed"
+            android:text="@string/label_today_cases"
             android:textAlignment="center"
             android:textColor="@android:color/primary_text_light"
             app:fontFamily="@font/roboto"
@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <include
-            android:id="@+id/tv_cases"
+            android:id="@+id/tv_today_cases"
             layout="@layout/layout_global_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,12 +37,12 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/title_deaths"
+            android:id="@+id/title_today_deaths"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginTop="16dp"
-            android:text="@string/label_deaths"
+            android:text="@string/label_today_deaths"
             android:textAlignment="center"
             android:textColor="@android:color/primary_text_light"
             app:fontFamily="@font/roboto"
@@ -50,7 +50,7 @@
             app:layout_constraintTop_toBottomOf="@+id/title_confirmed" />
 
         <include
-            android:id="@+id/tv_deaths"
+            android:id="@+id/tv_today_deaths"
             layout="@layout/layout_global_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,23 +59,23 @@
             android:layout_marginTop="16dp"
             android:layout_toEndOf="@+id/title_confirmed"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_cases" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_today_cases" />
 
         <TextView
-            android:id="@+id/title_recovered"
+            android:id="@+id/title_critical"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginTop="16dp"
-            android:text="@string/label_recovered"
+            android:text="@string/label_critical"
             android:textAlignment="center"
             android:textColor="@android:color/primary_text_light"
             app:fontFamily="@font/roboto"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_deaths" />
+            app:layout_constraintTop_toBottomOf="@+id/title_today_deaths" />
 
         <include
-            android:id="@+id/tv_recovered"
+            android:id="@+id/tv_critical"
             layout="@layout/layout_global_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,8 +84,33 @@
             android:layout_marginTop="16dp"
             android:layout_toEndOf="@+id/title_confirmed"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_deaths" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_today_deaths" />
 
+        <TextView
+            android:id="@+id/title_active"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_active"
+            android:textAlignment="center"
+            android:textColor="@android:color/primary_text_light"
+            app:fontFamily="@font/roboto"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_critical" />
+
+
+        <include
+            android:id="@+id/tv_active"
+            layout="@layout/layout_global_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@+id/title_confirmed"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_critical" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

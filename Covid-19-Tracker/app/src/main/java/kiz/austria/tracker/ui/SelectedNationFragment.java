@@ -39,20 +39,21 @@ public class SelectedNationFragment extends BaseFragment {
     //references
     private Nation mNation;
     //widgets
-    @BindView(R.id.tv_cases)
-    TextView mConfirmed;
-    @BindView(R.id.tv_deaths)
-    TextView mDeaths;
-    @BindView(R.id.tv_recovered)
-    TextView mRecovered;
+    @BindView(R.id.tv_today_cases)
+    TextView mTodayCases;
+    @BindView(R.id.tv_today_deaths)
+    TextView mTodayDeaths;
+    @BindView(R.id.tv_critical)
+    TextView mCritical;
+    @BindView(R.id.tv_active)
+    TextView mActive;
     //ButterKnife
     private Unbinder mUnbinder;
 
     //values
-    private int mIntCases;
+    private int mIntConfirmed;
     private int mIntDeaths;
-    private int mIntCritical;
-    private int mIntActive;
+    private int mIntRecovered;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -62,10 +63,9 @@ public class SelectedNationFragment extends BaseFragment {
 
             mNation = args.getParcelable(TrackerKeys.KEY_SELECTED_COUNTRY);
             assert mNation != null;
-            mIntCases = Integer.parseInt(mNation.getTodayCases());
-            mIntDeaths = Integer.parseInt(mNation.getTodayDeaths());
-            mIntCritical = Integer.parseInt(mNation.getCritical());
-            mIntActive = Integer.parseInt(mNation.getActive());
+            mIntConfirmed = Integer.parseInt(mNation.getConfirmed());
+            mIntDeaths = Integer.parseInt(mNation.getDeaths());
+            mIntRecovered = Integer.parseInt(mNation.getRecovered());
 
         }
     }
@@ -75,29 +75,28 @@ public class SelectedNationFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_selected_nation, container, false);
         mUnbinder = ButterKnife.bind(this, view);
-        TrackerNumber.display(mConfirmed, Integer.parseInt(mNation.getConfirmed()));
-        TrackerNumber.display(mDeaths, Integer.parseInt(mNation.getDeaths()));
-        TrackerNumber.display(mRecovered, Integer.parseInt(mNation.getRecovered()));
+        TrackerNumber.display(mTodayCases, Integer.parseInt(mNation.getTodayCases()));
+        TrackerNumber.display(mTodayDeaths, Integer.parseInt(mNation.getTodayDeaths()));
+        TrackerNumber.display(mCritical, Integer.parseInt(mNation.getCritical()));
+        TrackerNumber.display(mActive, Integer.parseInt(mNation.getActive()));
 
         initBarChart();
         return view;
     }
 
     private void initBarChart() {
-        String[] values = new String[]{"Today's Cases", "Today's Deaths", "Critical", "Active"};
+        String[] values = new String[]{"Confirmed", "Deaths", "Recovered"};
         ArrayList<BarEntry> yValues = new ArrayList<>(
                 Arrays.asList(
-                        new BarEntry(0, mIntCases),
+                        new BarEntry(0, mIntConfirmed),
                         new BarEntry(1, mIntDeaths),
-                        new BarEntry(2, mIntCritical),
-                        new BarEntry(3, mIntActive)
-                ));
+                        new BarEntry(2, mIntRecovered))
+        );
 
         ArrayList<LegendEntry> entries = new ArrayList<>(Arrays.asList(
                 new LegendEntry(values[0], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(217, 80, 138)),
                 new LegendEntry(values[1], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(254, 149, 7)),
-                new LegendEntry(values[2], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(254, 247, 120)),
-                new LegendEntry(values[3], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(106, 167, 134))));
+                new LegendEntry(values[2], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(254, 247, 120))));
 
         TrackerBarChart barChart = new TrackerBarChart(mChart, values, tfLight);
         barChart.initChart();

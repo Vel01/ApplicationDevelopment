@@ -16,10 +16,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
 import java.util.ArrayList;
@@ -150,45 +147,21 @@ public class GlobalFragment extends BaseFragment implements
 
     private void initPieChart() {
 
-        chart.setUsePercentValues(true);
-        chart.getDescription().setEnabled(false);
-        chart.setExtraOffsets(5, 10, 5, 5);
-        chart.setDragDecelerationFrictionCoef(0.90f);
-
-        chart.setDrawHoleEnabled(true);
-
-        chart.setRotationEnabled(true);
-        chart.setRotationAngle(50);
-        chart.setHighlightPerTapEnabled(true);
-        chart.animateY(4000, Easing.EaseInOutQuad);
-        // entry label styling
-        chart.setEntryLabelColor(Color.BLACK);
-        chart.setEntryLabelTypeface(tfRegular);
-        chart.setEntryLabelTextSize(10f);
-
         ArrayList<PieEntry> entries = new ArrayList<>();
         entries.add(new PieEntry(disCases, "Confirmed"));
         entries.add(new PieEntry(disDeaths, "Deaths"));
         entries.add(new PieEntry(disRecovered, "Recovered"));
-        TrackerPieChart pieChart = new TrackerPieChart(chart, entries, null);
 
-        pieChart.setLegend(Legend.LegendVerticalAlignment.BOTTOM,
-                Legend.LegendHorizontalAlignment.CENTER,
-                Legend.LegendOrientation.HORIZONTAL);
-        pieChart.setLegend(7f, 10f);
-        pieChart.dataSetValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE,
-                PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        pieChart.dataSetLinePart1OffsetPercentage(90.0f);
-        pieChart.dataSetValuePartLength(.5f, .4f);
-        pieChart.dataSetSliceSpace(2f);
-        pieChart.dataSetSelectionShift(4f);
         // add a lot of colors
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(rgb(255, 140, 157));
         colors.add(rgb(192, 255, 140));
         colors.add(rgb(255, 247, 140));
-
-        pieChart.dataSetColorTemplate(colors);
+        TrackerPieChart pieChart = new TrackerPieChart(chart, entries, null);
+        pieChart.initPieChart(tfRegular);
+        pieChart.setLegend();
+        pieChart.setLegend();
+        pieChart.dataSet(colors);
         pieChart.dataSetAttributes(chart, 10f, Color.BLACK, tfLight);
 
     }

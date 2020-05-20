@@ -1,7 +1,9 @@
 package kiz.austria.tracker.util;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -25,45 +27,42 @@ public class TrackerPieChart {
         mDataSet = new PieDataSet(entries, label);
     }
 
+    public void initPieChart(Typeface tfRegular) {
 
-    public void setLegend(Legend.LegendVerticalAlignment verticalAlignment,
-                          Legend.LegendHorizontalAlignment horizontalAlignment,
-                          Legend.LegendOrientation legendOrientation) {
-        mLegend.setVerticalAlignment(verticalAlignment);
-        mLegend.setHorizontalAlignment(horizontalAlignment);
-        mLegend.setOrientation(legendOrientation);
+        mPieChart.setUsePercentValues(true);
+        mPieChart.getDescription().setEnabled(false);
+        mPieChart.setExtraOffsets(5, 10, 5, 5);
+        mPieChart.setDragDecelerationFrictionCoef(0.90f);
+
+        mPieChart.setDrawHoleEnabled(true);
+
+        mPieChart.setRotationEnabled(true);
+        mPieChart.setRotationAngle(50);
+        mPieChart.setHighlightPerTapEnabled(true);
+        mPieChart.animateY(4000, Easing.EaseInOutQuad);
+        // entry label styling
+        mPieChart.setEntryLabelColor(Color.BLACK);
+        mPieChart.setEntryLabelTypeface(tfRegular);
+        mPieChart.setEntryLabelTextSize(10f);
     }
 
-    public void setLegend(float xEntrySpace, float yOffset) {
-        mLegend.setXEntrySpace(xEntrySpace);
-        mLegend.setYOffset(yOffset);
+
+    public void setLegend() {
+        mLegend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        mLegend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        mLegend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        mLegend.setXEntrySpace(7f);
+        mLegend.setYOffset(10f);
     }
 
-    public void dataSetValuePosition(PieDataSet.ValuePosition yValuePosition,
-                                     PieDataSet.ValuePosition xValuePosition) {
-
-        mDataSet.setYValuePosition(yValuePosition);
-        mDataSet.setXValuePosition(xValuePosition);
-    }
-
-    public void dataSetLinePart1OffsetPercentage(float value) {
-        mDataSet.setValueLinePart1OffsetPercentage(value);
-    }
-
-    public void dataSetValuePartLength(float part1, float part2) {
-        mDataSet.setValueLinePart1Length(part1);
-        mDataSet.setValueLinePart2Length(part2);
-    }
-
-    public void dataSetSliceSpace(float spaceDp) {
-        mDataSet.setSliceSpace(spaceDp);
-    }
-
-    public void dataSetSelectionShift(float shift) {
-        mDataSet.setSelectionShift(shift);
-    }
-
-    public void dataSetColorTemplate(ArrayList<Integer> colors) {
+    public void dataSet(ArrayList<Integer> colors) {
+        mDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        mDataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        mDataSet.setValueLinePart1OffsetPercentage(90.0f);
+        mDataSet.setValueLinePart1Length(.5f);
+        mDataSet.setValueLinePart2Length(.4f);
+        mDataSet.setSliceSpace(2f);
+        mDataSet.setSelectionShift(4f);
         mDataSet.setColors(colors);
     }
 
