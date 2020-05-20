@@ -32,6 +32,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.AdapterClickListener;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
@@ -73,23 +76,36 @@ public class CountriesFragment extends BaseFragment implements
         mCountriesRecyclerAdapter.notifyItemChanged(position, position);
     }
 
-    //vars
-    private ArrayList<Nation> mNations = new ArrayList<>();
-    private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
-    private TrackerDialog mDialog = null;
-    private Inflatable mListener;
-    private boolean isPaused = false;
     //widgets
-    private RecyclerView mRecyclerView;
-    private EditText mSearch;
-    private TextView mCountryLabel;
-    private TextView mSimpleLabel;
+    @BindView(R.id.rv_countries_list)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.edt_countries_search)
+    EditText mSearch;
+    @BindView(R.id.tv_countries_label)
+    TextView mCountryLabel;
+    @BindView(R.id.tv_countries_list_label)
+    TextView mSimpleLabel;
     //layouts
-    private View mChildShimmer;
-    private View mChildMain;
-    private ConstraintLayout mLegendLayout;
-    private FrameLayout mSelectedFrameLayout;
-    private ShimmerFrameLayout mShimmerFrameLayout;
+    @BindView(R.id.child_layout_countries_shimmer)
+    View mChildShimmer;
+
+    //vars
+    private boolean isPaused = false;
+    @BindView(R.id.child_layout_countries_main)
+    View mChildMain;
+    @BindView(R.id.constraint_legend)
+    ConstraintLayout mLegendLayout;
+    @BindView(R.id.fragment_container_countries)
+    FrameLayout mSelectedFrameLayout;
+    @BindView(R.id.layout_countries_shimmer)
+    ShimmerFrameLayout mShimmerFrameLayout;
+    //ButterKnife
+    private Unbinder mUnbinder;
+    //references
+    private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
+    private ArrayList<Nation> mNations = new ArrayList<>();
+    private Inflatable mListener;
+    private TrackerDialog mDialog = null;
 
     @Override
     public void onItemLongClick(View view, int position) {
@@ -153,19 +169,7 @@ public class CountriesFragment extends BaseFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_countries, container, false);
-
-        mLegendLayout = view.findViewById(R.id.constraint_legend);
-        mCountryLabel = view.findViewById(R.id.tv_countries_label);
-        mSimpleLabel = view.findViewById(R.id.tv_countries_list_label);
-
-        mChildShimmer = view.findViewById(R.id.child_layout_countries_shimmer);
-        mChildMain = view.findViewById(R.id.child_layout_countries_main);
-        mShimmerFrameLayout = view.findViewById(R.id.layout_countries_shimmer);
-        mSelectedFrameLayout = view.findViewById(R.id.fragment_container_countries);
-
-        mRecyclerView = view.findViewById(R.id.rv_countries_list);
-        mSearch = view.findViewById(R.id.edt_countries_search);
-
+        mUnbinder = ButterKnife.bind(this, view);
 
         ImageView btnBack = view.findViewById(R.id.imb_countries_back);
         btnBack.setOnClickListener(this);
@@ -352,5 +356,12 @@ public class CountriesFragment extends BaseFragment implements
             }
             return false;
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView()");
+        mUnbinder.unbind();
     }
 }
