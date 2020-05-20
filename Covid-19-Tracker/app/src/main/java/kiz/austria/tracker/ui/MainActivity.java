@@ -60,6 +60,7 @@ public class MainActivity extends BaseActivity implements
     }
 
     private int mTapToClose = 0;
+    private ConnectivityReceiver receiver;
 
     @Override
     public void onDialogNegativeEvent(int id, Bundle args) {
@@ -92,7 +93,7 @@ public class MainActivity extends BaseActivity implements
         //note: ConnectivityManager.CONNECTIVITY_ACTION is deprecated in api 28 above
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 
-        ConnectivityReceiver receiver = new ConnectivityReceiver();
+        receiver = new ConnectivityReceiver();
         registerReceiver(receiver, filter);
     }
 
@@ -151,6 +152,7 @@ public class MainActivity extends BaseActivity implements
     protected void onDestroy() {
         super.onDestroy();
         Log.e(TAG, "onDestroy()");
+        unregisterReceiver(receiver);
     }
 
     private void onTapToClose() {
