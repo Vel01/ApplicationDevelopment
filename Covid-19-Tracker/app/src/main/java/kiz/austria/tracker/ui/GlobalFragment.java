@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +19,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieEntry;
+import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +64,13 @@ public class GlobalFragment extends BaseFragment implements
         if (isConnected) {
             NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
             nationNationDataParser.execute(Addresses.Link.DATA_WORLD);
+            return;
         }
+
+        new StyleableToast.Builder(Objects.requireNonNull(getActivity())).iconStart(R.drawable.ic_signal_wifi_off)
+                .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
+                .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
+                .cornerRadius(10).length(Toast.LENGTH_LONG).show();
     }
 
     //ButterKnife
@@ -106,6 +115,12 @@ public class GlobalFragment extends BaseFragment implements
         super.onAttach(context);
         initInflatable();
         initTrackerListener();
+        if (!ConnectivityReceiver.isConnected()) {
+            new StyleableToast.Builder(context).iconStart(R.drawable.ic_signal_wifi_off)
+                    .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
+                    .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
+                    .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+        }
     }
 
     private void initTrackerListener() {
@@ -119,17 +134,6 @@ public class GlobalFragment extends BaseFragment implements
                     + " must implement Inflatable interface");
         }
         mListener = (Inflatable) activity;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "onActivityCreated()");
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Nullable

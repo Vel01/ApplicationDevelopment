@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -143,6 +145,10 @@ public class CountriesFragment extends BaseFragment implements
             CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
             countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
         }
+        new StyleableToast.Builder(Objects.requireNonNull(getActivity())).iconStart(R.drawable.ic_signal_wifi_off)
+                .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
+                .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
+                .cornerRadius(10).length(Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -150,6 +156,12 @@ public class CountriesFragment extends BaseFragment implements
         super.onAttach(context);
         initInflatable();
         initTrackerListener();
+        if (!ConnectivityReceiver.isConnected()) {
+            new StyleableToast.Builder(context).iconStart(R.drawable.ic_signal_wifi_off)
+                    .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
+                    .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
+                    .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+        }
     }
 
     private void initTrackerListener() {
