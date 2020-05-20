@@ -130,6 +130,11 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onActivityCreated()");
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
@@ -223,8 +228,8 @@ public class GlobalFragment extends BaseFragment implements
 
     private void displayData() {
         Log.d(TAG, "displayData() preparing to display");
-        Log.d(TAG, "setting up data for display " + mChildShimmer.getVisibility());
         if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE) {
+            Log.d(TAG, "setting up data for display " + mChildShimmer.getVisibility());
             Log.d(TAG, "data is displayed!");
             stopShimmer();
             TrackerNumber.display(tvCases, disCases);

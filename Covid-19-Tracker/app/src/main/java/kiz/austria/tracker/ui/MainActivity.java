@@ -73,9 +73,12 @@ public class MainActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         activateToolbar(false);
+
+        if (savedInstanceState == null) {
+            initGlobalFragment();
+        }
 
         initMaterialDrawer();
 
@@ -126,7 +129,7 @@ public class MainActivity extends BaseActivity implements
                     return false;
                 }).build();
 
-        mDrawer.setSelection(1, true);
+//        mDrawer.setSelection(1, true);
         mDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         mDrawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Exit").withIcon(CommunityMaterial.Icon.cmd_exit_to_app));
     }
