@@ -1,5 +1,7 @@
 package kiz.austria.tracker.ui;
 
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,6 +20,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
 import kiz.austria.tracker.R;
+import kiz.austria.tracker.broadcast.ConnectivityReceiver;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
 
@@ -77,6 +80,22 @@ public class MainActivity extends BaseActivity implements
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume() was called!");
+        registerTrackerReceiver();
+    }
+
+    private void registerTrackerReceiver() {
+        IntentFilter filter = new IntentFilter();
+        //note: ConnectivityManager.CONNECTIVITY_ACTION is deprecated in api 28 above
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+
+        ConnectivityReceiver receiver = new ConnectivityReceiver();
+        registerReceiver(receiver, filter);
+    }
+
     private void initMaterialDrawer() {
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -109,12 +128,6 @@ public class MainActivity extends BaseActivity implements
         mDrawer.setSelection(1, true);
         mDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         mDrawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Exit").withIcon(CommunityMaterial.Icon.cmd_exit_to_app));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e(TAG, "onResume() was called!");
     }
 
     private void initGlobalFragment() {

@@ -28,6 +28,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import kiz.austria.tracker.R;
+import kiz.austria.tracker.broadcast.ConnectivityReceiver;
+import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.Addresses;
 import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.data.NationDataParser;
@@ -38,7 +40,7 @@ import kiz.austria.tracker.util.TrackerPieChart;
 import static android.graphics.Color.rgb;
 
 public class GlobalFragment extends BaseFragment implements
-        View.OnClickListener, NationDataParser.OnDataAvailable {
+        View.OnClickListener, NationDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = "GlobalFragment";
 
@@ -56,11 +58,13 @@ public class GlobalFragment extends BaseFragment implements
         }
     }
 
-    //events
     @Override
-    public void onClick(View v) {
-        //onClick() - View All Countries
-        mListener.onInflateCountriesFragment();
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
+        if (isConnected) {
+            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
+            nationNationDataParser.execute(Addresses.Link.DATA_WORLD);
+        }
     }
 
     //ButterKnife
@@ -103,10 +107,15 @@ public class GlobalFragment extends BaseFragment implements
     public void onAttach(@NonNull Context context) {
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
-        iniInterface();
+        initInflatable();
+        initTrackerListener();
     }
 
-    private void iniInterface() {
+    private void initTrackerListener() {
+        TrackerApplication.getInstance().setConnectivityListener(this);
+    }
+
+    private void initInflatable() {
         Activity activity = getActivity();
         if (!(activity instanceof Inflatable) && activity != null) {
             throw new ClassCastException(activity.getClass().getSimpleName()
@@ -228,6 +237,13 @@ public class GlobalFragment extends BaseFragment implements
         }
     }
 
+    //events
+    @Override
+    public void onClick(View v) {
+        //onClick() - View All Countries
+        mListener.onInflateCountriesFragment();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -247,6 +263,4 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onDetach() data is still retained! (may not if onDestroy() is called)");
         mListener = null;
     }
-
-
 }

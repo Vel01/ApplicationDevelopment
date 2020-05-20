@@ -35,6 +35,8 @@ import java.util.Objects;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.AdapterClickListener;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
+import kiz.austria.tracker.broadcast.ConnectivityReceiver;
+import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.Addresses;
 import kiz.austria.tracker.data.CountriesDataParser;
 import kiz.austria.tracker.data.JSONRawData;
@@ -48,7 +50,7 @@ public class CountriesFragment extends BaseFragment implements
         Returnable,
         AdapterClickListener.OnAdapterClickListener,
         View.OnClickListener,
-        CountriesDataParser.OnDataAvailable {
+        CountriesDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = "CountriesFragment";
 
@@ -119,14 +121,60 @@ public class CountriesFragment extends BaseFragment implements
     }
 
     @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
+        if (isConnected) {
+            CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
+            countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+        }
+    }
+
+    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        initInflatable();
+        initTrackerListener();
+    }
+
+    private void initTrackerListener() {
+        TrackerApplication.getInstance().setConnectivityListener(this);
+    }
+
+    private void initInflatable() {
         Activity activity = getActivity();
         if (!(activity instanceof Inflatable) && activity != null) {
             throw new ClassCastException(activity.getClass().getSimpleName()
                     + " must implement Inflatable");
         }
         mListener = (Inflatable) activity;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_countries, container, false);
+
+        mLegendLayout = view.findViewById(R.id.constraint_legend);
+        mCountryLabel = view.findViewById(R.id.tv_countries_label);
+        mSimpleLabel = view.findViewById(R.id.tv_countries_list_label);
+
+        mChildShimmer = view.findViewById(R.id.child_layout_countries_shimmer);
+        mChildMain = view.findViewById(R.id.child_layout_countries_main);
+        mShimmerFrameLayout = view.findViewById(R.id.layout_countries_shimmer);
+        mSelectedFrameLayout = view.findViewById(R.id.fragment_container_countries);
+
+        mRecyclerView = view.findViewById(R.id.rv_countries_list);
+        mSearch = view.findViewById(R.id.edt_countries_search);
+
+
+        ImageView btnBack = view.findViewById(R.id.imb_countries_back);
+        btnBack.setOnClickListener(this);
+
+        ImageButton btnSort = view.findViewById(R.id.imb_countries_sort);
+        btnSort.setOnClickListener(this);
+
+        initRecyclerView();
+        return view;
     }
 
     @Override
@@ -171,34 +219,6 @@ public class CountriesFragment extends BaseFragment implements
             stopShimmer();
             mCountriesRecyclerAdapter.addList(mNations);
         }
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_countries, container, false);
-
-        mLegendLayout = view.findViewById(R.id.constraint_legend);
-        mCountryLabel = view.findViewById(R.id.tv_countries_label);
-        mSimpleLabel = view.findViewById(R.id.tv_countries_list_label);
-
-        mChildShimmer = view.findViewById(R.id.child_layout_countries_shimmer);
-        mChildMain = view.findViewById(R.id.child_layout_countries_main);
-        mShimmerFrameLayout = view.findViewById(R.id.layout_countries_shimmer);
-        mSelectedFrameLayout = view.findViewById(R.id.fragment_container_countries);
-
-        mRecyclerView = view.findViewById(R.id.rv_countries_list);
-        mSearch = view.findViewById(R.id.edt_countries_search);
-
-
-        ImageView btnBack = view.findViewById(R.id.imb_countries_back);
-        btnBack.setOnClickListener(this);
-
-        ImageButton btnSort = view.findViewById(R.id.imb_countries_sort);
-        btnSort.setOnClickListener(this);
-
-        initRecyclerView();
-        return view;
     }
 
     private void notifyChangedAdapter() {
