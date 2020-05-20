@@ -24,16 +24,16 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 
             NetworkCapabilities capabilities = manager.getNetworkCapabilities(manager.getActiveNetwork());
 
-            return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN));
+            return capabilities == null || (!capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) &&
+                    !capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) &&
+                    !capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN));
 
         } else {
 
             NetworkInfo info = manager.getActiveNetworkInfo();
             assert info != null;
 
-            return info.isConnected() || info.isAvailable();
+            return !info.isConnected() && !info.isAvailable();
         }
     }
 

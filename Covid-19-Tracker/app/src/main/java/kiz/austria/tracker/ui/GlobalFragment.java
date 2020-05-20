@@ -115,7 +115,7 @@ public class GlobalFragment extends BaseFragment implements
         super.onAttach(context);
         initInflatable();
         initTrackerListener();
-        if (!ConnectivityReceiver.isConnected()) {
+        if (ConnectivityReceiver.isConnected()) {
             new StyleableToast.Builder(context).iconStart(R.drawable.ic_signal_wifi_off)
                     .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
                     .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
