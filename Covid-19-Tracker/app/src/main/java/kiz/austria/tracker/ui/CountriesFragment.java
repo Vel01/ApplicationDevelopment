@@ -144,6 +144,7 @@ public class CountriesFragment extends BaseFragment implements
         if (isConnected) {
             CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
             countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            return;
         }
         new StyleableToast.Builder(Objects.requireNonNull(getActivity())).iconStart(R.drawable.ic_signal_wifi_off)
                 .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))

@@ -31,9 +31,9 @@ public class ConnectivityReceiver extends BroadcastReceiver {
         } else {
 
             NetworkInfo info = manager.getActiveNetworkInfo();
-            assert info != null;
 
-            return !info.isConnected() && !info.isAvailable();
+
+            return info == null || !info.isConnected() && !info.isAvailable();
         }
     }
 
@@ -57,7 +57,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 
             NetworkInfo info = manager.getActiveNetworkInfo();
 
-            boolean isConnected = info != null && (info.isConnected() || info.isAvailable());
+            boolean isConnected = info != null && (info.isConnectedOrConnecting() || info.isConnected() || info.isAvailable());
 
             listener.onNetworkConnectionChanged(isConnected);
         }
