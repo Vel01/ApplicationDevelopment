@@ -31,8 +31,8 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
 import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.Addresses;
+import kiz.austria.tracker.data.DataParser;
 import kiz.austria.tracker.data.JSONRawData;
-import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerNumber;
 import kiz.austria.tracker.util.TrackerPieChart;
@@ -40,7 +40,7 @@ import kiz.austria.tracker.util.TrackerPieChart;
 import static android.graphics.Color.rgb;
 
 public class GlobalFragment extends BaseFragment implements
-        View.OnClickListener, NationDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener {
+        View.OnClickListener, DataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = "GlobalFragment";
 
@@ -62,8 +62,8 @@ public class GlobalFragment extends BaseFragment implements
     public void onNetworkConnectionChanged(boolean isConnected) {
         Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
         if (isConnected) {
-            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
-            nationNationDataParser.execute(Addresses.Link.DATA_WORLD);
+            DataParser nationDataParser = DataParser.getInstance(this);
+            nationDataParser.execute(Addresses.Link.DATA_WORLD);
             return;
         }
 
@@ -175,8 +175,8 @@ public class GlobalFragment extends BaseFragment implements
         super.onResume();
         Log.d(TAG, "onResume: was called!");
         if (!isPausedToStopReDownload()) {
-            NationDataParser<Nation> nationNationDataParser = NationDataParser.getInstance(this);
-            nationNationDataParser.execute(Addresses.Link.DATA_WORLD);
+            DataParser nationDataParser = DataParser.getInstance(this);
+            nationDataParser.execute(Addresses.Link.DATA_WORLD);
         }
     }
 

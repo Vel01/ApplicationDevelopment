@@ -43,8 +43,8 @@ import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
 import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.Addresses;
-import kiz.austria.tracker.data.CountriesDataParser;
 import kiz.austria.tracker.data.JSONRawData;
+import kiz.austria.tracker.data.ListDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
@@ -55,7 +55,7 @@ public class CountriesFragment extends BaseFragment implements
         Returnable,
         AdapterClickListener.OnAdapterClickListener,
         View.OnClickListener,
-        CountriesDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener {
+        ListDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = "CountriesFragment";
 
@@ -142,8 +142,8 @@ public class CountriesFragment extends BaseFragment implements
     public void onNetworkConnectionChanged(boolean isConnected) {
         Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
         if (isConnected) {
-            CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
-            countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            ListDataParser listDataParser = new ListDataParser(this);
+            listDataParser.execute(Addresses.Link.DATA_COUNTRIES);
             return;
         }
         new StyleableToast.Builder(Objects.requireNonNull(getActivity())).iconStart(R.drawable.ic_signal_wifi_off)
@@ -199,8 +199,8 @@ public class CountriesFragment extends BaseFragment implements
         super.onResume();
         Log.d(TAG, "onResume: was called!");
         if (!isPausedToStopReDownload()) {
-            CountriesDataParser countryNationDataParser = CountriesDataParser.getInstance(this);
-            countryNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            ListDataParser listDataParser = new ListDataParser(this);
+            listDataParser.execute(Addresses.Link.DATA_COUNTRIES);
         }
     }
 
@@ -377,4 +377,6 @@ public class CountriesFragment extends BaseFragment implements
         Log.d(TAG, "onDestroyView()");
         mUnbinder.unbind();
     }
+
+
 }

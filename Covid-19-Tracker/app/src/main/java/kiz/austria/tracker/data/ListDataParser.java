@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import kiz.austria.tracker.model.Nation;
 
-public class CountriesDataParser extends AsyncTask<String, Void, ArrayList<Nation>> implements JSONRawData.OnDownloadComplete {
+public class ListDataParser extends AsyncTask<String, Void, ArrayList<Nation>> implements JSONRawData.OnDownloadComplete {
 
     private static final String TAG = "RawDataParser";
 
@@ -25,15 +25,7 @@ public class CountriesDataParser extends AsyncTask<String, Void, ArrayList<Natio
         void onDataAvailable(ArrayList<Nation> nations, final JSONRawData.DownloadStatus status);
     }
 
-    private CountriesDataParser(OnDataAvailable onDataAvailable) {
-        mOnDataAvailable = onDataAvailable;
-    }
-
-    public static CountriesDataParser getInstance(OnDataAvailable onDataAvailable) {
-        return new CountriesDataParser(onDataAvailable);
-    }
-
-    public void setOnDataAvailable(OnDataAvailable onDataAvailable) {
+    public ListDataParser(OnDataAvailable onDataAvailable) {
         mOnDataAvailable = onDataAvailable;
     }
 
@@ -71,6 +63,7 @@ public class CountriesDataParser extends AsyncTask<String, Void, ArrayList<Natio
                         String critical = currentCovered.getString("critical");
 
                         mNations.add(new Nation(country, cases, deaths, todayCases, todayDeaths, recovered, active, critical));
+
                     }
                     mDownloadStatus = JSONRawData.DownloadStatus.OK;
 
@@ -79,9 +72,6 @@ public class CountriesDataParser extends AsyncTask<String, Void, ArrayList<Natio
                     e.printStackTrace();
                 }
             }
-
-
         }
-
     }
 }
