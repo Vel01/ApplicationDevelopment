@@ -32,6 +32,7 @@ import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -43,24 +44,25 @@ import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
 import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.Addresses;
+import kiz.austria.tracker.data.DataParser;
 import kiz.austria.tracker.data.JSONRawData;
-import kiz.austria.tracker.data.ListDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
 import kiz.austria.tracker.util.TrackerPlate;
 import kiz.austria.tracker.util.TrackerTextWatcher;
+import kiz.austria.tracker.util.TrackerUtility;
 
 public class CountriesFragment extends BaseFragment implements
         Returnable,
         AdapterClickListener.OnAdapterClickListener,
         View.OnClickListener,
-        ListDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener {
+        DataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = "CountriesFragment";
 
     @Override
-    public void onDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
+    public void onDataAvailable(List<Nation> nations, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK) {
             Log.d(TAG, "onDataAvailable() data received from itself: " + nations.toString());
             mNations.addAll(nations);
@@ -142,8 +144,8 @@ public class CountriesFragment extends BaseFragment implements
     public void onNetworkConnectionChanged(boolean isConnected) {
         Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
         if (isConnected) {
-            ListDataParser listDataParser = new ListDataParser(this);
-            listDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            DataParser dataParser = new DataParser(this);
+            dataParser.execute(Addresses.Link.DATA_COUNTRIES);
             return;
         }
         new StyleableToast.Builder(Objects.requireNonNull(getActivity())).iconStart(R.drawable.ic_signal_wifi_off)
@@ -199,8 +201,8 @@ public class CountriesFragment extends BaseFragment implements
         super.onResume();
         Log.d(TAG, "onResume: was called!");
         if (!isPausedToStopReDownload()) {
-            ListDataParser listDataParser = new ListDataParser(this);
-            listDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            DataParser dataParser = new DataParser(this);
+            dataParser.execute(Addresses.Link.DATA_COUNTRIES);
         }
     }
 
@@ -268,17 +270,6 @@ public class CountriesFragment extends BaseFragment implements
         mSearch.addTextChangedListener(new TrackerTextWatcher(mNations, mCountriesRecyclerAdapter, getActivity()));
     }
 
-    private int sort(final int value_one, final int value_two) {
-
-        if (value_one < value_two) {
-            return -1;
-        } else if (value_one > value_two) {
-            return 1;
-        }
-        return 0;
-
-    }
-
     private View initSortView() {
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.dialog_countries_sort_container,
                 null, false);
@@ -291,15 +282,15 @@ public class CountriesFragment extends BaseFragment implements
             categories.setOnItemClickListener((parent, view1, position, id) -> {
                 switch (position) {
                     case TrackerKeys.MENU_SORT_CATEGORY_CONFIRMED:
-                        Collections.sort(mNations, (o1, o2) -> sort(Integer.parseInt(o2.getConfirmed()), Integer.parseInt(o1.getConfirmed())));
+                        Collections.sort(mNations, (o1, o2) -> TrackerUtility.sort(Integer.parseInt(o1.getConfirmed()), Integer.parseInt(o2.getConfirmed())));
                         notifyChangedAdapter();
                         break;
                     case TrackerKeys.MENU_SORT_CATEGORY_DEATHS:
-                        Collections.sort(mNations, (o1, o2) -> sort(Integer.parseInt(o2.getDeaths()), Integer.parseInt(o1.getDeaths())));
+                        Collections.sort(mNations, (o1, o2) -> TrackerUtility.sort(Integer.parseInt(o1.getDeaths()), Integer.parseInt(o2.getDeaths())));
                         notifyChangedAdapter();
                         break;
                     case TrackerKeys.MENU_SORT_CATEGORY_RECOVERED:
-                        Collections.sort(mNations, (o1, o2) -> sort(Integer.parseInt(o2.getRecovered()), Integer.parseInt(o1.getRecovered())));
+                        Collections.sort(mNations, (o1, o2) -> TrackerUtility.sort(Integer.parseInt(o1.getRecovered()), Integer.parseInt(o2.getRecovered())));
                         notifyChangedAdapter();
                         break;
                 }

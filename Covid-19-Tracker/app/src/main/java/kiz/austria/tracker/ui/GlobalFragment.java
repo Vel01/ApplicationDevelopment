@@ -22,6 +22,8 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -36,6 +38,7 @@ import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.util.TrackerNumber;
 import kiz.austria.tracker.util.TrackerPieChart;
+import kiz.austria.tracker.util.TrackerUtility;
 
 import static android.graphics.Color.rgb;
 
@@ -44,17 +47,35 @@ public class GlobalFragment extends BaseFragment implements
 
     private static final String TAG = "GlobalFragment";
 
+    private List<Nation> topNations = new ArrayList<>();
+
     @Override
-    public void onDataAvailable(Nation nation, JSONRawData.DownloadStatus status) {
+    public void onDataAvailable(List<Nation> nations, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK) {
-            Log.d(TAG, "onDataAvailable() data received from itself: " + nation.toString());
-            disCases = Integer.parseInt(nation.getConfirmed());
-            disDeaths = Integer.parseInt(nation.getDeaths());
-            disRecovered = Integer.parseInt(nation.getRecovered());
-            disNewCases = Integer.parseInt(nation.getTodayCases());
-            disNewDeaths = Integer.parseInt(nation.getTodayDeaths());
-            disActive = Integer.parseInt(nation.getActive());
-            displayData();
+
+            Collections.sort(nations, (o1, o2) ->
+                    TrackerUtility.sort(Integer.parseInt(o1.getTodayCases()),
+                            Integer.parseInt(o2.getTodayCases())));
+            for (int i = 0; i < nations.size(); i++) {
+                Nation nation = nations.get(i);
+                if (nation.getCountry().toLowerCase().equals("world")) {
+                    Log.d(TAG, "onDataAvailable() data received from itself: " + nation.toString());
+                    disCases = Integer.parseInt(nation.getConfirmed());
+                    disDeaths = Integer.parseInt(nation.getDeaths());
+                    disRecovered = Integer.parseInt(nation.getRecovered());
+                    disNewCases = Integer.parseInt(nation.getTodayCases());
+                    disNewDeaths = Integer.parseInt(nation.getTodayDeaths());
+                    disActive = Integer.parseInt(nation.getActive());
+                    displayData();
+                    continue;
+                }
+                if (topNations.size() != 10) {
+                    topNations.add(nation);
+                    continue;
+                }
+                break;
+            }
+            Log.d(TAG, "onDataAvailable: " + topNations.toString());
         }
     }
 
@@ -62,8 +83,8 @@ public class GlobalFragment extends BaseFragment implements
     public void onNetworkConnectionChanged(boolean isConnected) {
         Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
         if (isConnected) {
-            DataParser nationDataParser = DataParser.getInstance(this);
-            nationDataParser.execute(Addresses.Link.DATA_WORLD);
+            DataParser nationDataParser = new DataParser(this);
+            nationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
             return;
         }
 
@@ -175,8 +196,8 @@ public class GlobalFragment extends BaseFragment implements
         super.onResume();
         Log.d(TAG, "onResume: was called!");
         if (!isPausedToStopReDownload()) {
-            DataParser nationDataParser = DataParser.getInstance(this);
-            nationDataParser.execute(Addresses.Link.DATA_WORLD);
+            DataParser nationDataParser = new DataParser(this);
+            nationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
         }
     }
 
