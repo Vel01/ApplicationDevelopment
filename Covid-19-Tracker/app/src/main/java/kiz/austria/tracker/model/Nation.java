@@ -99,16 +99,15 @@ public class Nation implements Parcelable {
     @androidx.annotation.NonNull
     @Override
     public String toString() {
-        return "Nation{" +
-                "mCountry='" + mCountry + '\'' +
-                ", mCases='" + mConfirmed + '\'' +
-                ", mDeaths='" + mDeaths + '\'' +
-                ", mTodayCases='" + mTodayCases + '\'' +
-                ", mTodayDeaths='" + mTodayDeaths + '\'' +
-                ", mRecovered='" + mRecovered + '\'' +
-                ", mActive='" + mActive + '\'' +
-                ", mCritical='" + mCritical + '\'' +
-                '}';
+        return "\n************************" +
+                "\nmCountry='" + mCountry +
+                "\nmCases='" + mConfirmed +
+                "\nmDeaths='" + mDeaths +
+                "\nmTodayCases='" + mTodayCases +
+                "\nmTodayDeaths='" + mTodayDeaths +
+                "\nmRecovered='" + mRecovered +
+                "\nmActive='" + mActive +
+                "\nmCritical='" + mCritical;
     }
 
     @Override
@@ -128,5 +127,4 @@ public class Nation implements Parcelable {
         dest.writeString(mCritical);
         dest.writeByte((byte) (mExpanded ? 1 : 0));
     }
-
 }
