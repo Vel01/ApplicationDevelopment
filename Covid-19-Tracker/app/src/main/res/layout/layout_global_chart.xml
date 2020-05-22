@@ -22,7 +22,7 @@
             android:layout_height="50dp"
             android:layout_marginStart="16dp"
             android:gravity="center_vertical"
-            android:text="@string/label_chart"
+            android:text="@string/label_chart_overview"
             android:textColor="@android:color/primary_text_light"
             app:fontFamily="@font/roboto_bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,18 +39,55 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_global_chart" />
 
+
+        <TextView
+            android:id="@+id/tv_global_cases"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/label_global_total_cases"
+            android:textColor="@android:color/primary_text_light"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/div_global_one" />
+
+
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/chart_global_cases"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/div_global_two"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/div_global_one" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_global_cases" />
+
+        <TextView
+            android:id="@+id/tv_global_top_countries"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/label_top_countries_cases"
+            android:textColor="@android:color/primary_text_light"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_global_cases" />
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/chart_global_top_10"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_view_all_countries"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_global_top_countries" />
 
         <TextView
             android:id="@+id/div_global_two"
@@ -83,8 +120,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/label_view_all_countries"
-                android:textColor="@color/colorLink"
+                android:textColor="@color/colorAccent"
                 android:textSize="12sp"
+                android:textStyle="bold"
                 app:fontFamily="@font/roboto" />
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>

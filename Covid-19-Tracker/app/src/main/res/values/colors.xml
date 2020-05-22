@@ -2,12 +2,17 @@
 <resources>
     <color name="colorPrimary">#F44336</color>
     <color name="colorPrimaryDark">#D32F2F</color>
-    <color name="colorAccent">#FFEB3B</color>
+    <color name="colorAccent">#F44336</color>
 
     <color name="shimmer_bg">#dddddd</color>
     <color name="toast_connection_lost">#D32F2F</color>
-    <color name="toast_connection_reconnected">#89da59</color>
 
+    <color name="green_one">#97F295</color>
+    <color name="green_two">#DDFFDD</color>
+    <color name="red_one">#FF4433</color>
+    <color name="red_two">#fee8e9</color>
+    <color name="grey_one">#757575</color>
+    <color name="grey_two">#E9ECEF</color>
 
     <color name="primary">#F44336</color>
     <color name="primary_dark">#D32F2F</color>
@@ -18,9 +23,9 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
 
-    <color name="colorConfirmed">#FF8C9D</color>
-    <color name="colorDeaths">#C0FF8C</color>
-    <color name="colorRecovered">#FFF78C</color>
+    <color name="colorConfirmed">@color/red_one</color>
+    <color name="colorDeaths">@color/grey_two</color>
+    <color name="colorRecovered">@color/green_one</color>
     <color name="colorExpand">#F48B35</color>
     <color name="colorLink">#008EB4</color>
     <color name="colorSortTransparent">#0000</color>

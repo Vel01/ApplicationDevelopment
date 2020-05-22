@@ -94,9 +94,9 @@ public class SelectedNationFragment extends BaseFragment {
         );
 
         ArrayList<LegendEntry> entries = new ArrayList<>(Arrays.asList(
-                new LegendEntry(values[0], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(217, 80, 138)),
-                new LegendEntry(values[1], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(254, 149, 7)),
-                new LegendEntry(values[2], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(254, 247, 120))));
+                new LegendEntry(values[0], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(255, 68, 51)),
+                new LegendEntry(values[1], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(233, 236, 239)),
+                new LegendEntry(values[2], Legend.LegendForm.CIRCLE, 10, 5, null, Color.rgb(151, 242, 149))));
 
         TrackerBarChart barChart = new TrackerBarChart(mChart, values, tfLight);
         barChart.initChart();

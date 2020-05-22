@@ -50,11 +50,13 @@
     <string name="label_new_cases">New Cases</string>
     <string name="label_actives">Active</string>
     <string name="label_new_deaths">New Deaths</string>
-    <string name="label_chart">Chart</string>
+    <string name="label_chart_overview">Covid-19 Overview</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tag_fragment_selected_country">tag_fragment_selected_country</string>
+    <string name="label_global_total_cases">Global total cases</string>
+    <string name="label_top_countries_cases">Top countries with daily new cases</string>
 
 
 </resources>

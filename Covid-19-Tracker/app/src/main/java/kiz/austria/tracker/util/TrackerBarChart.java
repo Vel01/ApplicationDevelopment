@@ -2,6 +2,7 @@ package kiz.austria.tracker.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.widget.TextView;
 
@@ -19,7 +20,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Utils;
 
@@ -57,25 +57,15 @@ public class TrackerBarChart {
         chart.setMarker(mv); // Set the marker to the chart
     }
 
+    private static final int[] JOYFUL_COLORS = {
+            Color.rgb(255, 68, 51), Color.rgb(233, 236, 239), Color.rgb(151, 242, 149)
+    };
+
     public void barDataSet(ArrayList<BarEntry> yValues, String label) {
         ArrayList<BarEntry> barEntries = new ArrayList<>(yValues);
         set = new BarDataSet(barEntries, label);
-        set.setColors(ColorTemplate.JOYFUL_COLORS);
+        set.setColors(JOYFUL_COLORS);
         set.setDrawValues(true);
-    }
-
-    public void initLegend(ArrayList<LegendEntry> entries) {
-        Legend l = chart.getLegend();
-        l.setCustom(entries);
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(9f);
-        l.setTextSize(10f);
-        l.setXEntrySpace(10f);
-        initBarData();
     }
 
     private void leftAxisLabel() {
@@ -112,6 +102,20 @@ public class TrackerBarChart {
         chart.getBarData().setBarWidth(.6f);
         chart.invalidate();
         chart.animateY(500);
+    }
+
+    public void initLegend(ArrayList<LegendEntry> entries) {
+        Legend l = chart.getLegend();
+        l.setCustom(entries);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setFormSize(9f);
+        l.setTextSize(10f);
+        l.setXEntrySpace(20f);
+//        l.setDrawInside(false);
+        initBarData();
     }
 
     @SuppressLint("ViewConstructor")
