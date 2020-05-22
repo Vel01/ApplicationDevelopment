@@ -103,7 +103,7 @@ public class MainActivity extends BaseActivity implements
     private void initMaterialDrawer() {
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.ic_corona)
+                .withHeaderBackground(R.drawable.ic_corona_header)
                 .build();
         mDrawer = new DrawerBuilder()
                 .withActivity(this)
