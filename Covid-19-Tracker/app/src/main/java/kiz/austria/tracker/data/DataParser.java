@@ -64,10 +64,11 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
                 } catch (JSONException e) {
                     e.getMessage();
                     e.printStackTrace();
+                    mDownloadStatus = JSONRawData.DownloadStatus.FAILED_OR_EMPTY;
                 }
             }
 
-            if (destinationUri.equals(Addresses.Link.DATA_WORLD)) {
+            if (destinationUri.equals(Addresses.Link.DATA_WORLD) || destinationUri.equals(Addresses.Link.DATA_PHILIPPINES)) {
                 mNations = new ArrayList<>();
 
                 try {
@@ -84,6 +85,7 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
                     mDownloadStatus = JSONRawData.DownloadStatus.OK;
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    mDownloadStatus = JSONRawData.DownloadStatus.FAILED_OR_EMPTY;
                 }
             }
         }

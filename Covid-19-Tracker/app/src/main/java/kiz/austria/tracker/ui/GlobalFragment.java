@@ -26,6 +26,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.muddzdev.styleabletoast.StyleableToast;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +41,9 @@ import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.Addresses;
 import kiz.austria.tracker.data.DataParser;
 import kiz.austria.tracker.data.JSONRawData;
+import kiz.austria.tracker.data.PHTrendDataParser;
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.model.PHTrend;
 import kiz.austria.tracker.util.TrackerHorizontalChart;
 import kiz.austria.tracker.util.TrackerNumber;
 import kiz.austria.tracker.util.TrackerPieChart;
@@ -49,31 +52,18 @@ import kiz.austria.tracker.util.TrackerUtility;
 import static android.graphics.Color.rgb;
 
 public class GlobalFragment extends BaseFragment implements
-        View.OnClickListener, DataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener, OnChartValueSelectedListener {
+        View.OnClickListener, PHTrendDataParser.OnDataAvailable, DataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener, OnChartValueSelectedListener {
 
     private static final String TAG = "GlobalFragment";
 
     //widgets
     @BindView(R.id.chart_global_top_10)
     HorizontalBarChart horizontalChart;
+    //layouts
+    @BindView(R.id.layout_shimmer)
+    ShimmerFrameLayout mShimmerFrameLayout;
     //ButterKnife
     private Unbinder mUnbinder;
-    private List<Nation> topNations = new ArrayList<>();
-
-    @Override
-    public void onNetworkConnectionChanged(boolean isConnected) {
-        Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
-        if (isConnected) {
-            DataParser nationDataParser = new DataParser(this);
-            nationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
-            return;
-        }
-
-        new StyleableToast.Builder(Objects.requireNonNull(getActivity())).iconStart(R.drawable.ic_signal_wifi_off)
-                .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
-                .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
-                .cornerRadius(10).length(Toast.LENGTH_LONG).show();
-    }
 
     @Override
     public void onDataAvailable(List<Nation> nations, JSONRawData.DownloadStatus status) {
@@ -100,7 +90,6 @@ public class GlobalFragment extends BaseFragment implements
                 }
                 break;
             }
-            displayData();
             Log.d(TAG, "onDataAvailable: " + topNations.toString());
         }
     }
@@ -135,6 +124,10 @@ public class GlobalFragment extends BaseFragment implements
 
         }
     }
+
+    private boolean isPaused = false;
+    //references
+    private List<Nation> topNations = new ArrayList<>();
     @BindView(R.id.chart_global_cases)
     PieChart chart;
     @BindView(R.id.tv_cases)
@@ -153,10 +146,7 @@ public class GlobalFragment extends BaseFragment implements
     TextView tvUpdate;
     @BindView(R.id.btn_view_all_countries)
     CardView btnViewAllCountries;
-
-    //layouts
-    @BindView(R.id.layout_global_shimmer)
-    ShimmerFrameLayout mShimmerFrameLayout;
+    private Inflatable mListener;
     @BindView(R.id.include_layout_global_results)
     ConstraintLayout mChildMain;
     @BindView(R.id.child_layout_global_shimmer)
@@ -164,13 +154,50 @@ public class GlobalFragment extends BaseFragment implements
 
     //vars
     private int disCases, disDeaths, disRecovered, disActive, disNewCases, disNewDeaths;
+    private DataParser mNationDataParser = null;
+    private PHTrendDataParser mPHTrendDataParser = null;
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
+        if (isConnected) {
+            mNationDataParser = new DataParser(this);
+            mNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+
+            mPHTrendDataParser = new PHTrendDataParser(this);
+            mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
+            return;
+        }
+
+        new StyleableToast.Builder(Objects.requireNonNull(getActivity())).iconStart(R.drawable.ic_signal_wifi_off)
+                .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
+                .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
+                .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDataTrendAvailable(List<PHTrend> trends, JSONRawData.DownloadStatus status) {
+
+        if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
+            PHTrend trend = trends.get(trends.size() - 1);
+            setLatestUpdate(trend);
+            displayData();
+        }
+    }
+
+    private void setLatestUpdate(PHTrend trend) {
+        Log.d(TAG, "onDataTrendAvailable() " + trend.getLatestUpdate());
+        try {
+            tvUpdate.setText(TrackerUtility.formatDate(trend.getLatestUpdate()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onNothingSelected() {
 
     }
-    private Inflatable mListener;
-    private boolean isPaused = false;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -206,7 +233,7 @@ public class GlobalFragment extends BaseFragment implements
         final View view = inflater.inflate(R.layout.fragment_global, container, false);
         mUnbinder = ButterKnife.bind(this, view);
         //update widget
-        tvUpdate.setText(getCurrentDate());
+        tvUpdate.setText(TrackerUtility.getCurrentDate());
         //go to countries widget
         btnViewAllCountries.setOnClickListener(this);
         return view;
@@ -284,8 +311,11 @@ public class GlobalFragment extends BaseFragment implements
         super.onResume();
         Log.d(TAG, "onResume: was called!");
         if (!isPausedToStopReDownload()) {
-            DataParser nationDataParser = new DataParser(this);
-            nationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            mNationDataParser = new DataParser(this);
+            mNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+
+            mPHTrendDataParser = new PHTrendDataParser(this);
+            mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
         }
     }
 
@@ -308,6 +338,8 @@ public class GlobalFragment extends BaseFragment implements
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause()");
+        mNationDataParser.cancel(true);
+        mPHTrendDataParser.cancel(true);
         stopShimmer();
         pausedToStopReDownload();
     }

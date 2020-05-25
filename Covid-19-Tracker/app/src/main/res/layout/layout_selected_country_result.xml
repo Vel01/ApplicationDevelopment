@@ -27,7 +27,7 @@
 
         <include
             android:id="@+id/tv_today_cases"
-            layout="@layout/layout_global_total"
+            layout="@layout/layout_dashboard_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -51,7 +51,7 @@
 
         <include
             android:id="@+id/tv_today_deaths"
-            layout="@layout/layout_global_total"
+            layout="@layout/layout_dashboard_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -76,7 +76,7 @@
 
         <include
             android:id="@+id/tv_critical"
-            layout="@layout/layout_global_total"
+            layout="@layout/layout_dashboard_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -102,7 +102,7 @@
 
         <include
             android:id="@+id/tv_active"
-            layout="@layout/layout_global_total"
+            layout="@layout/layout_dashboard_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

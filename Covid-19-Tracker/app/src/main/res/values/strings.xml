@@ -19,6 +19,7 @@
     <!--  Tag Fragments  -->
     <string name="tag_fragment_global">tag_fragment_global</string>
     <string name="tag_fragment_countries">tag_fragment_countries</string>
+    <string name="tag_fragment_philippines">tag_fragment_philippines</string>
 
     <!--  Intent and Bundle Extras  -->
     <string name="intent_global_cases">"intent_global_cases"</string>

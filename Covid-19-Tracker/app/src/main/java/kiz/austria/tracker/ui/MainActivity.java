@@ -122,6 +122,9 @@ public class MainActivity extends BaseActivity implements
                         case 1:
                             initGlobalFragment();
                             break;
+                        case 2:
+                            initPhilippinesFragment();
+                            break;
                         case -1:
                             finish();
                             break;
@@ -132,6 +135,14 @@ public class MainActivity extends BaseActivity implements
 //        mDrawer.setSelection(1, true);
         mDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         mDrawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Exit").withIcon(CommunityMaterial.Icon.cmd_exit_to_app));
+    }
+
+    private void initPhilippinesFragment() {
+        PhilippinesFragment fragment = new PhilippinesFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_philippines));
+        transaction.addToBackStack(getString(R.string.tag_fragment_philippines));
+        transaction.commit();
     }
 
     private void initGlobalFragment() {
@@ -178,7 +189,7 @@ public class MainActivity extends BaseActivity implements
             }
 
             onTapToClose();
-            if (mTapToClose == 2) finish();
+            if (mTapToClose >= 2) finish();
         } else {
 
             TrackerDialog dialog = new TrackerDialog();
