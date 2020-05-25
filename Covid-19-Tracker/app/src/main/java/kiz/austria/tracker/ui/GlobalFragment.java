@@ -67,7 +67,7 @@ public class GlobalFragment extends BaseFragment implements
 
     @Override
     public void onDataAvailable(List<Nation> nations, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK) {
+        if (status == JSONRawData.DownloadStatus.OK && !mNationDataParser.isCancelled()) {
 
             Collections.sort(nations, (o1, o2) ->
                     TrackerUtility.sort(Integer.parseInt(o1.getTodayCases()),
@@ -338,10 +338,14 @@ public class GlobalFragment extends BaseFragment implements
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause()");
-        mNationDataParser.cancel(true);
-        mPHTrendDataParser.cancel(true);
+        cancelDownload();
         stopShimmer();
         pausedToStopReDownload();
+    }
+
+    private void cancelDownload() {
+        if (mNationDataParser != null) mNationDataParser.cancel(true);
+        if (mPHTrendDataParser != null) mPHTrendDataParser.cancel(true);
     }
 
     private void displayData() {

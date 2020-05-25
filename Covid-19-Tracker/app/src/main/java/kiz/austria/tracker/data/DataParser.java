@@ -21,6 +21,10 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
     private List<Nation> mNations;
     private String destinationUri;
 
+    public interface OnDataAvailable {
+        void onDataAvailable(List<Nation> nations, final JSONRawData.DownloadStatus status);
+    }
+
     public DataParser(OnDataAvailable onDataAvailable) {
         mOnDataAvailable = onDataAvailable;
     }
@@ -89,10 +93,5 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
                 }
             }
         }
-    }
-
-    public interface OnDataAvailable {
-
-        void onDataAvailable(List<Nation> nations, final JSONRawData.DownloadStatus status);
     }
 }

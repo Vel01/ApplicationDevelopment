@@ -98,7 +98,7 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     @Override
     public void onDataTrendAvailable(List<PHTrend> trends, JSONRawData.DownloadStatus status) {
 
-        if (status == JSONRawData.DownloadStatus.OK) {
+        if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
             PHTrend trend = trends.get(trends.size() - 1);
             setLatestUpdate(trend);
             displayData();
@@ -117,7 +117,7 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
 
     @Override
     public void onDataAvailable(List<Nation> nations, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK) {
+        if (status == JSONRawData.DownloadStatus.OK && !mDataParser.isCancelled()) {
             Log.d(TAG, "onDataAvailable() data received successfully!");
             Nation nation = nations.get(0);
             mCountCases = Integer.parseInt(nation.getConfirmed());
@@ -173,7 +173,13 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause()");
+        cancelDownload();
         pausedToStopReDownload();
+    }
+
+    private void cancelDownload() {
+        if (mDataParser != null) mDataParser.cancel(true);
+        if (mPHTrendDataParser != null) mPHTrendDataParser.cancel(true);
     }
 
     private void pausedToStopReDownload() {
@@ -210,8 +216,6 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
         super.onDestroyView();
         Log.d(TAG, "onDestroyView()");
         mUnbinder.unbind();
-        mDataParser.cancel(true);
-        mPHTrendDataParser.cancel(true);
     }
 
 }
