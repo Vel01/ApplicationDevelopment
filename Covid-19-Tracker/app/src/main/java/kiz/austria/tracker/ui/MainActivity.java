@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,7 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
+import kiz.austria.tracker.util.TrackerUtility;
 
 public class MainActivity extends BaseActivity implements
         TrackerDialog.OnDialogListener,
@@ -69,11 +71,17 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    private View root;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        root = findViewById(R.id.main_activity);
+
+        TrackerUtility.runFadeAnimationOn(this, root, true);
         activateToolbar(false);
 
         if (savedInstanceState == null) {
@@ -132,7 +140,6 @@ public class MainActivity extends BaseActivity implements
                     return false;
                 }).build();
 
-//        mDrawer.setSelection(1, true);
         mDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         mDrawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Exit").withIcon(CommunityMaterial.Icon.cmd_exit_to_app));
     }
@@ -149,6 +156,7 @@ public class MainActivity extends BaseActivity implements
         onTapToCloseReset();
         GlobalFragment fragment = new GlobalFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_global));
         transaction.addToBackStack(getString(R.string.tag_fragment_global));
         transaction.commit();
@@ -181,7 +189,8 @@ public class MainActivity extends BaseActivity implements
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed: called");
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))) {
+        if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))
+                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_philippines)))) {
 
             if (mDrawer.isDrawerOpen()) {
                 mDrawer.closeDrawer();
@@ -189,7 +198,9 @@ public class MainActivity extends BaseActivity implements
             }
 
             onTapToClose();
-            if (mTapToClose >= 2) finish();
+            if (mTapToClose >= 2) {
+                TrackerUtility.finishFade(this, root);
+            }
         } else {
 
             TrackerDialog dialog = new TrackerDialog();

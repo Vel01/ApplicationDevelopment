@@ -231,6 +231,7 @@ public class GlobalFragment extends BaseFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: started");
         final View view = inflater.inflate(R.layout.fragment_global, container, false);
+
         mUnbinder = ButterKnife.bind(this, view);
         //update widget
         tvUpdate.setText(TrackerUtility.getCurrentDate());

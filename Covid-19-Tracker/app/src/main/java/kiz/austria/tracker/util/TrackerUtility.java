@@ -1,5 +1,9 @@
 package kiz.austria.tracker.util;
 
+import android.app.Activity;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -39,6 +43,36 @@ public class TrackerUtility {
         Date date = inputFormat.parse(input);
         assert date != null;
         return "(Last Updated: " + outputFormat.format(date) + ")";
+    }
+
+
+    private static final int FADEOUT_DELAY_MS = 500;
+
+    public static void runFadeAnimationOn(Activity ctx, View target, boolean in) {
+        int start, finish;
+        if (in) {
+            start = 0;
+            finish = 1;
+        } else {
+            start = 1;
+            finish = 0;
+        }
+        AlphaAnimation fade = new AlphaAnimation(start, finish);
+        fade.setDuration(1000);
+        fade.setFillAfter(true);
+        target.startAnimation(fade);
+    }
+
+    public static void finishFade(Activity activity, View root) {
+        TrackerUtility.runFadeAnimationOn(activity, root, false);
+        new Thread(() -> {
+            try {
+                Thread.sleep(FADEOUT_DELAY_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            activity.finish();
+        }).start();
     }
 
 }
