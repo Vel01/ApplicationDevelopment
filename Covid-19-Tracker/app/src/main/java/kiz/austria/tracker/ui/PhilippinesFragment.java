@@ -14,9 +14,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.github.mikephil.charting.charts.LineChart;
 import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +34,7 @@ import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.data.PHTrendDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.model.PHTrend;
+import kiz.austria.tracker.util.TrackerLineChart;
 import kiz.austria.tracker.util.TrackerNumber;
 import kiz.austria.tracker.util.TrackerUtility;
 
@@ -42,6 +45,8 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
 
     private static final String TAG = "PhilippinesFragment";
     //widget
+    @BindView(R.id.chart_ph_cases_trend)
+    LineChart lineChart;
     @BindView(R.id.tv_cases)
     TextView tvCases;
     @BindView(R.id.tv_recovered)
@@ -68,6 +73,7 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     //references
     private DataParser mDataParser = null;
     private PHTrendDataParser mPHTrendDataParser = null;
+    private List<PHTrend> mPHTrends;
     //variables
     private int mCountCases;
     private int mCountRecovered;
@@ -99,6 +105,9 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     public void onDataTrendAvailable(List<PHTrend> trends, JSONRawData.DownloadStatus status) {
 
         if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
+            mPHTrends = trends;
+            initLineChart();
+
             PHTrend trend = trends.get(trends.size() - 1);
             setLatestUpdate(trend);
             displayData();
@@ -152,8 +161,37 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_philippines, container, false);
         mUnbinder = ButterKnife.bind(this, view);
-
         return view;
+    }
+
+    private void initLineChart() {
+
+        TrackerLineChart chart = new TrackerLineChart(lineChart);
+        chart.setAttributes();
+        chart.setLeft();
+        chart.setRight();
+        chart.setXAxis(getLineChartLabel());
+        chart.setLegend();
+        try {
+            chart.setLineChartData(mPHTrends);
+        } catch (ParseException e) {
+            e.getMessage();
+            e.printStackTrace();
+        }
+    }
+
+    private List<String> getLineChartLabel() {
+        List<String> labels = new ArrayList<>();
+
+        for (PHTrend trend : mPHTrends) {
+            try {
+                labels.add(TrackerUtility.formatSimpleDate(trend.getLatestUpdate()));
+            } catch (ParseException e) {
+                Log.d(TAG, "getLineChartLabel() Parse failed to read");
+            }
+        }
+
+        return labels;
     }
 
     @Override

@@ -45,6 +45,16 @@ public class TrackerUtility {
         return "(Last Updated: " + outputFormat.format(date) + ")";
     }
 
+    public static String formatSimpleDate(String input) throws ParseException {
+        final String DATE_OLD_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        final String DATE_NEW_FORMAT = "L/d/yy";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(DATE_OLD_FORMAT, Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(DATE_NEW_FORMAT, Locale.ENGLISH);
+        Date date = inputFormat.parse(input);
+        assert date != null;
+        return outputFormat.format(date);
+    }
+
 
     private static final int FADEOUT_DELAY_MS = 500;
 
