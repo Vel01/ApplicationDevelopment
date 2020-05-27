@@ -26,5 +26,8 @@ public class TrackerKeys {
     //Selected Nation
     public static final String KEY_SELECTED_COUNTRY = "kiz.austria.tracker.SELECTED_COUNTRY";
 
+    //Drawer state
+    public static final String STATE_SELECTION_DRAWER = "kiz.austria.tracker.DRAWER_CURRENT_SELECTED";
+
 
 }

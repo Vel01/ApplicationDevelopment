@@ -89,7 +89,18 @@ public class MainActivity extends BaseActivity implements
         }
 
         initMaterialDrawer();
+        if (savedInstanceState != null) {
+            int currentSelection = savedInstanceState.getInt(TrackerKeys.STATE_SELECTION_DRAWER);
+            mDrawer.setSelection(currentSelection);
+        }
 
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(TrackerKeys.STATE_SELECTION_DRAWER, mDrawer.getCurrentSelectedPosition());
     }
 
     @Override

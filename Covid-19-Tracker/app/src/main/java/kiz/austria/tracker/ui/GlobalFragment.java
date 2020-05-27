@@ -378,6 +378,7 @@ public class GlobalFragment extends BaseFragment implements
         super.onDestroyView();
         Log.d(TAG, "onDestroyView() data retained!");
         mUnbinder.unbind();
+        cancelDownload();
     }
 
     @Override

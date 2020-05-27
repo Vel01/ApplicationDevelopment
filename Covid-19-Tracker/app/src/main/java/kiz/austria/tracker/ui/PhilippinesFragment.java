@@ -216,6 +216,7 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
         super.onDestroyView();
         Log.d(TAG, "onDestroyView()");
         mUnbinder.unbind();
+        cancelDownload();
     }
 
 }
