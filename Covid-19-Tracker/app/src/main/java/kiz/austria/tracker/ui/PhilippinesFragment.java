@@ -91,6 +91,7 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
             mDataParser.execute(Addresses.Link.DATA_COUNTRIES);
 
             mPHTrendDataParser = new PHTrendDataParser(this);
+            mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.CASUALTIES_ONLY);
             mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
             return;
         }
@@ -203,6 +204,7 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
             mDataParser.execute(Addresses.Link.DATA_PHILIPPINES);
 
             mPHTrendDataParser = new PHTrendDataParser(this);
+            mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.CASUALTIES_ONLY);
             mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
         }
     }

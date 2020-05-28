@@ -165,6 +165,7 @@ public class GlobalFragment extends BaseFragment implements
             mNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
 
             mPHTrendDataParser = new PHTrendDataParser(this);
+            mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.DATE_ONLY);
             mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
             return;
         }
@@ -177,10 +178,8 @@ public class GlobalFragment extends BaseFragment implements
 
     @Override
     public void onDataTrendAvailable(List<PHTrend> trends, JSONRawData.DownloadStatus status) {
-
         if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
-            PHTrend trend = trends.get(trends.size() - 1);
-            setLatestUpdate(trend);
+            setLatestUpdate(trends.get(0));
             displayData();
         }
     }
@@ -316,6 +315,7 @@ public class GlobalFragment extends BaseFragment implements
             mNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
 
             mPHTrendDataParser = new PHTrendDataParser(this);
+            mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.DATE_ONLY);
             mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
         }
     }

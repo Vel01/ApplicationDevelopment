@@ -16,36 +16,27 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHTrend>> im
 
     private static final String TAG = "RawDataParser";
 
+    private InterestedData interest;
+
     private OnDataAvailable mOnDataAvailable;
     private JSONRawData.DownloadStatus mDownloadStatus;
 
     private List<PHTrend> mPHTrends;
     private String destinationUri;
 
+    public void setInterestData(InterestedData interest) {
+        this.interest = interest;
+    }
+
     public PHTrendDataParser(OnDataAvailable onDataAvailable) {
         mOnDataAvailable = onDataAvailable;
-    }
-
-    @Override
-    protected List<PHTrend> doInBackground(String... path) {
-        destinationUri = path[0];
-        JSONRawData JSONRawData = new JSONRawData(this);
-        JSONRawData.runInTheSameThread(destinationUri);
-        return mPHTrends;
-    }
-
-    @Override
-    protected void onPostExecute(List<PHTrend> trends) {
-        if (mOnDataAvailable != null) {
-            mOnDataAvailable.onDataTrendAvailable(trends, mDownloadStatus);
-        }
     }
 
     @Override
     public void onDownloadComplete(String data, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK) {
 
-            if (destinationUri.equals(Addresses.Link.DATA_TREND_PHILIPPINES)) {
+            if (destinationUri.equals(Addresses.Link.DATA_TREND_PHILIPPINES) && (interest == InterestedData.COMPLETE_DATA)) {
                 mPHTrends = new ArrayList<>();
                 try {
                     JSONArray jsonList = new JSONArray(data);
@@ -71,8 +62,63 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHTrend>> im
                     mDownloadStatus = JSONRawData.DownloadStatus.FAILED_OR_EMPTY;
                 }
             }
+
+            if (destinationUri.equals(Addresses.Link.DATA_TREND_PHILIPPINES) && (interest == InterestedData.CASUALTIES_ONLY)) {
+                mPHTrends = new ArrayList<>();
+                try {
+                    JSONArray jsonList = new JSONArray(data);
+                    for (int i = 0; i < jsonList.length(); i++) {
+                        JSONObject jsonObject = jsonList.getJSONObject(i);
+                        String infected = jsonObject.getString("infected");
+                        String recovered = jsonObject.getString("recovered");
+                        String deceased = jsonObject.getString("deceased");
+                        String latestUpdate = jsonObject.getString("lastUpdatedAtApify");
+                        mPHTrends.add(new PHTrend("N/A", infected, "0", recovered, deceased, "0", "0", latestUpdate));
+                    }
+                    mDownloadStatus = JSONRawData.DownloadStatus.OK;
+                } catch (JSONException e) {
+                    e.getMessage();
+                    e.printStackTrace();
+                    mDownloadStatus = JSONRawData.DownloadStatus.FAILED_OR_EMPTY;
+                }
+            }
+
+            if (destinationUri.equals(Addresses.Link.DATA_TREND_PHILIPPINES) && (interest == InterestedData.DATE_ONLY)) {
+                mPHTrends = new ArrayList<>();
+                try {
+                    JSONArray jsonList = new JSONArray(data);
+                    for (int i = 0; i < jsonList.length(); i++) {
+                        JSONObject jsonObject = jsonList.getJSONObject(i);
+                        String latestUpdate = jsonObject.getString("lastUpdatedAtApify");
+                        if (i == (jsonList.length() - 1))
+                            mPHTrends.add(new PHTrend("0", "0", "0", "0", "0", "0", "0", latestUpdate));
+                    }
+                    mDownloadStatus = JSONRawData.DownloadStatus.OK;
+                } catch (JSONException e) {
+                    e.getMessage();
+                    e.printStackTrace();
+                    mDownloadStatus = JSONRawData.DownloadStatus.FAILED_OR_EMPTY;
+                }
+            }
         }
     }
+
+    @Override
+    protected List<PHTrend> doInBackground(String... path) {
+        destinationUri = path[0];
+        JSONRawData JSONRawData = new JSONRawData(this);
+        JSONRawData.runInTheSameThread(destinationUri);
+        return mPHTrends;
+    }
+
+    @Override
+    protected void onPostExecute(List<PHTrend> trends) {
+        if (mOnDataAvailable != null) {
+            mOnDataAvailable.onDataTrendAvailable(trends, mDownloadStatus);
+        }
+    }
+
+    public enum InterestedData {COMPLETE_DATA, DATE_ONLY, CASUALTIES_ONLY, UNDERESTIMATION_ONLY}
 
     private String getObjectPUM(JSONObject currentCovered) {
         try {
