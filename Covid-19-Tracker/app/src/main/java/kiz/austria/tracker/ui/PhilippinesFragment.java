@@ -104,16 +104,29 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
 
     @Override
     public void onDataTrendAvailable(List<PHTrend> trends, JSONRawData.DownloadStatus status) {
+        //this method is not supported
+    }
 
+    @Override
+    public void onDataCasualtiesTrendAvailable(List<PHTrend> casualties, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
-            mPHTrends = trends;
+            mPHTrends = casualties;
             initLineChart();
 
-            PHTrend trend = trends.get(trends.size() - 1);
+            PHTrend trend = casualties.get(casualties.size() - 1);
             setLatestUpdate(trend);
             displayData();
         }
+    }
 
+    @Override
+    public void onDataUnderinvestigationTrendAvailable(List<PHTrend> casualties, JSONRawData.DownloadStatus status) {
+        //this method is not supported
+    }
+
+    @Override
+    public void onDataLastUpdateAvailable(PHTrend date, JSONRawData.DownloadStatus status) {
+        //this method is not supported
     }
 
     private void setLatestUpdate(PHTrend trend) {

@@ -55,7 +55,6 @@ public class TrackerUtility {
         return outputFormat.format(date);
     }
 
-
     private static final int FADEOUT_DELAY_MS = 500;
 
     public static void runFadeAnimationOn(Activity ctx, View target, boolean in) {

@@ -1,7 +1,5 @@
 package kiz.austria.tracker.util;
 
-import android.util.Log;
-
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -76,90 +74,109 @@ public class TrackerLineChart {
         l.setDrawInside(false);
     }
 
-    private void setData(List<Entry> values, int current, float value) {
-        Entry entry = new Entry(current, value);
-        Log.d(TAG, "setData() entry = " + entry);
-        ;
-        values.add(entry);
+    //    private List<ILineDataSet> dataSets = new ArrayList<>();
+    private LineData data = new LineData();
+
+    private ILineDataSet dataForInfected(List<PHTrend> trends) throws ParseException {
+        Collections.sort(trends, (o1, o2) ->
+                TrackerUtility.sort(Integer.parseInt(o2.getInfected()),
+                        Integer.parseInt(o1.getInfected())));
+        List<Entry> values = new ArrayList<>();
+
+        float currentValue = -1;
+        String currentDate = "";
+        for (int j = 0; j < trends.size(); j++) {
+            PHTrend trend = trends.get(j);
+            float value = Float.parseFloat(trend.getInfected());
+            String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
+            if (currentValue != value && !currentDate.equals(date)) {
+                values.add(new Entry(j, value));
+                currentValue = value;
+                currentDate = date;
+            }
+        }
+
+        LineDataSet lineData = new LineDataSet(values, "Confirmed");
+        lineData.setLineWidth(1f);
+        lineData.setCircleRadius(2f);
+        lineData.setDrawCircleHole(false);
+
+        int color = colors[0];
+        lineData.setColor(color);
+        lineData.setCircleColor(color);
+        return lineData;
+    }
+
+    private ILineDataSet dataForRecovered(List<PHTrend> trends) throws ParseException {
+        Collections.sort(trends, (o1, o2) ->
+                TrackerUtility.sort(Integer.parseInt(o2.getRecovered()),
+                        Integer.parseInt(o1.getRecovered())));
+        List<Entry> values = new ArrayList<>();
+
+        float currentValue = -1;
+        String currentDate = "";
+        for (int j = 0; j < trends.size(); j++) {
+            PHTrend trend = trends.get(j);
+            float value = Float.parseFloat(trend.getRecovered());
+            String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
+            if (currentValue != value && !currentDate.equals(date)) {
+                values.add(new Entry(j, value));
+                currentValue = value;
+                currentDate = date;
+            }
+        }
+
+        LineDataSet lineData = new LineDataSet(values, "Recovered");
+        lineData.setLineWidth(1f);
+        lineData.setCircleRadius(2f);
+        lineData.setDrawCircleHole(false);
+
+        int color = colors[1];
+        lineData.setColor(color);
+        lineData.setCircleColor(color);
+        return lineData;
+    }
+
+    private LineDataSet dataForDeceased(List<PHTrend> trends) throws ParseException {
+        Collections.sort(trends, (o1, o2) ->
+                TrackerUtility.sort(Integer.parseInt(o2.getDeceased()),
+                        Integer.parseInt(o1.getDeceased())));
+        List<Entry> values = new ArrayList<>();
+
+        float currentValue = -1;
+        String currentDate = "";
+        for (int j = 0; j < trends.size(); j++) {
+            PHTrend trend = trends.get(j);
+            float value = Float.parseFloat(trend.getDeceased());
+            String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
+            if (currentValue != value && !currentDate.equals(date)) {
+                values.add(new Entry(j, value));
+                currentValue = value;
+                currentDate = date;
+            }
+        }
+
+        LineDataSet lineData = new LineDataSet(values, "Deceased");
+        lineData.setLineWidth(1f);
+        lineData.setCircleRadius(2f);
+        lineData.setDrawCircleHole(false);
+
+        int color = colors[2];
+        lineData.setColor(color);
+        lineData.setCircleColor(color);
+        return lineData;
     }
 
     public void setLineChartData(List<PHTrend> trends) throws ParseException {
 
+        TrackerSort.quickSort(trends, "INFECTED", 0, trends.size());
+        data.addDataSet(dataForInfected(trends));
 
-        List<ILineDataSet> dataSets = new ArrayList<>();
+        TrackerSort.quickSort(trends, "RECOVERED", 0, trends.size());
+        data.addDataSet(dataForRecovered(trends));
 
-        for (int i = 0; i < 3; i++) {
-
-            List<Entry> values = new ArrayList<>();
-
-            if (i == 0) {
-                Collections.sort(trends, (o1, o2) ->
-                        TrackerUtility.sort(Integer.parseInt(o2.getInfected()),
-                                Integer.parseInt(o1.getInfected())));
-            } else if (i == 1) {
-                Collections.sort(trends, (o1, o2) ->
-                        TrackerUtility.sort(Integer.parseInt(o2.getRecovered()),
-                                Integer.parseInt(o1.getRecovered())));
-            } else {
-                Collections.sort(trends, (o1, o2) ->
-                        TrackerUtility.sort(Integer.parseInt(o2.getDeceased()),
-                                Integer.parseInt(o1.getDeceased())));
-            }
-
-            float currentValue = -1;
-            String currentDate = "";
-            int count = 1;
-            for (int j = 0; j < trends.size(); j++) {
-                PHTrend trend = trends.get(j);
-
-                if (i == 0) {
-                    float value = Float.parseFloat(trend.getInfected());
-                    String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
-                    if (currentValue != value && !currentDate.equals(date)) {
-                        setData(values, j, value);
-                        currentValue = value;
-                        currentDate = date;
-                    }
-                }
-                if (i == 1) {
-                    float value = Float.parseFloat(trend.getRecovered());
-                    String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
-                    if (currentValue != value && !currentDate.equals(date)) {
-                        setData(values, j, value);
-                        currentValue = value;
-                        currentDate = date;
-                    }
-                }
-                if (i == 2) {
-                    float value = Float.parseFloat(trend.getDeceased());
-                    String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
-                    if (currentValue != value && !currentDate.equals(date)) {
-                        setData(values, j, value);
-                        currentValue = value;
-                        currentDate = date;
-                    }
-                }
-            }
-
-
-            String label;
-            if (i == 0) label = "Confirmed";
-            else if (i == 1) label = "Recovered";
-            else label = "Deceased";
-
-            LineDataSet data = new LineDataSet(values, label);
-            data.setLineWidth(1f);
-            data.setCircleRadius(2f);
-            data.setDrawCircleHole(false);
-
-            int color = colors[i % colors.length];
-            data.setColor(color);
-            data.setCircleColor(color);
-            dataSets.add(data);
-
-        }
-
-        LineData data = new LineData(dataSets);
+        TrackerSort.quickSort(trends, "DECEASED", 0, trends.size());
+        data.addDataSet(dataForDeceased(trends));
         chart.setData(data);
         chart.invalidate();
     }

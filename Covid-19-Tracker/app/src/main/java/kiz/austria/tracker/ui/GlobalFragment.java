@@ -178,11 +178,27 @@ public class GlobalFragment extends BaseFragment implements
 
     @Override
     public void onDataTrendAvailable(List<PHTrend> trends, JSONRawData.DownloadStatus status) {
+        //this method is not supported
+    }
+
+    @Override
+    public void onDataCasualtiesTrendAvailable(List<PHTrend> casualties, JSONRawData.DownloadStatus status) {
+        //this method is not supported
+    }
+
+    @Override
+    public void onDataUnderinvestigationTrendAvailable(List<PHTrend> casualties, JSONRawData.DownloadStatus status) {
+        //this method is not supported
+    }
+
+    @Override
+    public void onDataLastUpdateAvailable(PHTrend date, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
-            setLatestUpdate(trends.get(0));
+            setLatestUpdate(date);
             displayData();
         }
     }
+
 
     private void setLatestUpdate(PHTrend trend) {
         Log.d(TAG, "onDataTrendAvailable() " + trend.getLatestUpdate());
@@ -195,7 +211,7 @@ public class GlobalFragment extends BaseFragment implements
 
     @Override
     public void onNothingSelected() {
-
+        //this method is not supported
     }
 
     @Override
