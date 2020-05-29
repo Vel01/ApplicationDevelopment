@@ -3,6 +3,11 @@ package kiz.austria.tracker.util;
 import android.app.Activity;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
+
+import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -11,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class TrackerUtility {
@@ -25,6 +31,13 @@ public class TrackerUtility {
 
     public static String format(float value) {
         return NumberFormat.getNumberInstance().format(value);
+    }
+
+    public static void message(FragmentActivity activity, String message, int iconStart, int textColor, int bgColor) {
+        new StyleableToast.Builder(Objects.requireNonNull(activity)).iconStart(iconStart)
+                .text(message).textColor(activity.getResources().getColor(textColor))
+                .backgroundColor(activity.getResources().getColor(bgColor))
+                .cornerRadius(10).length(Toast.LENGTH_LONG).show();
     }
 
     public static String getCurrentDate() {

@@ -11,7 +11,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,14 +18,9 @@ import kiz.austria.tracker.model.PHTrend;
 
 import static android.graphics.Color.rgb;
 
-public class TrackerLineChart implements DataInfected.OnDataInfectedAvailable {
+public class TrackerLineChart implements LinesDataTrend.OnDataInfectedAvailable {
     private static final String TAG = "TrackerLineChart";
     private final LineChart chart;
-    private final int[] colors = new int[]{
-            rgb(255, 68, 51),
-            rgb(151, 242, 149),
-            rgb(117, 117, 117)
-    };
 
     public TrackerLineChart(LineChart chart) {
         this.chart = chart;
@@ -75,109 +69,18 @@ public class TrackerLineChart implements DataInfected.OnDataInfectedAvailable {
         l.setDrawInside(false);
     }
 
-    //    private List<ILineDataSet> dataSets = new ArrayList<>();
     private LineData data = new LineData();
 
-    private ILineDataSet dataForInfected(List<PHTrend> trends) throws ParseException {
-//        Collections.sort(trends, (o1, o2) ->
-//                TrackerUtility.sort(Integer.parseInt(o2.getInfected()),
-//                        Integer.parseInt(o1.getInfected())));
-        List<Entry> values = new ArrayList<>();
+    public void setLineChartData(List<PHTrend> trends) {
 
-        float currentValue = -1;
-        String currentDate = "";
-        for (int j = 0; j < trends.size(); j++) {
-            PHTrend trend = trends.get(j);
-            float value = Float.parseFloat(trend.getInfected());
-            String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
-            if (currentValue != value && !currentDate.equals(date)) {
-                values.add(new Entry(j, value));
-                currentValue = value;
-                currentDate = date;
-            }
-        }
+        LinesDataTrend linesDataTrend = new LinesDataTrend(this, trends, "INFECTED");
+        linesDataTrend.execute();
 
-        LineDataSet lineData = new LineDataSet(values, "Confirmed");
-        lineData.setLineWidth(1f);
-        lineData.setCircleRadius(2f);
-        lineData.setDrawCircleHole(false);
+        linesDataTrend = new LinesDataTrend(this, trends, "RECOVERED");
+        linesDataTrend.execute();
 
-        int color = colors[0];
-        lineData.setColor(color);
-        lineData.setCircleColor(color);
-        return lineData;
-    }
-
-    private ILineDataSet dataForRecovered(List<PHTrend> trends) throws ParseException {
-//        Collections.sort(trends, (o1, o2) ->
-//                TrackerUtility.sort(Integer.parseInt(o2.getRecovered()),
-//                        Integer.parseInt(o1.getRecovered())));
-        List<Entry> values = new ArrayList<>();
-
-        float currentValue = -1;
-        String currentDate = "";
-        for (int j = 0; j < trends.size(); j++) {
-            PHTrend trend = trends.get(j);
-            float value = Float.parseFloat(trend.getRecovered());
-            String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
-            if (currentValue != value && !currentDate.equals(date)) {
-                values.add(new Entry(j, value));
-                currentValue = value;
-                currentDate = date;
-            }
-        }
-
-        LineDataSet lineData = new LineDataSet(values, "Recovered");
-        lineData.setLineWidth(1f);
-        lineData.setCircleRadius(2f);
-        lineData.setDrawCircleHole(false);
-
-        int color = colors[1];
-        lineData.setColor(color);
-        lineData.setCircleColor(color);
-        return lineData;
-    }
-
-    private LineDataSet dataForDeceased(List<PHTrend> trends) throws ParseException {
-//        Collections.sort(trends, (o1, o2) ->
-//                TrackerUtility.sort(Integer.parseInt(o2.getDeceased()),
-//                        Integer.parseInt(o1.getDeceased())));
-        List<Entry> values = new ArrayList<>();
-
-        float currentValue = -1;
-        String currentDate = "";
-        for (int j = 0; j < trends.size(); j++) {
-            PHTrend trend = trends.get(j);
-            float value = Float.parseFloat(trend.getDeceased());
-            String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
-            if (currentValue != value && !currentDate.equals(date)) {
-                values.add(new Entry(j, value));
-                currentValue = value;
-                currentDate = date;
-            }
-        }
-
-        LineDataSet lineData = new LineDataSet(values, "Deceased");
-        lineData.setLineWidth(1f);
-        lineData.setCircleRadius(2f);
-        lineData.setDrawCircleHole(false);
-
-        int color = colors[2];
-        lineData.setColor(color);
-        lineData.setCircleColor(color);
-        return lineData;
-    }
-
-    public void setLineChartData(List<PHTrend> trends) throws ParseException {
-
-        DataInfected dataInfected = new DataInfected(this, trends, "INFECTED");
-        dataInfected.execute();
-
-        dataInfected = new DataInfected(this, trends, "RECOVERED");
-        dataInfected.execute();
-
-        dataInfected = new DataInfected(this, trends, "DECEASED");
-        dataInfected.execute();
+        linesDataTrend = new LinesDataTrend(this, trends, "DECEASED");
+        linesDataTrend.execute();
     }
 
     public LineChart getChart() {
@@ -192,7 +95,7 @@ public class TrackerLineChart implements DataInfected.OnDataInfectedAvailable {
     }
 }
 
-class DataInfected extends AsyncTask<Void, Void, ILineDataSet> {
+class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
     private final int[] colors = new int[]{
             rgb(255, 68, 51),
             rgb(151, 242, 149),
@@ -203,7 +106,7 @@ class DataInfected extends AsyncTask<Void, Void, ILineDataSet> {
     private List<PHTrend> mPHTrends;
     private String flag;
 
-    DataInfected(OnDataInfectedAvailable dataInfectedAvailable, List<PHTrend> PHTrends, String flag) {
+    LinesDataTrend(OnDataInfectedAvailable dataInfectedAvailable, List<PHTrend> PHTrends, String flag) {
         mDataInfectedAvailable = dataInfectedAvailable;
         mPHTrends = PHTrends;
         this.flag = flag;
@@ -211,18 +114,16 @@ class DataInfected extends AsyncTask<Void, Void, ILineDataSet> {
 
     @Override
     protected ILineDataSet doInBackground(Void... voids) {
-        try {
-            switch (flag) {
-                case "INFECTED":
-                    return dataForInfected(mPHTrends);
-                case "RECOVERED":
-                    return dataForRecovered(mPHTrends);
-                case "DECEASED":
-                    return dataForDeceased(mPHTrends);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
+
+        switch (flag) {
+            case "INFECTED":
+                return dataForInfected(mPHTrends);
+            case "RECOVERED":
+                return dataForRecovered(mPHTrends);
+            case "DECEASED":
+                return dataForDeceased(mPHTrends);
         }
+
         return null;
     }
 
@@ -233,89 +134,64 @@ class DataInfected extends AsyncTask<Void, Void, ILineDataSet> {
         }
     }
 
-    private ILineDataSet dataForInfected(List<PHTrend> trends) throws ParseException {
-        TrackerSort.quickSort(trends, flag, 0, trends.size());
-        List<Entry> values = new ArrayList<>();
-        float currentValue = -1;
-        String currentDate = "";
-        for (int j = 0; j < trends.size(); j++) {
-            PHTrend trend = trends.get(j);
-            float value = Float.parseFloat(trend.getInfected());
-            String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
-            if (currentValue != value && !currentDate.equals(date)) {
-                values.add(new Entry(j, value));
-                currentValue = value;
-                currentDate = date;
-            }
-        }
-
-        LineDataSet lineData = new LineDataSet(values, "Confirmed");
+    private LineDataSet lineDataConfig(List<Entry> values, String label, int color) {
+        LineDataSet lineData = new LineDataSet(values, label);
         lineData.setLineWidth(1f);
         lineData.setCircleRadius(2f);
         lineData.setDrawCircleHole(false);
-
-        int color = rgb(255, 68, 51);
         lineData.setColor(color);
         lineData.setCircleColor(color);
         return lineData;
     }
 
-    private ILineDataSet dataForRecovered(List<PHTrend> trends) throws ParseException {
-        TrackerSort.quickSort(trends, flag, 0, trends.size());
-
-        List<Entry> values = new ArrayList<>();
-
-        float currentValue = -1;
-        String currentDate = "";
-        for (int j = 0; j < trends.size(); j++) {
-            PHTrend trend = trends.get(j);
-            float value = Float.parseFloat(trend.getRecovered());
-            String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
-            if (currentValue != value && !currentDate.equals(date)) {
-                values.add(new Entry(j, value));
-                currentValue = value;
-                currentDate = date;
-            }
+    private float add(List<Entry> values, float currentValue, String data, int j) {
+        float value = Float.parseFloat(data);
+        if (currentValue != value) {
+            values.add(new Entry(j, value));
+            return value;
         }
-
-        LineDataSet lineData = new LineDataSet(values, "Recovered");
-        lineData.setLineWidth(1f);
-        lineData.setCircleRadius(2f);
-        lineData.setDrawCircleHole(false);
-
-        int color = colors[1];
-        lineData.setColor(color);
-        lineData.setCircleColor(color);
-        return lineData;
+        return value;
     }
 
-    private LineDataSet dataForDeceased(List<PHTrend> trends) throws ParseException {
+
+    private ILineDataSet dataForInfected(List<PHTrend> trends) {
+        TrackerSort.quickSort(trends, flag, 0, trends.size());
+        List<Entry> values = new ArrayList<>();
+        float currentValue = -1;
+        for (int j = 0; j < trends.size(); j++) {
+            currentValue = add(values, currentValue,
+                    trends.get(j).getInfected(), j);
+        }
+
+        return lineDataConfig(values, "Confirmed", colors[0]);
+    }
+
+    private ILineDataSet dataForRecovered(List<PHTrend> trends) {
         TrackerSort.quickSort(trends, flag, 0, trends.size());
 
         List<Entry> values = new ArrayList<>();
 
         float currentValue = -1;
-        String currentDate = "";
         for (int j = 0; j < trends.size(); j++) {
-            PHTrend trend = trends.get(j);
-            float value = Float.parseFloat(trend.getDeceased());
-            String date = TrackerUtility.formatSimpleDate(trend.getLatestUpdate());
-            if (currentValue != value && !currentDate.equals(date)) {
-                values.add(new Entry(j, value));
-                currentValue = value;
-                currentDate = date;
-            }
+            currentValue = add(values, currentValue,
+                    trends.get(j).getRecovered(), j);
         }
 
-        LineDataSet lineData = new LineDataSet(values, "Deceased");
-        lineData.setLineWidth(1f);
-        lineData.setCircleRadius(2f);
-        lineData.setDrawCircleHole(false);
+        return lineDataConfig(values, "Recovered", colors[1]);
+    }
 
-        int color = colors[2];
-        lineData.setColor(color);
-        lineData.setCircleColor(color);
-        return lineData;
+    private LineDataSet dataForDeceased(List<PHTrend> trends) {
+        TrackerSort.quickSort(trends, flag, 0, trends.size());
+
+        List<Entry> values = new ArrayList<>();
+
+        float currentValue = -1;
+        for (int j = 0; j < trends.size(); j++) {
+            currentValue = add(values, currentValue,
+                    trends.get(j).getDeceased(), j);
+        }
+
+        return lineDataConfig(values, "Deceased", colors[2]);
     }
 
     interface OnDataInfectedAvailable {

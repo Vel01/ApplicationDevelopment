@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -15,12 +14,10 @@ import androidx.fragment.app.Fragment;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.mikephil.charting.charts.LineChart;
-import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,10 +93,9 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
             return;
         }
 
-        new StyleableToast.Builder(Objects.requireNonNull(getActivity())).iconStart(R.drawable.ic_signal_wifi_off)
-                .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
-                .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
-                .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+        TrackerUtility.message(getActivity(), "No Internet Connection",
+                R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+                R.color.toast_connection_lost);
     }
 
     @Override
@@ -113,8 +109,7 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
             mPHTrends = casualties;
             initLineChart();
 
-            PHTrend trend = casualties.get(casualties.size() - 1);
-            setLatestUpdate(trend);
+            getLatestUpdate(mPHTrends.get(casualties.size() - 1));
             displayData();
         }
     }
@@ -129,8 +124,7 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
         //this method is not supported
     }
 
-    private void setLatestUpdate(PHTrend trend) {
-        Log.d(TAG, "onDataTrendAvailable() " + trend.getLatestUpdate());
+    private void getLatestUpdate(PHTrend trend) {
         try {
             tvLatestUpdate.setText(TrackerUtility.formatDate(trend.getLatestUpdate()));
         } catch (ParseException e) {
@@ -158,10 +152,9 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
         super.onAttach(context);
         initTrackerListener();
         if (ConnectivityReceiver.isConnected()) {
-            new StyleableToast.Builder(context).iconStart(R.drawable.ic_signal_wifi_off)
-                    .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
-                    .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
-                    .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+            TrackerUtility.message(getActivity(), "No Internet Connection",
+                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+                    R.color.toast_connection_lost);
         }
     }
 
@@ -172,7 +165,6 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_philippines, container, false);
         mUnbinder = ButterKnife.bind(this, view);
         return view;
@@ -186,12 +178,8 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
         chart.setRight();
         chart.setXAxis(getLineChartLabel());
         chart.setLegend();
-        try {
-            chart.setLineChartData(mPHTrends);
-        } catch (ParseException e) {
-            e.getMessage();
-            e.printStackTrace();
-        }
+        chart.setLineChartData(mPHTrends);
+
     }
 
     private List<String> getLineChartLabel() {
