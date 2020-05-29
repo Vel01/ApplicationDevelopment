@@ -28,8 +28,10 @@ import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.Addresses;
 import kiz.austria.tracker.data.DataParser;
 import kiz.austria.tracker.data.JSONRawData;
+import kiz.austria.tracker.data.PHRecordParser;
 import kiz.austria.tracker.data.PHTrendDataParser;
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.model.PHRecord;
 import kiz.austria.tracker.model.PHTrend;
 import kiz.austria.tracker.util.TrackerLineChart;
 import kiz.austria.tracker.util.TrackerNumber;
@@ -38,7 +40,7 @@ import kiz.austria.tracker.util.TrackerUtility;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PhilippinesFragment extends Fragment implements DataParser.OnDataAvailable, PHTrendDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener {
+public class PhilippinesFragment extends Fragment implements DataParser.OnDataAvailable, PHTrendDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener, PHRecordParser.OnDataAvailable {
 
     private static final String TAG = "PhilippinesFragment";
     //widget
@@ -70,7 +72,9 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     //references
     private DataParser mDataParser = null;
     private PHTrendDataParser mPHTrendDataParser = null;
+    private PHRecordParser mPHRecordParser = null;
     private List<PHTrend> mPHTrends;
+    private List<PHRecord> mPHRecords;
     //variables
     private int mCountCases;
     private int mCountRecovered;
@@ -78,6 +82,11 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     private int mCountNewCases;
     private int mCountActive;
     private int mCountNewDeaths;
+    private int mCount1to17 = 0;
+    private int mCount18to30 = 0;
+    private int mCount31to45 = 0;
+    private int mCount46to60 = 0;
+    private int mCount61up = 0;
     private boolean isPaused = false;
 
     @Override
@@ -90,6 +99,9 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
             mPHTrendDataParser = new PHTrendDataParser(this);
             mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.CASUALTIES_ONLY);
             mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
+
+            mPHRecordParser = new PHRecordParser(this);
+            mPHRecordParser.execute(Addresses.Link.DATA_PH_DROP_CASES);
             return;
         }
 
@@ -110,7 +122,6 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
             initLineChart();
 
             getLatestUpdate(mPHTrends.get(casualties.size() - 1));
-            displayData();
         }
     }
 
@@ -143,6 +154,29 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
             mCountNewCases = Integer.parseInt(nation.getTodayCases());
             mCountActive = Integer.parseInt(nation.getActive());
             mCountNewDeaths = Integer.parseInt(nation.getTodayDeaths());
+        }
+    }
+
+    @Override
+    public void onDataPHRecordAvailable(List<PHRecord> records, JSONRawData.DownloadStatus status) {
+        Log.d(TAG, "onDataPHRecordAvailable() status " + status);
+        if (status == JSONRawData.DownloadStatus.OK && !mPHRecordParser.isCancelled()) {
+            Log.d(TAG, "onDataPHRecordAvailable() size = " + records.size());
+            Log.d(TAG, "onDataPHRecordAvailable() data = " + records);
+            mPHRecords = records;
+            for (PHRecord record : records) {
+                if (Integer.parseInt(record.getAge()) >= 61) mCount61up++;
+                else if (Integer.parseInt(record.getAge()) <= 60 && Integer.parseInt(record.getAge()) >= 46)
+                    mCount46to60++;
+                else if (Integer.parseInt(record.getAge()) <= 45 && Integer.parseInt(record.getAge()) >= 31)
+                    mCount31to45++;
+                else if (Integer.parseInt(record.getAge()) <= 30 && Integer.parseInt(record.getAge()) >= 18)
+                    mCount18to30++;
+                else if (Integer.parseInt(record.getAge()) <= 17 && Integer.parseInt(record.getAge()) >= 1)
+                    mCount1to17++;
+            }
+            Log.d(TAG, "onDataPHRecordAvailable() " + mCount61up + " " + mCount46to60 + " " + mCount31to45 + " " + mCount18to30 + " " + mCount1to17);
+            displayData();
         }
     }
 
@@ -207,6 +241,9 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
             mPHTrendDataParser = new PHTrendDataParser(this);
             mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.CASUALTIES_ONLY);
             mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
+
+            mPHRecordParser = new PHRecordParser(this);
+            mPHRecordParser.execute(Addresses.Link.DATA_PH_DROP_CASES);
         }
     }
 
@@ -221,6 +258,7 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     private void cancelDownload() {
         if (mDataParser != null) mDataParser.cancel(true);
         if (mPHTrendDataParser != null) mPHTrendDataParser.cancel(true);
+        if (mPHRecordParser != null) mPHRecordParser.cancel(true);
     }
 
     private void pausedToStopReDownload() {
@@ -259,5 +297,6 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
         mUnbinder.unbind();
         cancelDownload();
     }
+
 
 }
