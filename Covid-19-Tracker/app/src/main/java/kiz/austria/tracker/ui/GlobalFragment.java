@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,13 +23,11 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -104,19 +101,12 @@ public class GlobalFragment extends BaseFragment implements
 
             switch (h.getStackIndex()) {
                 case 0:
-                    new StyleableToast.Builder(Objects.requireNonNull(getActivity()))
-                            .text(TrackerUtility.format(entry.getYVals()[h.getStackIndex()]))
-                            .backgroundColor(getResources().getColor(R.color.red_two))
-                            .textColor(getResources().getColor(R.color.red_one))
-                            .iconStart(R.drawable.ic_confirmed_toast)
-                            .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+                    TrackerUtility.message(getActivity(), TrackerUtility.format(entry.getYVals()[h.getStackIndex()]),
+                            R.drawable.ic_confirmed_toast, R.color.red_one, R.color.red_two);
                     break;
                 case 1:
-                    new StyleableToast.Builder(Objects.requireNonNull(getActivity()))
-                            .text(TrackerUtility.format(entry.getYVals()[h.getStackIndex()])).textColor(getResources().getColor(R.color.grey_one))
-                            .backgroundColor(getResources().getColor(R.color.grey_two))
-                            .iconStart(R.drawable.ic_death_toast)
-                            .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+                    TrackerUtility.message(getActivity(), TrackerUtility.format(entry.getYVals()[h.getStackIndex()]),
+                            R.drawable.ic_death_toast, R.color.grey_one, R.color.grey_two);
                     break;
                 default:
             }
@@ -169,11 +159,9 @@ public class GlobalFragment extends BaseFragment implements
             mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
             return;
         }
-
-        new StyleableToast.Builder(Objects.requireNonNull(getActivity())).iconStart(R.drawable.ic_signal_wifi_off)
-                .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
-                .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
-                .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+        TrackerUtility.message(getActivity(), "No Internet Connection",
+                R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+                R.color.toast_connection_lost);
     }
 
     @Override
@@ -221,10 +209,9 @@ public class GlobalFragment extends BaseFragment implements
         initInflatable();
         initTrackerListener();
         if (ConnectivityReceiver.isConnected()) {
-            new StyleableToast.Builder(context).iconStart(R.drawable.ic_signal_wifi_off)
-                    .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
-                    .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
-                    .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+            TrackerUtility.message(getActivity(), "No Internet Connection",
+                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+                    R.color.toast_connection_lost);
         }
     }
 

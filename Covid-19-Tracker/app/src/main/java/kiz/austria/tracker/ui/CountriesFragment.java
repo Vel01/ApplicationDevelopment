@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +27,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -148,10 +146,9 @@ public class CountriesFragment extends BaseFragment implements
             dataParser.execute(Addresses.Link.DATA_COUNTRIES);
             return;
         }
-        new StyleableToast.Builder(Objects.requireNonNull(getActivity())).iconStart(R.drawable.ic_signal_wifi_off)
-                .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
-                .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
-                .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+        TrackerUtility.message(getActivity(), "No Internet Connection",
+                R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+                R.color.toast_connection_lost);
     }
 
     @Override
@@ -160,10 +157,9 @@ public class CountriesFragment extends BaseFragment implements
         initInflatable();
         initTrackerListener();
         if (ConnectivityReceiver.isConnected()) {
-            new StyleableToast.Builder(context).iconStart(R.drawable.ic_signal_wifi_off)
-                    .text("No Internet Connection").textColor(getResources().getColor(R.color.md_white_1000))
-                    .backgroundColor(getResources().getColor(R.color.toast_connection_lost))
-                    .cornerRadius(10).length(Toast.LENGTH_LONG).show();
+            TrackerUtility.message(getActivity(), "No Internet Connection",
+                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+                    R.color.toast_connection_lost);
         }
     }
 
