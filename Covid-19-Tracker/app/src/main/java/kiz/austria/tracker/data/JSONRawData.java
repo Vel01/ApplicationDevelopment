@@ -51,8 +51,16 @@ public class JSONRawData extends AsyncTask<String, Void, String> {
 
             StringBuilder data = new StringBuilder();
 
-            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-                data.append(line).append("\n");
+            int charsRead;
+            char[] inputBuffer = new char[100000];
+
+            while (true) {
+                charsRead = reader.read(inputBuffer);
+
+                if (charsRead < 0) break;
+                if (charsRead > 0) {
+                    data.append(String.copyValueOf(inputBuffer, 0, charsRead));
+                }
             }
 
             mDownloadStatus = DownloadStatus.OK;

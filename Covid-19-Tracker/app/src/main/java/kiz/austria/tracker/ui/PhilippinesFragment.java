@@ -13,10 +13,23 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,24 +41,40 @@ import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.Addresses;
 import kiz.austria.tracker.data.DataParser;
 import kiz.austria.tracker.data.JSONRawData;
+import kiz.austria.tracker.data.PHDOHParser;
 import kiz.austria.tracker.data.PHRecordParser;
 import kiz.austria.tracker.data.PHTrendDataParser;
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.model.PHCases;
+import kiz.austria.tracker.model.PHDOHDrop;
 import kiz.austria.tracker.model.PHRecord;
-import kiz.austria.tracker.model.PHTrend;
+import kiz.austria.tracker.util.TrackerHorizontalChart;
 import kiz.austria.tracker.util.TrackerLineChart;
 import kiz.austria.tracker.util.TrackerNumber;
+import kiz.austria.tracker.util.TrackerPieChart;
 import kiz.austria.tracker.util.TrackerUtility;
+
+import static android.graphics.Color.WHITE;
+import static android.graphics.Color.rgb;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PhilippinesFragment extends Fragment implements DataParser.OnDataAvailable, PHTrendDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener, PHRecordParser.OnDataAvailable {
+public class PhilippinesFragment extends BaseFragment implements DataParser.OnDataAvailable, PHTrendDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener, PHRecordParser.OnDataAvailable, PHDOHParser.OnDataAvailable, OnChartValueSelectedListener {
 
     private static final String TAG = "PhilippinesFragment";
+    private static final int[] COLORS = {
+            rgb(255, 68, 51),
+            rgb(0, 141, 203)
+    };
+
     //widget
     @BindView(R.id.chart_ph_cases_trend)
     LineChart lineChart;
+    @BindView(R.id.chart_ph_cases_by_age)
+    HorizontalBarChart barChart;
+    @BindView(R.id.chart_ph_cases_by_gender)
+    PieChart pieChart;
     @BindView(R.id.tv_cases)
     TextView tvCases;
     @BindView(R.id.tv_recovered)
@@ -71,10 +100,8 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     private Unbinder mUnbinder;
     //references
     private DataParser mDataParser = null;
+    private PHDOHParser mPHDOHParser = null;
     private PHTrendDataParser mPHTrendDataParser = null;
-    private PHRecordParser mPHRecordParser = null;
-    private List<PHTrend> mPHTrends;
-    private List<PHRecord> mPHRecords;
     //variables
     private int mCountCases;
     private int mCountRecovered;
@@ -82,26 +109,29 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     private int mCountNewCases;
     private int mCountActive;
     private int mCountNewDeaths;
-    private int mCount1to17 = 0;
-    private int mCount18to30 = 0;
-    private int mCount31to45 = 0;
-    private int mCount46to60 = 0;
-    private int mCount61up = 0;
+    private int mCount1to17;
+    private int mCount18to30;
+    private int mCount31to45;
+    private int mCount46to60;
+    private int mCount61up;
+    private int mGenderMale;
+    private int mGenderFemale;
     private boolean isPaused = false;
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
         if (isConnected) {
-            mDataParser = new DataParser(this);
-            mDataParser.execute(Addresses.Link.DATA_COUNTRIES);
-
+            resetStats();
             mPHTrendDataParser = new PHTrendDataParser(this);
             mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.CASUALTIES_ONLY);
             mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
 
-            mPHRecordParser = new PHRecordParser(this);
-            mPHRecordParser.execute(Addresses.Link.DATA_PH_DROP_CASES);
+            mDataParser = new DataParser(this);
+            mDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+
+            mPHDOHParser = new PHDOHParser(this);
+            mPHDOHParser.execute(Addresses.Link.DATA_PH_DROP_DOH);
             return;
         }
 
@@ -110,32 +140,40 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
                 R.color.toast_connection_lost);
     }
 
+    private void resetStats() {
+        mCount1to17 = 0;
+        mCount18to30 = 0;
+        mCount31to45 = 0;
+        mCount46to60 = 0;
+        mCount61up = 0;
+        mGenderMale = 0;
+        mGenderFemale = 0;
+    }
+
     @Override
-    public void onDataTrendAvailable(List<PHTrend> trends, JSONRawData.DownloadStatus status) {
+    public void onDataTrendAvailable(List<PHCases> trends, JSONRawData.DownloadStatus status) {
         //this method is not supported
     }
 
     @Override
-    public void onDataCasualtiesTrendAvailable(List<PHTrend> casualties, JSONRawData.DownloadStatus status) {
+    public void onDataCasualtiesTrendAvailable(List<PHCases> casualties, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
-            mPHTrends = casualties;
-            initLineChart();
-
-            getLatestUpdate(mPHTrends.get(casualties.size() - 1));
+            initLineChart(casualties);
+            getLatestUpdate(casualties.get(casualties.size() - 1));
         }
     }
 
     @Override
-    public void onDataUnderinvestigationTrendAvailable(List<PHTrend> casualties, JSONRawData.DownloadStatus status) {
+    public void onDataUnderinvestigationTrendAvailable(List<PHCases> casualties, JSONRawData.DownloadStatus status) {
         //this method is not supported
     }
 
     @Override
-    public void onDataLastUpdateAvailable(PHTrend date, JSONRawData.DownloadStatus status) {
+    public void onDataLastUpdateAvailable(PHCases date, JSONRawData.DownloadStatus status) {
         //this method is not supported
     }
 
-    private void getLatestUpdate(PHTrend trend) {
+    private void getLatestUpdate(PHCases trend) {
         try {
             tvLatestUpdate.setText(TrackerUtility.formatDate(trend.getLatestUpdate()));
         } catch (ParseException e) {
@@ -154,30 +192,78 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
             mCountNewCases = Integer.parseInt(nation.getTodayCases());
             mCountActive = Integer.parseInt(nation.getActive());
             mCountNewDeaths = Integer.parseInt(nation.getTodayDeaths());
+            displayData();
         }
     }
 
     @Override
     public void onDataPHRecordAvailable(List<PHRecord> records, JSONRawData.DownloadStatus status) {
         Log.d(TAG, "onDataPHRecordAvailable() status " + status);
-        if (status == JSONRawData.DownloadStatus.OK && !mPHRecordParser.isCancelled()) {
-            Log.d(TAG, "onDataPHRecordAvailable() size = " + records.size());
-            Log.d(TAG, "onDataPHRecordAvailable() data = " + records);
-            mPHRecords = records;
-            for (PHRecord record : records) {
-                if (Integer.parseInt(record.getAge()) >= 61) mCount61up++;
-                else if (Integer.parseInt(record.getAge()) <= 60 && Integer.parseInt(record.getAge()) >= 46)
-                    mCount46to60++;
-                else if (Integer.parseInt(record.getAge()) <= 45 && Integer.parseInt(record.getAge()) >= 31)
-                    mCount31to45++;
-                else if (Integer.parseInt(record.getAge()) <= 30 && Integer.parseInt(record.getAge()) >= 18)
-                    mCount18to30++;
-                else if (Integer.parseInt(record.getAge()) <= 17 && Integer.parseInt(record.getAge()) >= 1)
-                    mCount1to17++;
-            }
-            Log.d(TAG, "onDataPHRecordAvailable() " + mCount61up + " " + mCount46to60 + " " + mCount31to45 + " " + mCount18to30 + " " + mCount1to17);
-            displayData();
+
+    }
+
+    @Override
+    public void onDataPHDOHAvailable(List<PHDOHDrop> dohDrops, JSONRawData.DownloadStatus status) {
+        if (status == JSONRawData.DownloadStatus.OK && !mPHDOHParser.isCancelled()) {
+            Log.d(TAG, "onDataPHDOHAvailable() size = " + dohDrops.size());
+            Log.d(TAG, "onDataPHDOHAvailable() data = " + dohDrops);
+
+
+            retrievedStats(dohDrops);
+            initPieChart();
         }
+    }
+
+    private void retrievedStats(List<PHDOHDrop> dohDrops) {
+        for (PHDOHDrop drop : dohDrops) {
+
+            if (Integer.parseInt(drop.getAge()) >= 61) {
+                mCount61up++;
+            } else if (Integer.parseInt(drop.getAge()) >= 46 && Integer.parseInt(drop.getAge()) <= 60) {
+                mCount46to60++;
+            } else if (Integer.parseInt(drop.getAge()) >= 31 && Integer.parseInt(drop.getAge()) <= 45) {
+                mCount31to45++;
+            } else if (Integer.parseInt(drop.getAge()) >= 18 && Integer.parseInt(drop.getAge()) <= 30) {
+                mCount18to30++;
+            } else if (Integer.parseInt(drop.getAge()) >= 1 && Integer.parseInt(drop.getAge()) <= 17) {
+                mCount1to17++;
+            }
+            if (drop.getSex().toLowerCase().equals("f")) mGenderFemale++;
+            else mGenderMale++;
+        }
+
+        initBarChart(mCount1to17 + mCount18to30 + mCount31to45 + mCount46to60 + mCount61up);
+    }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        Log.d("Entry selected", e.toString());
+        int value = 0;
+        switch ((int) e.getX()) {
+            case 4:
+                value = mCount61up;
+                break;
+            case 3:
+                value = mCount46to60;
+                break;
+            case 2:
+                value = mCount31to45;
+                break;
+            case 1:
+                value = mCount18to30;
+                break;
+            case 0:
+                value = mCount1to17;
+                break;
+        }
+
+        TrackerUtility.message(getActivity(), String.valueOf(value),
+                R.drawable.ic_confirmed_toast, R.color.red_one, R.color.red_two);
+    }
+
+    @Override
+    public void onNothingSelected() {
+
     }
 
     @Override
@@ -204,22 +290,22 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
         return view;
     }
 
-    private void initLineChart() {
+    private void initLineChart(List<PHCases> casualties) {
 
         TrackerLineChart chart = new TrackerLineChart(lineChart);
         chart.setAttributes();
         chart.setLeft();
         chart.setRight();
-        chart.setXAxis(getLineChartLabel());
+        chart.setXAxis(getLineChartLabel(casualties));
         chart.setLegend();
-        chart.setLineChartData(mPHTrends);
+        chart.setLineChartData(casualties);
 
     }
 
-    private List<String> getLineChartLabel() {
+    private List<String> getLineChartLabel(List<PHCases> casualties) {
         List<String> labels = new ArrayList<>();
 
-        for (PHTrend trend : mPHTrends) {
+        for (PHCases trend : casualties) {
             try {
                 labels.add(TrackerUtility.formatSimpleDate(trend.getLatestUpdate()));
             } catch (ParseException e) {
@@ -230,20 +316,67 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
         return labels;
     }
 
+    private void initBarChart(int total) {
+        barChart.getLegend().setEnabled(false);
+        barChart.setDrawBarShadow(true);
+        TrackerHorizontalChart chart = new TrackerHorizontalChart(barChart);
+        barChart.setOnChartValueSelectedListener(this);
+        chart.attributes();
+        chart.setXAxis(XAxis.XAxisPosition.BOTTOM).setValueFormatter(new IndexAxisValueFormatter(Arrays.asList("1-17", "18-30", "31-45", "46-60", "60+")));
+        chart.setAxisLeft();
+        chart.setAxisRight();
+        BarDataSet dataSet = chart.setData(setHorizontalChartData(total), "Cases by Age Group", new int[]{COLORS[0]});
+        dataSet.setValueFormatter(new PercentFormatter());
+        dataSet.setBarShadowColor(getResources().getColor(R.color.bar_bg));
+    }
+
+    private void initPieChart() {
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(mGenderMale, "Male"));
+        entries.add(new PieEntry(mGenderFemale, "Female"));
+        TrackerPieChart chart = new TrackerPieChart(pieChart, entries, "Cases by Gender");
+        chart.initPieChart(tfRegular, 12f, WHITE);
+        chart.setLegend();
+        PieDataSet dataSet = chart.getDataSet();
+        dataSet.setColors(COLORS);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
+        chart.dataSetAttributes(pieChart, 12f, WHITE, tfLight);
+
+    }
+
+    private List<BarEntry> setHorizontalChartData(int total) {
+        List<BarEntry> values = new ArrayList<>();
+
+        values.add(new BarEntry(0, new float[]{
+                (TrackerUtility.convert(mCount1to17) / total) * 100F}));
+        values.add(new BarEntry(1, new float[]{
+                (TrackerUtility.convert(mCount18to30) / total) * 100F}));
+        values.add(new BarEntry(2, new float[]{
+                (TrackerUtility.convert(mCount31to45) / total) * 100F}));
+        values.add(new BarEntry(3, new float[]{
+                (TrackerUtility.convert(mCount46to60) / total) * 100F}));
+        values.add(new BarEntry(4, new float[]{
+                (TrackerUtility.convert(mCount61up) / total) * 100F}));
+
+        return values;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume()");
         if (!isPausedToStopReDownload()) {
-            mDataParser = new DataParser(this);
-            mDataParser.execute(Addresses.Link.DATA_PHILIPPINES);
-
             mPHTrendDataParser = new PHTrendDataParser(this);
             mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.CASUALTIES_ONLY);
             mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
 
-            mPHRecordParser = new PHRecordParser(this);
-            mPHRecordParser.execute(Addresses.Link.DATA_PH_DROP_CASES);
+            mDataParser = new DataParser(this);
+            mDataParser.execute(Addresses.Link.DATA_PHILIPPINES);
+
+            mPHDOHParser = new PHDOHParser(this);
+            mPHDOHParser.execute(Addresses.Link.DATA_PH_DROP_DOH);
         }
     }
 
@@ -251,14 +384,13 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause()");
-        cancelDownload();
         pausedToStopReDownload();
     }
 
     private void cancelDownload() {
         if (mDataParser != null) mDataParser.cancel(true);
         if (mPHTrendDataParser != null) mPHTrendDataParser.cancel(true);
-        if (mPHRecordParser != null) mPHRecordParser.cancel(true);
+        if (mPHDOHParser != null) mPHDOHParser.cancel(true);
     }
 
     private void pausedToStopReDownload() {
@@ -297,6 +429,5 @@ public class PhilippinesFragment extends Fragment implements DataParser.OnDataAv
         mUnbinder.unbind();
         cancelDownload();
     }
-
 
 }

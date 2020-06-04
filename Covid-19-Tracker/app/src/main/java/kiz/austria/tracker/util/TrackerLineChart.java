@@ -14,7 +14,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import kiz.austria.tracker.model.PHTrend;
+import kiz.austria.tracker.model.PHCases;
 
 import static android.graphics.Color.rgb;
 
@@ -71,7 +71,7 @@ public class TrackerLineChart implements LinesDataTrend.OnDataInfectedAvailable 
 
     private LineData data = new LineData();
 
-    public void setLineChartData(List<PHTrend> trends) {
+    public void setLineChartData(List<PHCases> trends) {
 
         LinesDataTrend linesDataTrend = new LinesDataTrend(this, trends, "INFECTED");
         linesDataTrend.execute();
@@ -91,6 +91,7 @@ public class TrackerLineChart implements LinesDataTrend.OnDataInfectedAvailable 
     public void onDataInfectedAvailable(ILineDataSet lineDataSet) {
         data.addDataSet(lineDataSet);
         chart.setData(data);
+        chart.animateX(2500);
         chart.invalidate();
     }
 }
@@ -103,12 +104,12 @@ class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
     };
 
     private OnDataInfectedAvailable mDataInfectedAvailable;
-    private List<PHTrend> mPHTrends;
+    private List<PHCases> mPHCases;
     private String flag;
 
-    LinesDataTrend(OnDataInfectedAvailable dataInfectedAvailable, List<PHTrend> PHTrends, String flag) {
+    LinesDataTrend(OnDataInfectedAvailable dataInfectedAvailable, List<PHCases> PHCases, String flag) {
         mDataInfectedAvailable = dataInfectedAvailable;
-        mPHTrends = PHTrends;
+        mPHCases = PHCases;
         this.flag = flag;
     }
 
@@ -117,11 +118,11 @@ class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
 
         switch (flag) {
             case "INFECTED":
-                return dataForInfected(mPHTrends);
+                return dataForInfected(mPHCases);
             case "RECOVERED":
-                return dataForRecovered(mPHTrends);
+                return dataForRecovered(mPHCases);
             case "DECEASED":
-                return dataForDeceased(mPHTrends);
+                return dataForDeceased(mPHCases);
         }
 
         return null;
@@ -154,7 +155,7 @@ class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
     }
 
 
-    private ILineDataSet dataForInfected(List<PHTrend> trends) {
+    private ILineDataSet dataForInfected(List<PHCases> trends) {
         TrackerSort.quickSort(trends, flag, 0, trends.size());
         List<Entry> values = new ArrayList<>();
         float currentValue = -1;
@@ -166,7 +167,7 @@ class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
         return lineDataConfig(values, "Confirmed", colors[0]);
     }
 
-    private ILineDataSet dataForRecovered(List<PHTrend> trends) {
+    private ILineDataSet dataForRecovered(List<PHCases> trends) {
         TrackerSort.quickSort(trends, flag, 0, trends.size());
 
         List<Entry> values = new ArrayList<>();
@@ -180,7 +181,7 @@ class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
         return lineDataConfig(values, "Recovered", colors[1]);
     }
 
-    private LineDataSet dataForDeceased(List<PHTrend> trends) {
+    private LineDataSet dataForDeceased(List<PHCases> trends) {
         TrackerSort.quickSort(trends, flag, 0, trends.size());
 
         List<Entry> values = new ArrayList<>();

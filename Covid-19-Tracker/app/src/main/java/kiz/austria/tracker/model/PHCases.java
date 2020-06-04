@@ -2,7 +2,7 @@ package kiz.austria.tracker.model;
 
 import kiz.austria.tracker.util.TrackerUtility;
 
-public class PHTrend {
+public class PHCases {
 
     private String mCountry;
     private String mInfected;
@@ -13,23 +13,23 @@ public class PHTrend {
     private String mPUM;
     private String mLatestUpdate;
 
-    public PHTrend() {
+    public PHCases() {
         this("N/A", "0", "0", "0", "0", "0", "0", TrackerUtility.getCurrentDate());
     }
 
-    public PHTrend(String latestUpdate) {
+    public PHCases(String latestUpdate) {
         this("N/A", "0", "0", "0", "0", "0", "0", latestUpdate);
     }
 
-    public PHTrend(String tested, String PUI, String PUM) {
+    public PHCases(String tested, String PUI, String PUM) {
         this("N/A", "0", tested, "0", "0", PUI, PUM, TrackerUtility.getCurrentDate());
     }
 
-    public PHTrend(String infected, String recovered, String deceased, String latestUpdate) {
+    public PHCases(String infected, String recovered, String deceased, String latestUpdate) {
         this("N/A", infected, "0", recovered, deceased, "0", "0", latestUpdate);
     }
 
-    public PHTrend(String country, String infected, String tested, String recovered, String deceased, String PUI, String PUM, String latestUpdate) {
+    public PHCases(String country, String infected, String tested, String recovered, String deceased, String PUI, String PUM, String latestUpdate) {
         mCountry = country;
         mInfected = infected;
         mTested = tested;

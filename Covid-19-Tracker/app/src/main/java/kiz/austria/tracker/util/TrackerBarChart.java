@@ -43,6 +43,7 @@ public class TrackerBarChart {
     }
 
     public void initChart() {
+        chart.setExtraOffsets(10, 10, 10, 10);
         chart.getDescription().setEnabled(false);
         chart.getAxisRight().setEnabled(true);
         chart.setPinchZoom(true);
@@ -72,8 +73,8 @@ public class TrackerBarChart {
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setTypeface(tfLight);
         leftAxis.setValueFormatter(new LargeValueFormatter());
-        leftAxis.setDrawGridLines(true);
-        leftAxis.setSpaceTop(35f);
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setSpaceTop(25f);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
     }
 
@@ -81,7 +82,7 @@ public class TrackerBarChart {
         YAxis rightAxis = chart.getAxisRight();
         rightAxis.setTypeface(tfLight);
         rightAxis.setValueFormatter(new LargeValueFormatter());
-        rightAxis.setDrawGridLines(true);
+        rightAxis.setDrawGridLines(false);
         rightAxis.setSpaceTop(35f);
         rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
     }
@@ -89,6 +90,7 @@ public class TrackerBarChart {
     private void xAxisLabel() {
         XAxis xAxis = chart.getXAxis();
         xAxis.setTypeface(tfLight);
+        xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(xAxisLabels));
         xAxis.setTextSize(8f);

@@ -18,14 +18,19 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,12 +45,13 @@ import kiz.austria.tracker.data.DataParser;
 import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.data.PHTrendDataParser;
 import kiz.austria.tracker.model.Nation;
-import kiz.austria.tracker.model.PHTrend;
+import kiz.austria.tracker.model.PHCases;
 import kiz.austria.tracker.util.TrackerHorizontalChart;
 import kiz.austria.tracker.util.TrackerNumber;
 import kiz.austria.tracker.util.TrackerPieChart;
 import kiz.austria.tracker.util.TrackerUtility;
 
+import static android.graphics.Color.BLACK;
 import static android.graphics.Color.rgb;
 
 public class GlobalFragment extends BaseFragment implements
@@ -164,36 +170,30 @@ public class GlobalFragment extends BaseFragment implements
                 R.color.toast_connection_lost);
     }
 
+    private static final int[] JOYFUL_COLORS = {
+            Color.rgb(255, 68, 51), Color.rgb(233, 236, 239)
+    };
+
     @Override
-    public void onDataTrendAvailable(List<PHTrend> trends, JSONRawData.DownloadStatus status) {
+    public void onDataTrendAvailable(List<PHCases> trends, JSONRawData.DownloadStatus status) {
         //this method is not supported
     }
 
     @Override
-    public void onDataCasualtiesTrendAvailable(List<PHTrend> casualties, JSONRawData.DownloadStatus status) {
+    public void onDataCasualtiesTrendAvailable(List<PHCases> casualties, JSONRawData.DownloadStatus status) {
         //this method is not supported
     }
 
     @Override
-    public void onDataUnderinvestigationTrendAvailable(List<PHTrend> casualties, JSONRawData.DownloadStatus status) {
+    public void onDataUnderinvestigationTrendAvailable(List<PHCases> casualties, JSONRawData.DownloadStatus status) {
         //this method is not supported
     }
 
     @Override
-    public void onDataLastUpdateAvailable(PHTrend date, JSONRawData.DownloadStatus status) {
+    public void onDataLastUpdateAvailable(PHCases date, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
             setLatestUpdate(date);
             displayData();
-        }
-    }
-
-
-    private void setLatestUpdate(PHTrend trend) {
-        Log.d(TAG, "onDataTrendAvailable() " + trend.getLatestUpdate());
-        try {
-            tvUpdate.setText(TrackerUtility.formatDate(trend.getLatestUpdate()));
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
     }
 
@@ -242,6 +242,15 @@ public class GlobalFragment extends BaseFragment implements
         return view;
     }
 
+    private void setLatestUpdate(PHCases trend) {
+        Log.d(TAG, "onDataTrendAvailable() " + trend.getLatestUpdate());
+        try {
+            tvUpdate.setText(TrackerUtility.formatDate(trend.getLatestUpdate()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initPieChart() {
 
         ArrayList<PieEntry> entries = new ArrayList<>();
@@ -255,8 +264,7 @@ public class GlobalFragment extends BaseFragment implements
         colors.add(rgb(233, 236, 239));
         colors.add(rgb(151, 242, 149));
         TrackerPieChart pieChart = new TrackerPieChart(chart, entries, null);
-        pieChart.initPieChart(tfRegular);
-        pieChart.setLegend();
+        pieChart.initPieChart(tfRegular, 10f, BLACK);
         pieChart.setLegend();
         pieChart.dataSet(colors);
         pieChart.dataSetAttributes(chart, 10f, Color.BLACK, tfLight);
@@ -269,12 +277,19 @@ public class GlobalFragment extends BaseFragment implements
         horizontalChart.setOnChartValueSelectedListener(this);
         chart.setFonts(tfLight);
         chart.attributes();
-        chart.setXAxis(setHorizontalChartLabel());
+        chart.setXAxis(XAxis.XAxisPosition.TOP).
+                setValueFormatter(new IndexAxisValueFormatter(setHorizontalChartLabel()));
         chart.setAxisLeft();
         chart.setAxisRight();
-        chart.setLegend();
-        chart.setData(setHorizontalChartData(), "Top Daily Cases");
+        chart.setLegend(setEntries());
+        chart.setData(setHorizontalChartData(), "Top Daily Cases", JOYFUL_COLORS);
 
+    }
+
+    private List<LegendEntry> setEntries() {
+        return new ArrayList<>(Arrays.asList(
+                new LegendEntry("Daily New Cases", Legend.LegendForm.SQUARE, 9f, 5, null, Color.rgb(255, 68, 51)),
+                new LegendEntry("Daily New Deaths", Legend.LegendForm.SQUARE, 9f, 5, null, Color.rgb(233, 236, 239))));
     }
 
     private void sortTop10DailyCases() {

@@ -9,6 +9,7 @@ public class Addresses {
         public static final String DATA_PHILIPPINES = HTTP_REQUEST + "countries/Philippines";
         public static final String DATA_TREND_PHILIPPINES = "https://api.apify.com/v2/datasets/sFSef5gfYg3soj8mb/items?format=json&clean=1";
         public static final String DATA_PH_DROP_CASES = "https://coronavirus-ph-api.herokuapp.com/cases";
+        public static final String DATA_PH_DROP_DOH = "https://coronavirus-ph-api.herokuapp.com/doh-data-drop";
         public static final String DATA_COUNTRIES = HTTP_REQUEST + "countries";
 
 //        public static String DATA_COUNTRY;

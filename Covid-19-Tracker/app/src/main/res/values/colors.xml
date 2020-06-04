@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#D32F2F</color>
     <color name="colorAccent">#F44336</color>
 
+    <color name="bar_bg">#F1F1F1</color>
     <color name="shimmer_bg">#dddddd</color>
     <color name="toast_connection_lost">#D32F2F</color>
 

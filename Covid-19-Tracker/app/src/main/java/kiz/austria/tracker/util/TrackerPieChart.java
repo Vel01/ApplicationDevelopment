@@ -1,6 +1,5 @@
 package kiz.austria.tracker.util;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -27,23 +26,21 @@ public class TrackerPieChart {
         mDataSet = new PieDataSet(entries, label);
     }
 
-    public void initPieChart(Typeface tfRegular) {
+    public void initPieChart(Typeface tfRegular, float textSize, int color) {
 
         mPieChart.setUsePercentValues(true);
         mPieChart.getDescription().setEnabled(false);
         mPieChart.setExtraOffsets(5, 10, 5, 5);
         mPieChart.setDragDecelerationFrictionCoef(0.90f);
-
         mPieChart.setDrawHoleEnabled(true);
-
         mPieChart.setRotationEnabled(true);
-        mPieChart.setRotationAngle(50);
+        mPieChart.setRotationAngle(-5);
         mPieChart.setHighlightPerTapEnabled(true);
         mPieChart.animateY(4000, Easing.EaseInOutQuad);
         // entry label styling
-        mPieChart.setEntryLabelColor(Color.BLACK);
+        mPieChart.setEntryLabelColor(color);
         mPieChart.setEntryLabelTypeface(tfRegular);
-        mPieChart.setEntryLabelTextSize(10f);
+        mPieChart.setEntryLabelTextSize(textSize);
     }
 
 
@@ -80,5 +77,7 @@ public class TrackerPieChart {
         mPieChart.invalidate();
     }
 
-
+    public PieDataSet getDataSet() {
+        return mDataSet;
+    }
 }

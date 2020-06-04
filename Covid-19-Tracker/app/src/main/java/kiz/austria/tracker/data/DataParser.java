@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.model.Philippines;
 
 public class DataParser extends AsyncTask<String, Void, List<Nation>> implements JSONRawData.OnDownloadComplete {
 
@@ -17,8 +18,9 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
 
     private OnDataAvailable mOnDataAvailable;
     private JSONRawData.DownloadStatus mDownloadStatus;
-
     private List<Nation> mNations;
+    private Philippines mPhilippines;
+
     private String destinationUri;
 
     public interface OnDataAvailable {
@@ -72,12 +74,11 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
                 }
             }
 
-            if (destinationUri.equals(Addresses.Link.DATA_WORLD) || destinationUri.equals(Addresses.Link.DATA_PHILIPPINES)) {
+            if (destinationUri.equals(Addresses.Link.DATA_PHILIPPINES)) {
                 mNations = new ArrayList<>();
 
                 try {
                     JSONObject jsonObject = new JSONObject(data);
-                    String country = jsonObject.getString("country");
                     String cases = jsonObject.getString("cases");
                     String deaths = jsonObject.getString("deaths");
                     String todayCases = jsonObject.getString("todayCases");
@@ -85,7 +86,7 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
                     String recovered = jsonObject.getString("recovered");
                     String active = jsonObject.getString("active");
                     String critical = jsonObject.getString("critical");
-                    mNations.add(new Nation(country, cases, deaths, todayCases, todayDeaths, recovered, active, critical));
+                    mNations.add(new Philippines(cases, todayCases, deaths, todayDeaths, recovered, active, critical));
                     mDownloadStatus = JSONRawData.DownloadStatus.OK;
                 } catch (JSONException e) {
                     e.printStackTrace();

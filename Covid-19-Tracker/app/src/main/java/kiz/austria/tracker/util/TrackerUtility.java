@@ -29,6 +29,10 @@ public class TrackerUtility {
         return Float.parseFloat(value);
     }
 
+    public static Float convert(int value) {
+        return (float) value;
+    }
+
     public static String format(float value) {
         return NumberFormat.getNumberInstance().format(value);
     }
