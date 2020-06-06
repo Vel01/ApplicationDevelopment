@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -41,6 +42,7 @@ import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.APIFYDataParser;
 import kiz.austria.tracker.data.Addresses;
 import kiz.austria.tracker.data.DataParser;
+import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.data.PHDOHParser;
 import kiz.austria.tracker.data.PHRecordParser;
@@ -96,6 +98,8 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
     ConstraintLayout mChildMain;
     @BindView(R.id.child_layout_ph_shimmer)
     View mChildShimmer;
+    @BindView(R.id.container_refresher)
+    SwipeRefreshLayout mRefreshLayout;
     //ButterKnife
     private Unbinder mUnbinder;
     //references
@@ -118,8 +122,8 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
     private int mGenderFemale;
     private boolean isPaused = false;
     private boolean isConnectionLoss = false;
-    private String mRawDataFromApify;
-    private String mRawDataDOHDropFromHerokuapp;
+    private static String mRawDataFromApify;
+    private static String mRawDataDOHDropFromHerokuapp;
 
     private void resetStats() {
         mCount1to17 = 0;
@@ -275,11 +279,11 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            mRawDataFromApify = args.getString("apify_data");
-            mRawDataDOHDropFromHerokuapp = args.getString("DOHDropHerokuapp");
-        }
+//        Bundle args = getArguments();
+//        if (args != null) {
+        mRawDataFromApify = DownloadedData.getInstance().getApifyData();//= args.getString("apify_data");
+        mRawDataDOHDropFromHerokuapp = DownloadedData.getInstance().getHerokuappDOHData();//args.getString("DOHDropHerokuapp");
+//        }
 
         initTrackerListener();
         if (ConnectivityReceiver.isConnected()) {
@@ -299,6 +303,9 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_philippines, container, false);
         mUnbinder = ButterKnife.bind(this, view);
+        mDataParser = new DataParser(this);
+        mAPIFYDataParser = new APIFYDataParser(this);
+        mPHDOHParser = new PHDOHParser(this);
         return view;
     }
 
@@ -379,18 +386,42 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume()");
+
+        mRefreshLayout.setOnRefreshListener(() -> {
+
+            mRawDataFromApify = DownloadedData.getInstance().getApifyData();
+            mRawDataDOHDropFromHerokuapp = DownloadedData.getInstance().getHerokuappDOHData();
+
+            if (!mRawDataFromApify.isEmpty() && mAPIFYDataParser.getStatus() != APIFYDataParser.Status.RUNNING) {
+                mAPIFYDataParser.cancel(true);
+                mAPIFYDataParser = new APIFYDataParser(PhilippinesFragment.this);
+                mAPIFYDataParser.parse(APIFYDataParser.ParseData.ESSENTIAL_DATA);
+                mAPIFYDataParser.execute(mRawDataFromApify);
+            }
+
+            if (!mRawDataDOHDropFromHerokuapp.isEmpty() && mPHDOHParser.getStatus() != PHDOHParser.Status.RUNNING) {
+                mPHDOHParser.cancel(true);
+                mPHDOHParser = new PHDOHParser(PhilippinesFragment.this);
+                mPHDOHParser.parse(PHDOHParser.ParseData.DOH_DROP);
+                mPHDOHParser.execute(mRawDataDOHDropFromHerokuapp);
+            }
+            
+            mRefreshLayout.setRefreshing(false);
+        });
+
+
         if (!isPausedToStopReDownload()) {
 
-            mAPIFYDataParser = new APIFYDataParser(this);
-            mAPIFYDataParser.parse(APIFYDataParser.ParseData.ESSENTIAL_DATA);
-            mAPIFYDataParser.execute(mRawDataFromApify);
-
-            mDataParser = new DataParser(this);
             mDataParser.execute(Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP);
+            if (!mRawDataFromApify.isEmpty()) {
+                mAPIFYDataParser.parse(APIFYDataParser.ParseData.ESSENTIAL_DATA);
+                mAPIFYDataParser.execute(mRawDataFromApify);
+            }
 
-            mPHDOHParser = new PHDOHParser(this);
-            mPHDOHParser.parse(PHDOHParser.ParseData.DOH_DROP);
-            mPHDOHParser.execute(mRawDataDOHDropFromHerokuapp);
+            if (!mRawDataDOHDropFromHerokuapp.isEmpty()) {
+                mPHDOHParser.parse(PHDOHParser.ParseData.DOH_DROP);
+                mPHDOHParser.execute(mRawDataDOHDropFromHerokuapp);
+            }
         }
     }
 

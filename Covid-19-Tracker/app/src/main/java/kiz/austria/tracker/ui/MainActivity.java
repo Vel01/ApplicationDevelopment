@@ -27,6 +27,7 @@ import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
+import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.services.GetRawDataService;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
@@ -79,7 +80,7 @@ public class MainActivity extends BaseActivity implements
     private int mTapToClose = 0;
     //references
     private ConnectivityReceiver receiver;
-    private Bundle mArgument = new Bundle();
+//    private Bundle mArgument = new Bundle();
 
     private Drawer mDrawer;
     //Service
@@ -93,7 +94,8 @@ public class MainActivity extends BaseActivity implements
     public void onReceivedApifyData(boolean isReceived, String data) {
         if (isReceived) {
             Log.d(TAG, "onReceivedApifyData() data received by host activity.");
-            mArgument.putString("apify_data", data);
+//            mArgument.putString("apify_data", data);
+            DownloadedData.getInstance().saveApifyData(data);
         }
     }
 
@@ -101,7 +103,8 @@ public class MainActivity extends BaseActivity implements
     public void onReceivedDOHDropHerokuappData(boolean isReceived, String data) {
         if (isReceived) {
             Log.d(TAG, "onReceivedDOHDropHerokuappData() data received by host activity.");
-            mArgument.putString("DOHDropHerokuapp", data);
+//            mArgument.putString("DOHDropHerokuapp", data);
+            DownloadedData.getInstance().saveDOHData(data);
         }
     }
 
@@ -143,6 +146,7 @@ public class MainActivity extends BaseActivity implements
         root = findViewById(R.id.main_activity);
         TrackerUtility.runFadeAnimationOn(this, root, true);
         activateToolbar(false);
+
 
         //================ Service Instantiation ==================//
         mDownloadDataServiceIntent = new Intent(this, GetRawDataService.class);
@@ -221,7 +225,7 @@ public class MainActivity extends BaseActivity implements
 
     private void initPhilippinesFragment() {
         PhilippinesFragment fragment = new PhilippinesFragment();
-        fragment.setArguments(mArgument);
+//        fragment.setArguments(mArgument);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_philippines));
         transaction.addToBackStack(getString(R.string.tag_fragment_philippines));
