@@ -1,8 +1,13 @@
 package kiz.austria.tracker.ui;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,13 +27,16 @@ import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
+import kiz.austria.tracker.services.GetRawDataService;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
 import kiz.austria.tracker.util.TrackerUtility;
 
 public class MainActivity extends BaseActivity implements
+        GetRawDataService.RawDataReceiver,
         TrackerDialog.OnDialogListener,
-        Inflatable, NavigationView.OnNavigationItemSelectedListener {
+        Inflatable,
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
 
@@ -36,8 +44,6 @@ public class MainActivity extends BaseActivity implements
     public void onDialogPositiveEvent(int id, Bundle args) {
 
     }
-
-    private Drawer mDrawer;
 
     @Override
     public void onDialogCancelEvent(int id) {
@@ -61,8 +67,6 @@ public class MainActivity extends BaseActivity implements
         return true;
     }
 
-    private int mTapToClose = 0;
-    private ConnectivityReceiver receiver;
 
     @Override
     public void onDialogNegativeEvent(int id, Bundle args) {
@@ -71,8 +75,57 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    //variables
+    private int mTapToClose = 0;
+    //references
+    private ConnectivityReceiver receiver;
+    private Bundle mArgument;
+    private Drawer mDrawer;
+    //Service
+    private ServiceConnection mDownloadDataServiceConnection;
     private View root;
+    private Intent mDownloadDataServiceIntent;
+    private GetRawDataService mGetRawDataService;
+    private boolean mIsServiceBound = false;
 
+    @Override
+    public void onReceivedApifyData(boolean isReceived, String data) {
+        if (isReceived) {
+            Log.d(TAG, "onReceivedApifyData() data received by host activity.");
+            mArgument = new Bundle();
+            mArgument.putString("apify_data", data);
+        }
+    }
+
+    private void bindDownloadDataService() {
+        if (mDownloadDataServiceConnection == null) {
+            mDownloadDataServiceConnection = new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    Log.d(TAG, "onServiceConnected() service is now bound");
+                    GetRawDataService.RawDataServiceBinder binder = (GetRawDataService.RawDataServiceBinder) service;
+                    mGetRawDataService = binder.getInstance();
+                    mGetRawDataService.registerClientReceiver(MainActivity.this);
+                    mIsServiceBound = true;
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    mIsServiceBound = false;
+                }
+            };
+        }
+
+        bindService(mDownloadDataServiceIntent, mDownloadDataServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void unbindDownloadDataService() {
+        if (mIsServiceBound) {
+            Log.d(TAG, "unbindDownloadDataService() service is unbound");
+            unbindService(mDownloadDataServiceConnection);
+            mIsServiceBound = false;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +133,13 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         root = findViewById(R.id.main_activity);
-
         TrackerUtility.runFadeAnimationOn(this, root, true);
         activateToolbar(false);
+
+        //================ Service Instantiation ==================//
+        mDownloadDataServiceIntent = new Intent(this, GetRawDataService.class);
+        startService(mDownloadDataServiceIntent);
+        bindDownloadDataService();
 
         if (savedInstanceState == null) {
             initGlobalFragment();
@@ -93,8 +150,6 @@ public class MainActivity extends BaseActivity implements
             int currentSelection = savedInstanceState.getInt(TrackerKeys.STATE_SELECTION_DRAWER);
             mDrawer.setSelection(currentSelection);
         }
-
-
     }
 
     @Override
@@ -108,6 +163,7 @@ public class MainActivity extends BaseActivity implements
         super.onResume();
         Log.e(TAG, "onResume() was called!");
         registerTrackerReceiver();
+
     }
 
     private void registerTrackerReceiver() {
@@ -157,6 +213,7 @@ public class MainActivity extends BaseActivity implements
 
     private void initPhilippinesFragment() {
         PhilippinesFragment fragment = new PhilippinesFragment();
+        fragment.setArguments(mArgument);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_philippines));
         transaction.addToBackStack(getString(R.string.tag_fragment_philippines));
@@ -186,6 +243,8 @@ public class MainActivity extends BaseActivity implements
         super.onDestroy();
         Log.e(TAG, "onDestroy()");
         unregisterReceiver(receiver);
+        unbindDownloadDataService();
+        if (!mIsServiceBound) stopService(mDownloadDataServiceIntent);
     }
 
     private void onTapToClose() {
@@ -228,4 +287,5 @@ public class MainActivity extends BaseActivity implements
             dialog.show(getSupportFragmentManager(), null);
         }
     }
+
 }

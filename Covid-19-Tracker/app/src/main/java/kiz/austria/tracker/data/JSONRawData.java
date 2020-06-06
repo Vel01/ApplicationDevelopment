@@ -25,7 +25,7 @@ public class JSONRawData extends AsyncTask<String, Void, String> {
         void onDownloadComplete(String data, DownloadStatus status);
     }
 
-    JSONRawData(OnDownloadComplete onDownloadComplete) {
+    public JSONRawData(OnDownloadComplete onDownloadComplete) {
         mOnDownloadComplete = onDownloadComplete;
         mDownloadStatus = DownloadStatus.IDLE;
     }

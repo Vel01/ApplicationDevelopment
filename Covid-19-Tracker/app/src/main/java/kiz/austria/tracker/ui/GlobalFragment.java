@@ -45,7 +45,7 @@ import kiz.austria.tracker.data.DataParser;
 import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.data.PHTrendDataParser;
 import kiz.austria.tracker.model.Nation;
-import kiz.austria.tracker.model.PHCases;
+import kiz.austria.tracker.model.PHListUpdatesCases;
 import kiz.austria.tracker.util.TrackerHorizontalChart;
 import kiz.austria.tracker.util.TrackerNumber;
 import kiz.austria.tracker.util.TrackerPieChart;
@@ -162,7 +162,7 @@ public class GlobalFragment extends BaseFragment implements
 
             mPHTrendDataParser = new PHTrendDataParser(this);
             mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.DATE_ONLY);
-            mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
+            mPHTrendDataParser.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
             return;
         }
         TrackerUtility.message(getActivity(), "No Internet Connection",
@@ -175,22 +175,22 @@ public class GlobalFragment extends BaseFragment implements
     };
 
     @Override
-    public void onDataTrendAvailable(List<PHCases> trends, JSONRawData.DownloadStatus status) {
+    public void onDataTrendAvailable(List<PHListUpdatesCases> trends, JSONRawData.DownloadStatus status) {
         //this method is not supported
     }
 
     @Override
-    public void onDataCasualtiesTrendAvailable(List<PHCases> casualties, JSONRawData.DownloadStatus status) {
+    public void onDataCasualtiesTrendAvailable(List<PHListUpdatesCases> casualties, JSONRawData.DownloadStatus status) {
         //this method is not supported
     }
 
     @Override
-    public void onDataUnderinvestigationTrendAvailable(List<PHCases> casualties, JSONRawData.DownloadStatus status) {
+    public void onDataUnderinvestigationTrendAvailable(List<PHListUpdatesCases> casualties, JSONRawData.DownloadStatus status) {
         //this method is not supported
     }
 
     @Override
-    public void onDataLastUpdateAvailable(PHCases date, JSONRawData.DownloadStatus status) {
+    public void onDataLastUpdateAvailable(PHListUpdatesCases date, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
             setLatestUpdate(date);
             displayData();
@@ -242,7 +242,7 @@ public class GlobalFragment extends BaseFragment implements
         return view;
     }
 
-    private void setLatestUpdate(PHCases trend) {
+    private void setLatestUpdate(PHListUpdatesCases trend) {
         Log.d(TAG, "onDataTrendAvailable() " + trend.getLatestUpdate());
         try {
             tvUpdate.setText(TrackerUtility.formatDate(trend.getLatestUpdate()));
@@ -334,7 +334,7 @@ public class GlobalFragment extends BaseFragment implements
 
             mPHTrendDataParser = new PHTrendDataParser(this);
             mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.DATE_ONLY);
-            mPHTrendDataParser.execute(Addresses.Link.DATA_TREND_PHILIPPINES);
+            mPHTrendDataParser.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
         }
     }
 

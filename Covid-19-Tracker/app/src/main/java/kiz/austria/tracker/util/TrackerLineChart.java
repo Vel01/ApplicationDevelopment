@@ -1,7 +1,5 @@
 package kiz.austria.tracker.util;
 
-import android.os.AsyncTask;
-
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -14,12 +12,17 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import kiz.austria.tracker.model.PHCases;
+import kiz.austria.tracker.model.PHListUpdatesCases;
 
 import static android.graphics.Color.rgb;
 
-public class TrackerLineChart implements LinesDataTrend.OnDataInfectedAvailable {
+public class TrackerLineChart {
     private static final String TAG = "TrackerLineChart";
+    private final int[] colors = new int[]{
+            rgb(255, 68, 51),
+            rgb(151, 242, 149),
+            rgb(117, 117, 117)
+    };
     private final LineChart chart;
 
     public TrackerLineChart(LineChart chart) {
@@ -71,68 +74,13 @@ public class TrackerLineChart implements LinesDataTrend.OnDataInfectedAvailable 
 
     private LineData data = new LineData();
 
-    public void setLineChartData(List<PHCases> trends) {
-
-        LinesDataTrend linesDataTrend = new LinesDataTrend(this, trends, "INFECTED");
-        linesDataTrend.execute();
-
-        linesDataTrend = new LinesDataTrend(this, trends, "RECOVERED");
-        linesDataTrend.execute();
-
-        linesDataTrend = new LinesDataTrend(this, trends, "DECEASED");
-        linesDataTrend.execute();
-    }
-
-    public LineChart getChart() {
-        return chart;
-    }
-
-    @Override
-    public void onDataInfectedAvailable(ILineDataSet lineDataSet) {
-        data.addDataSet(lineDataSet);
+    public void setLineChartData(List<PHListUpdatesCases> trends) {
+        data.addDataSet(dataForInfected(trends));
+        data.addDataSet(dataForRecovered(trends));
+        data.addDataSet(dataForDeceased(trends));
         chart.setData(data);
         chart.animateX(2500);
         chart.invalidate();
-    }
-}
-
-class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
-    private final int[] colors = new int[]{
-            rgb(255, 68, 51),
-            rgb(151, 242, 149),
-            rgb(117, 117, 117)
-    };
-
-    private OnDataInfectedAvailable mDataInfectedAvailable;
-    private List<PHCases> mPHCases;
-    private String flag;
-
-    LinesDataTrend(OnDataInfectedAvailable dataInfectedAvailable, List<PHCases> PHCases, String flag) {
-        mDataInfectedAvailable = dataInfectedAvailable;
-        mPHCases = PHCases;
-        this.flag = flag;
-    }
-
-    @Override
-    protected ILineDataSet doInBackground(Void... voids) {
-
-        switch (flag) {
-            case "INFECTED":
-                return dataForInfected(mPHCases);
-            case "RECOVERED":
-                return dataForRecovered(mPHCases);
-            case "DECEASED":
-                return dataForDeceased(mPHCases);
-        }
-
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(ILineDataSet lineDataSet) {
-        if (mDataInfectedAvailable != null) {
-            mDataInfectedAvailable.onDataInfectedAvailable(lineDataSet);
-        }
     }
 
     private LineDataSet lineDataConfig(List<Entry> values, String label, int color) {
@@ -155,8 +103,8 @@ class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
     }
 
 
-    private ILineDataSet dataForInfected(List<PHCases> trends) {
-        TrackerSort.quickSort(trends, flag, 0, trends.size());
+    private ILineDataSet dataForInfected(List<PHListUpdatesCases> trends) {
+        TrackerSort.quickSort(trends, "INFECTED", 0, trends.size());
         List<Entry> values = new ArrayList<>();
         float currentValue = -1;
         for (int j = 0; j < trends.size(); j++) {
@@ -167,8 +115,8 @@ class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
         return lineDataConfig(values, "Confirmed", colors[0]);
     }
 
-    private ILineDataSet dataForRecovered(List<PHCases> trends) {
-        TrackerSort.quickSort(trends, flag, 0, trends.size());
+    private ILineDataSet dataForRecovered(List<PHListUpdatesCases> trends) {
+        TrackerSort.quickSort(trends, "RECOVERED", 0, trends.size());
 
         List<Entry> values = new ArrayList<>();
 
@@ -181,8 +129,8 @@ class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
         return lineDataConfig(values, "Recovered", colors[1]);
     }
 
-    private LineDataSet dataForDeceased(List<PHCases> trends) {
-        TrackerSort.quickSort(trends, flag, 0, trends.size());
+    private LineDataSet dataForDeceased(List<PHListUpdatesCases> trends) {
+        TrackerSort.quickSort(trends, "DECEASED", 0, trends.size());
 
         List<Entry> values = new ArrayList<>();
 
@@ -193,9 +141,5 @@ class LinesDataTrend extends AsyncTask<Void, Void, ILineDataSet> {
         }
 
         return lineDataConfig(values, "Deceased", colors[2]);
-    }
-
-    interface OnDataInfectedAvailable {
-        void onDataInfectedAvailable(ILineDataSet lineDataSet);
     }
 }

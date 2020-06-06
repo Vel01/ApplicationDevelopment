@@ -2,11 +2,11 @@ package kiz.austria.tracker.util;
 
 import java.util.List;
 
-import kiz.austria.tracker.model.PHCases;
+import kiz.austria.tracker.model.PHListUpdatesCases;
 
 public class TrackerSort {
 
-    public static void quickSort(List<PHCases> trends, String flag, int start, int end) {
+    public static void quickSort(List<PHListUpdatesCases> trends, String flag, int start, int end) {
         if (end - start < 2) {
             return;
         }
@@ -15,7 +15,7 @@ public class TrackerSort {
         quickSort(trends, flag, pivotIndex + 1, end);
     }
 
-    private static int partition(List<PHCases> trends, String flag, int start, int end) {
+    private static int partition(List<PHListUpdatesCases> trends, String flag, int start, int end) {
         // This is using the first element as the pivot
         int pivot = trends.indexOf(trends.get(start));//input[start];
 
@@ -70,7 +70,7 @@ public class TrackerSort {
     }
 
 
-    public static void insertionSort(List<PHCases> trends) {
+    public static void insertionSort(List<PHListUpdatesCases> trends) {
         for (int firstUnsortedIndex = 1; firstUnsortedIndex < trends.size();
              firstUnsortedIndex++) {
             int newElement = trends.indexOf(trends.get(firstUnsortedIndex));

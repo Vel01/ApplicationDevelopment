@@ -9,18 +9,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import kiz.austria.tracker.model.PHCases;
+import kiz.austria.tracker.model.PHListUpdatesCases;
 
-public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> implements JSONRawData.OnDownloadComplete {
+public class PHTrendDataParser extends AsyncTask<String, Void, List<PHListUpdatesCases>> implements JSONRawData.OnDownloadComplete {
 
     private static final String TAG = "RawDataParser";
 
-    private PHCases mDateUpdated;
+    private PHListUpdatesCases mDateUpdated;
 
     private InterestedData interest;
     private OnDataAvailable mOnDataAvailable;
     private JSONRawData.DownloadStatus mDownloadStatus;
-    private List<PHCases> mPHCases;
+    private List<PHListUpdatesCases> mPHListUpdatesCases;
 
     private String destinationUri;
 
@@ -28,8 +28,8 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> im
     public void onDownloadComplete(String data, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK) {
 
-            if (destinationUri.equals(Addresses.Link.DATA_TREND_PHILIPPINES) && (interest == InterestedData.COMPLETE_DATA)) {
-                mPHCases = new ArrayList<>();
+            if (destinationUri.equals(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY) && (interest == InterestedData.COMPLETE_DATA)) {
+                mPHListUpdatesCases = new ArrayList<>();
                 try {
                     JSONArray jsonList = new JSONArray(data);
                     for (int i = 0; i < jsonList.length(); i++) {
@@ -45,7 +45,7 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> im
                         String pui = getObjectPUI(jsonObject);
                         String pum = getObjectPUM(jsonObject);
 
-                        mPHCases.add(new PHCases(country, infected, tested, recovered, deceased, pui, pum, latestUpdate));
+                        mPHListUpdatesCases.add(new PHListUpdatesCases(country, infected, tested, recovered, deceased, pui, pum, latestUpdate));
                     }
                     mDownloadStatus = JSONRawData.DownloadStatus.OK;
                 } catch (JSONException e) {
@@ -54,8 +54,8 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> im
                     mDownloadStatus = JSONRawData.DownloadStatus.FAILED_OR_EMPTY;
                 }
             }
-            if (destinationUri.equals(Addresses.Link.DATA_TREND_PHILIPPINES) && (interest == InterestedData.UNDERINVESTIGATION_ONLY)) {
-                mPHCases = new ArrayList<>();
+            if (destinationUri.equals(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY) && (interest == InterestedData.UNDERINVESTIGATION_ONLY)) {
+                mPHListUpdatesCases = new ArrayList<>();
                 try {
                     JSONArray jsonList = new JSONArray(data);
                     for (int i = 0; i < jsonList.length(); i++) {
@@ -65,7 +65,7 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> im
                         String pui = getObjectPUI(jsonObject);
                         String pum = getObjectPUM(jsonObject);
 
-                        mPHCases.add(new PHCases(tested, pui, pum));
+                        mPHListUpdatesCases.add(new PHListUpdatesCases(tested, pui, pum));
                     }
                     mDownloadStatus = JSONRawData.DownloadStatus.OK;
                 } catch (JSONException e) {
@@ -75,8 +75,8 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> im
                 }
             }
 
-            if (destinationUri.equals(Addresses.Link.DATA_TREND_PHILIPPINES) && (interest == InterestedData.CASUALTIES_ONLY)) {
-                mPHCases = new ArrayList<>();
+            if (destinationUri.equals(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY) && (interest == InterestedData.CASUALTIES_ONLY)) {
+                mPHListUpdatesCases = new ArrayList<>();
                 try {
                     JSONArray jsonList = new JSONArray(data);
                     for (int i = 0; i < jsonList.length(); i++) {
@@ -85,7 +85,7 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> im
                         String recovered = jsonObject.getString("recovered");
                         String deceased = jsonObject.getString("deceased");
                         String latestUpdate = jsonObject.getString("lastUpdatedAtApify");
-                        mPHCases.add(new PHCases(infected, recovered, deceased, latestUpdate));
+                        mPHListUpdatesCases.add(new PHListUpdatesCases(infected, recovered, deceased, latestUpdate));
                     }
                     mDownloadStatus = JSONRawData.DownloadStatus.OK;
                 } catch (JSONException e) {
@@ -95,12 +95,12 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> im
                 }
             }
 
-            if (destinationUri.equals(Addresses.Link.DATA_TREND_PHILIPPINES) && (interest == InterestedData.DATE_ONLY)) {
+            if (destinationUri.equals(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY) && (interest == InterestedData.DATE_ONLY)) {
                 try {
                     JSONArray jsonList = new JSONArray(data);
                     JSONObject jsonObject = jsonList.getJSONObject(jsonList.length() - 1);
                     String latestUpdate = jsonObject.getString("lastUpdatedAtApify");
-                    mDateUpdated = new PHCases(latestUpdate);
+                    mDateUpdated = new PHListUpdatesCases(latestUpdate);
                     mDownloadStatus = JSONRawData.DownloadStatus.OK;
                 } catch (JSONException e) {
                     e.getMessage();
@@ -112,7 +112,7 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> im
     }
 
     @Override
-    protected void onPostExecute(List<PHCases> trends) {
+    protected void onPostExecute(List<PHListUpdatesCases> trends) {
         if (mOnDataAvailable != null) {
             switch (interest) {
                 case COMPLETE_DATA:
@@ -142,11 +142,11 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> im
     public enum InterestedData {COMPLETE_DATA, DATE_ONLY, CASUALTIES_ONLY, UNDERINVESTIGATION_ONLY}
 
     @Override
-    protected List<PHCases> doInBackground(String... path) {
+    protected List<PHListUpdatesCases> doInBackground(String... path) {
         destinationUri = path[0];
         JSONRawData JSONRawData = new JSONRawData(this);
         JSONRawData.runInTheSameThread(destinationUri);
-        return mPHCases;
+        return mPHListUpdatesCases;
     }
 
     private String getObjectPUM(JSONObject currentCovered) {
@@ -177,13 +177,13 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHCases>> im
     }
 
     public interface OnDataAvailable {
-        void onDataTrendAvailable(List<PHCases> trends, final JSONRawData.DownloadStatus status);
+        void onDataTrendAvailable(List<PHListUpdatesCases> trends, final JSONRawData.DownloadStatus status);
 
-        void onDataCasualtiesTrendAvailable(List<PHCases> casualties, final JSONRawData.DownloadStatus status);
+        void onDataCasualtiesTrendAvailable(List<PHListUpdatesCases> casualties, final JSONRawData.DownloadStatus status);
 
-        void onDataUnderinvestigationTrendAvailable(List<PHCases> casualties, final JSONRawData.DownloadStatus status);
+        void onDataUnderinvestigationTrendAvailable(List<PHListUpdatesCases> casualties, final JSONRawData.DownloadStatus status);
 
-        void onDataLastUpdateAvailable(PHCases date, final JSONRawData.DownloadStatus status);
+        void onDataLastUpdateAvailable(PHListUpdatesCases date, final JSONRawData.DownloadStatus status);
 
     }
 }
