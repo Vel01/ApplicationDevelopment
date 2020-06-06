@@ -143,7 +143,7 @@ public class CountriesFragment extends BaseFragment implements
         Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
         if (isConnected) {
             DataParser dataParser = new DataParser(this);
-            dataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            dataParser.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
             return;
         }
         TrackerUtility.message(getActivity(), "No Internet Connection",
@@ -198,7 +198,7 @@ public class CountriesFragment extends BaseFragment implements
         Log.d(TAG, "onResume: was called!");
         if (!isPausedToStopReDownload()) {
             DataParser dataParser = new DataParser(this);
-            dataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            dataParser.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
         }
     }
 

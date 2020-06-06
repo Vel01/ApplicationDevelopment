@@ -47,10 +47,10 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
     }
 
     @Override
-    public void onDownloadComplete(String data, JSONRawData.DownloadStatus status) {
+    public void onDownloadCompleteFromApify(String data, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK) {
 
-            if (destinationUri.equals(Addresses.Link.DATA_COUNTRIES)) {
+            if (destinationUri.equals(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP)) {
                 mNations = new ArrayList<>();
                 try {
                     JSONArray jsonList = new JSONArray(data);
@@ -74,7 +74,7 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
                 }
             }
 
-            if (destinationUri.equals(Addresses.Link.DATA_PHILIPPINES)) {
+            if (destinationUri.equals(Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP)) {
                 mNations = new ArrayList<>();
 
                 try {
@@ -94,5 +94,10 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
                 }
             }
         }
+    }
+
+    @Override
+    public void onDownloadCompleteDOHDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
+
     }
 }

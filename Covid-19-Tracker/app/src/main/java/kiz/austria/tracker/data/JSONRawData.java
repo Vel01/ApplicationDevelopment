@@ -18,11 +18,15 @@ public class JSONRawData extends AsyncTask<String, Void, String> {
     private static final String TAG = "GetRawData";
 
     private DownloadStatus mDownloadStatus;
-
     private final OnDownloadComplete mOnDownloadComplete;
 
-    public interface OnDownloadComplete {
-        void onDownloadComplete(String data, DownloadStatus status);
+    private String mCurrentAddress;
+
+    void runInTheSameThread(String path) {
+        if (mOnDownloadComplete != null) {
+            String data = doInBackground(path);
+            mOnDownloadComplete.onDownloadCompleteFromApify(data, mDownloadStatus);
+        }
     }
 
     public JSONRawData(OnDownloadComplete onDownloadComplete) {
@@ -30,14 +34,8 @@ public class JSONRawData extends AsyncTask<String, Void, String> {
         mDownloadStatus = DownloadStatus.IDLE;
     }
 
-    void runInTheSameThread(String path) {
-        if (mOnDownloadComplete != null) {
-            String data = doInBackground(path);
-            mOnDownloadComplete.onDownloadComplete(data, mDownloadStatus);
-        }
-    }
-
     private String downloadJSON(String path) {
+        mCurrentAddress = path;
 
         HttpURLConnection connection = null;
         BufferedReader reader = null;
@@ -87,6 +85,20 @@ public class JSONRawData extends AsyncTask<String, Void, String> {
     }
 
     @Override
+    protected void onPostExecute(String data) {
+        if (mOnDownloadComplete != null) {
+            switch (mCurrentAddress) {
+                case Addresses.Link.DATA_PHILIPPINES_FROM_APIFY:
+                    mOnDownloadComplete.onDownloadCompleteFromApify(data, mDownloadStatus);
+                    break;
+                case Addresses.Link.DATA_PHILIPPINES_DOHDATA_DROP_FROM_HEROKUAPP:
+                    mOnDownloadComplete.onDownloadCompleteDOHDataFromHerokuapp(data, mDownloadStatus);
+                    break;
+            }
+        }
+    }
+
+    @Override
     protected String doInBackground(String... path) {
         if (path[0] == null) {
             mDownloadStatus = DownloadStatus.NOT_INITIALISED;
@@ -95,10 +107,9 @@ public class JSONRawData extends AsyncTask<String, Void, String> {
         return downloadJSON(path[0]);
     }
 
-    @Override
-    protected void onPostExecute(String data) {
-        if (mOnDownloadComplete != null) {
-            mOnDownloadComplete.onDownloadComplete(data, mDownloadStatus);
-        }
+    public interface OnDownloadComplete {
+        void onDownloadCompleteFromApify(String data, DownloadStatus status);
+
+        void onDownloadCompleteDOHDataFromHerokuapp(String data, DownloadStatus status);
     }
 }

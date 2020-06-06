@@ -158,7 +158,7 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
         if (isConnected) {
             mNationDataParser = new DataParser(this);
-            mNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            mNationDataParser.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
 
             mPHTrendDataParser = new PHTrendDataParser(this);
             mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.DATE_ONLY);
@@ -330,7 +330,7 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onResume: was called!");
         if (!isPausedToStopReDownload()) {
             mNationDataParser = new DataParser(this);
-            mNationDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            mNationDataParser.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
 
             mPHTrendDataParser = new PHTrendDataParser(this);
             mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.DATE_ONLY);

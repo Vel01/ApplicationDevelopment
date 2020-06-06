@@ -79,7 +79,8 @@ public class MainActivity extends BaseActivity implements
     private int mTapToClose = 0;
     //references
     private ConnectivityReceiver receiver;
-    private Bundle mArgument;
+    private Bundle mArgument = new Bundle();
+
     private Drawer mDrawer;
     //Service
     private ServiceConnection mDownloadDataServiceConnection;
@@ -92,8 +93,15 @@ public class MainActivity extends BaseActivity implements
     public void onReceivedApifyData(boolean isReceived, String data) {
         if (isReceived) {
             Log.d(TAG, "onReceivedApifyData() data received by host activity.");
-            mArgument = new Bundle();
             mArgument.putString("apify_data", data);
+        }
+    }
+
+    @Override
+    public void onReceivedDOHDropHerokuappData(boolean isReceived, String data) {
+        if (isReceived) {
+            Log.d(TAG, "onReceivedDOHDropHerokuappData() data received by host activity.");
+            mArgument.putString("DOHDropHerokuapp", data);
         }
     }
 

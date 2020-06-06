@@ -25,7 +25,7 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHListUpdate
     private String destinationUri;
 
     @Override
-    public void onDownloadComplete(String data, JSONRawData.DownloadStatus status) {
+    public void onDownloadCompleteFromApify(String data, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK) {
 
             if (destinationUri.equals(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY) && (interest == InterestedData.COMPLETE_DATA)) {
@@ -109,6 +109,11 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHListUpdate
                 }
             }
         }
+    }
+
+    @Override
+    public void onDownloadCompleteDOHDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
+
     }
 
     @Override

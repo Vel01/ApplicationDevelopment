@@ -19,12 +19,21 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     private RawDataReceiver mReceiver;//callback
     private IBinder mIBinder = new RawDataServiceBinder();
     private JSONRawData mRawDataFromApify;
+    private JSONRawData mRawDataFromHerokuapp;
 
     @Override
-    public void onDownloadComplete(String data, JSONRawData.DownloadStatus status) {
+    public void onDownloadCompleteFromApify(String data, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK && !mRawDataFromApify.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received data from apify link.");
             mReceiver.onReceivedApifyData(true, data);
+        }
+    }
+
+    @Override
+    public void onDownloadCompleteDOHDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
+        if (status == JSONRawData.DownloadStatus.OK && !mRawDataFromHerokuapp.isCancelled()) {
+            Log.d(TAG, "onDownloadComplete() received data from apify link.");
+            mReceiver.onReceivedDOHDropHerokuappData(true, data);
         }
     }
 
@@ -41,6 +50,7 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     @Override
     public void onCreate() {
         mRawDataFromApify = new JSONRawData(this);
+        mRawDataFromHerokuapp = new JSONRawData(this);
     }
 
     @Override
@@ -50,6 +60,7 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
             @Override
             public void run() {
                 mRawDataFromApify.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
+                mRawDataFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_DOHDATA_DROP_FROM_HEROKUAPP);
             }
         }).start();
         return START_STICKY;
@@ -57,6 +68,8 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
 
     public interface RawDataReceiver {
         void onReceivedApifyData(boolean isReceived, String data);
+
+        void onReceivedDOHDropHerokuappData(boolean isReceived, String data);
 
     }
 

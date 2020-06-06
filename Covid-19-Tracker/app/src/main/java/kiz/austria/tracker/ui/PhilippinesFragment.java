@@ -44,9 +44,8 @@ import kiz.austria.tracker.data.DataParser;
 import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.data.PHDOHParser;
 import kiz.austria.tracker.data.PHRecordParser;
-import kiz.austria.tracker.data.PHTrendDataParser;
 import kiz.austria.tracker.model.Nation;
-import kiz.austria.tracker.model.PHDOHDrop;
+import kiz.austria.tracker.model.PHListDOHDrop;
 import kiz.austria.tracker.model.PHListUpdatesCases;
 import kiz.austria.tracker.model.PHRecord;
 import kiz.austria.tracker.util.TrackerHorizontalChart;
@@ -61,7 +60,7 @@ import static android.graphics.Color.rgb;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PhilippinesFragment extends BaseFragment implements DataParser.OnDataAvailable, PHTrendDataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener, PHRecordParser.OnDataAvailable, PHDOHParser.OnDataAvailable, OnChartValueSelectedListener, APIFYDataParser.OnDataAvailable {
+public class PhilippinesFragment extends BaseFragment implements DataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener, PHRecordParser.OnDataAvailable, PHDOHParser.OnDataAvailable, OnChartValueSelectedListener, APIFYDataParser.OnDataAvailable {
 
     private static final String TAG = "PhilippinesFragment";
     private static final int[] COLORS = {
@@ -103,7 +102,6 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
     private APIFYDataParser mAPIFYDataParser = null;
     private DataParser mDataParser = null;
     private PHDOHParser mPHDOHParser = null;
-    private PHTrendDataParser mPHTrendDataParser = null;
     //variables
     private int mCountCases;
     private int mCountRecovered;
@@ -121,6 +119,7 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
     private boolean isPaused = false;
     private boolean isConnectionLoss = false;
     private String mRawDataFromApify;
+    private String mRawDataDOHDropFromHerokuapp;
 
     private void resetStats() {
         mCount1to17 = 0;
@@ -137,44 +136,21 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
         Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
         if (isConnected && isConnectionLoss) {
             resetStats();
-            mPHTrendDataParser = new PHTrendDataParser(this);
-            mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.CASUALTIES_ONLY);
-            mPHTrendDataParser.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
+            mAPIFYDataParser = new APIFYDataParser(this);
+            mAPIFYDataParser.parse(APIFYDataParser.ParseData.ESSENTIAL_DATA);
+            mAPIFYDataParser.execute(mRawDataFromApify);
 
             mDataParser = new DataParser(this);
-            mDataParser.execute(Addresses.Link.DATA_COUNTRIES);
+            mDataParser.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
 
             mPHDOHParser = new PHDOHParser(this);
-            mPHDOHParser.execute(Addresses.Link.DATA_PH_DROP_DOH);
+            mPHDOHParser.execute(Addresses.Link.DATA_PHILIPPINES_DOHDATA_DROP_FROM_HEROKUAPP);
             return;
         }
         isConnectionLoss = true;
         TrackerUtility.message(getActivity(), "No Internet Connection",
                 R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
                 R.color.toast_connection_lost);
-    }
-
-    @Override
-    public void onDataTrendAvailable(List<PHListUpdatesCases> trends, JSONRawData.DownloadStatus status) {
-        //this method is not supported
-    }
-
-    @Override
-    public void onDataCasualtiesTrendAvailable(List<PHListUpdatesCases> casualties, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
-            initLineChart(casualties);
-            getLatestUpdate(casualties.get(casualties.size() - 1));
-        }
-    }
-
-    @Override
-    public void onDataUnderinvestigationTrendAvailable(List<PHListUpdatesCases> casualties, JSONRawData.DownloadStatus status) {
-        //this method is not supported
-    }
-
-    @Override
-    public void onDataLastUpdateAvailable(PHListUpdatesCases date, JSONRawData.DownloadStatus status) {
-        //this method is not supported
     }
 
     @Override
@@ -199,7 +175,7 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
     }
 
     @Override
-    public void onDataPHDOHAvailable(List<PHDOHDrop> dohDrops, JSONRawData.DownloadStatus status) {
+    public void onDataPHDOHAvailable(List<PHListDOHDrop> dohDrops, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK && !mPHDOHParser.isCancelled()) {
             Log.d(TAG, "onDataPHDOHAvailable() size = " + dohDrops.size());
             Log.d(TAG, "onDataPHDOHAvailable() data = " + dohDrops);
@@ -210,8 +186,8 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
         }
     }
 
-    private void retrievedStats(List<PHDOHDrop> dohDrops) {
-        for (PHDOHDrop drop : dohDrops) {
+    private void retrievedStats(List<PHListDOHDrop> dohDrops) {
+        for (PHListDOHDrop drop : dohDrops) {
 
             if (Integer.parseInt(drop.getAge()) >= 61) {
                 mCount61up++;
@@ -287,7 +263,6 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
             initLineChart(dataList);
             getLatestUpdate(dataList.get(dataList.size() - 1));
         }
-
     }
 
     @Override
@@ -303,6 +278,7 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
         Bundle args = getArguments();
         if (args != null) {
             mRawDataFromApify = args.getString("apify_data");
+            mRawDataDOHDropFromHerokuapp = args.getString("DOHDropHerokuapp");
         }
 
         initTrackerListener();
@@ -406,18 +382,15 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
         if (!isPausedToStopReDownload()) {
 
             mAPIFYDataParser = new APIFYDataParser(this);
-            mAPIFYDataParser.download(APIFYDataParser.DownloadData.ESSENTIAL_DATA);
+            mAPIFYDataParser.parse(APIFYDataParser.ParseData.ESSENTIAL_DATA);
             mAPIFYDataParser.execute(mRawDataFromApify);
 
-//            mPHTrendDataParser = new PHTrendDataParser(this);
-//            mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.CASUALTIES_ONLY);
-//            mPHTrendDataParser.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
-
             mDataParser = new DataParser(this);
-            mDataParser.execute(Addresses.Link.DATA_PHILIPPINES);
+            mDataParser.execute(Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP);
 
             mPHDOHParser = new PHDOHParser(this);
-            mPHDOHParser.execute(Addresses.Link.DATA_PH_DROP_DOH);
+            mPHDOHParser.parse(PHDOHParser.ParseData.DOH_DROP);
+            mPHDOHParser.execute(mRawDataDOHDropFromHerokuapp);
         }
     }
 
@@ -430,7 +403,6 @@ public class PhilippinesFragment extends BaseFragment implements DataParser.OnDa
 
     private void cancelDownload() {
         if (mDataParser != null) mDataParser.cancel(true);
-        if (mPHTrendDataParser != null) mPHTrendDataParser.cancel(true);
         if (mPHDOHParser != null) mPHDOHParser.cancel(true);
         if (mAPIFYDataParser != null) mAPIFYDataParser.cancel(true);
     }

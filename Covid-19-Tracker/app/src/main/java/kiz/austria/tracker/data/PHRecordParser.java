@@ -41,10 +41,10 @@ public class PHRecordParser extends AsyncTask<String, Void, List<PHRecord>> impl
     }
 
     @Override
-    public void onDownloadComplete(String data, JSONRawData.DownloadStatus status) {
+    public void onDownloadCompleteFromApify(String data, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK) {
 
-            if (destinationUri.equals(Addresses.Link.DATA_PH_DROP_CASES)) {
+            if (destinationUri.equals(Addresses.Link.DATA_PHILIPPINES_CASES_FROM_HEROKUAPP)) {
                 mPHRecord = new ArrayList<>();
                 try {
                     JSONObject object = new JSONObject(data);
@@ -74,6 +74,11 @@ public class PHRecordParser extends AsyncTask<String, Void, List<PHRecord>> impl
                 }
             }
         }
+    }
+
+    @Override
+    public void onDownloadCompleteDOHDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
+
     }
 
     public interface OnDataAvailable {

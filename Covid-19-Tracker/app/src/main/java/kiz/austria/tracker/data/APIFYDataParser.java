@@ -18,20 +18,20 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
     private ArrayList<PHListUpdatesCases> mPHListUpdatesCasesList;
     private JSONRawData.DownloadStatus mDownloadStatus;
     private PHListUpdatesCases mLatestDateUpdated;
-    private DownloadData mDownloadData;
+    private ParseData mParseData;
 
     public APIFYDataParser(final OnDataAvailable onDataAvailable) {
         mOnDataAvailable = onDataAvailable;
     }
 
-    public void download(DownloadData download) {
-        mDownloadData = download;
+    public void parse(ParseData parseData) {
+        mParseData = parseData;
     }
 
     @Override
     protected ArrayList<PHListUpdatesCases> doInBackground(String... raw) {
 
-        if (mDownloadData == DownloadData.FULL_DATA) {
+        if (mParseData == ParseData.FULL_DATA) {
             mPHListUpdatesCasesList = new ArrayList<>();
             try {
                 JSONArray jsonList = new JSONArray(raw[0]);
@@ -58,7 +58,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
             }
         }
 
-        if (mDownloadData == DownloadData.DATE_ONLY) {
+        if (mParseData == ParseData.DATE_ONLY) {
             try {
                 JSONArray jsonList = new JSONArray(raw[0]);
                 JSONObject jsonObject = jsonList.getJSONObject(jsonList.length() - 1);
@@ -72,7 +72,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
             }
         }
 
-        if (mDownloadData == DownloadData.ESSENTIAL_DATA) {
+        if (mParseData == ParseData.ESSENTIAL_DATA) {
             mPHListUpdatesCasesList = new ArrayList<>();
             try {
                 JSONArray jsonList = new JSONArray(raw[0]);
@@ -92,7 +92,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
             }
         }
 
-        if (mDownloadData == DownloadData.BASIC_DATA) {
+        if (mParseData == ParseData.BASIC_DATA) {
             mPHListUpdatesCasesList = new ArrayList<>();
             try {
                 JSONArray jsonList = new JSONArray(raw[0]);
@@ -119,7 +119,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
     @Override
     protected void onPostExecute(ArrayList<PHListUpdatesCases> phListUpdatesCases) {
         if (mOnDataAvailable != null) {
-            switch (mDownloadData) {
+            switch (mParseData) {
                 case FULL_DATA:
                     mOnDataAvailable.onFullDataAvailable(phListUpdatesCases, mDownloadStatus);
                     break;
@@ -163,7 +163,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
         return "0";
     }
 
-    public enum DownloadData {FULL_DATA, DATE_ONLY, ESSENTIAL_DATA, BASIC_DATA}
+    public enum ParseData {FULL_DATA, DATE_ONLY, ESSENTIAL_DATA, BASIC_DATA}
 
     public interface OnDataAvailable {
         void onFullDataAvailable(ArrayList<PHListUpdatesCases> dataList, final JSONRawData.DownloadStatus status);

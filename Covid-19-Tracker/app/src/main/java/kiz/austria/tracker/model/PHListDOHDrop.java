@@ -1,6 +1,6 @@
 package kiz.austria.tracker.model;
 
-public class PHDOHDrop {
+public class PHListDOHDrop {
 
     private String casesCode;
     private String age;
@@ -15,7 +15,7 @@ public class PHDOHDrop {
     private String latitude;
     private String longitude;
 
-    public PHDOHDrop(String casesCode, String age, String sex, String isAdmitted, String dateReported, String dateDied, String recoveredOn, String regionRes, String provCityRes, String location, String latitude, String longitude) {
+    public PHListDOHDrop(String casesCode, String age, String sex, String isAdmitted, String dateReported, String dateDied, String recoveredOn, String regionRes, String provCityRes, String location, String latitude, String longitude) {
         this.casesCode = casesCode;
         this.age = setAge(age);
         this.sex = sex;
@@ -85,7 +85,7 @@ public class PHDOHDrop {
 
     @Override
     public String toString() {
-        return "PHDOHDrop{" +
+        return "PHListDOHDrop{" +
                 "casesCode='" + casesCode + '\'' +
                 ", age='" + age + '\'' +
                 ", sex='" + sex + '\'' +
