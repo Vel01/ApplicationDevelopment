@@ -81,6 +81,11 @@ public class PHRecordParser extends AsyncTask<String, Void, List<PHRecord>> impl
 
     }
 
+    @Override
+    public void onDownloadCompletePhilippinesDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
+
+    }
+
     public interface OnDataAvailable {
         void onDataPHRecordAvailable(List<PHRecord> records, final JSONRawData.DownloadStatus status);
     }

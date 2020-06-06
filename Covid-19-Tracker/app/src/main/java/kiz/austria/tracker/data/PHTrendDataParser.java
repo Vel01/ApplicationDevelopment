@@ -117,6 +117,11 @@ public class PHTrendDataParser extends AsyncTask<String, Void, List<PHListUpdate
     }
 
     @Override
+    public void onDownloadCompletePhilippinesDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
+
+    }
+
+    @Override
     protected void onPostExecute(List<PHListUpdatesCases> trends) {
         if (mOnDataAvailable != null) {
             switch (interest) {

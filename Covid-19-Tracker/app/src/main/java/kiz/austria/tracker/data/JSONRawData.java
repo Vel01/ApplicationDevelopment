@@ -94,6 +94,9 @@ public class JSONRawData extends AsyncTask<String, Void, String> {
                 case Addresses.Link.DATA_PHILIPPINES_DOHDATA_DROP_FROM_HEROKUAPP:
                     mOnDownloadComplete.onDownloadCompleteDOHDataFromHerokuapp(data, mDownloadStatus);
                     break;
+                case Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP:
+                    mOnDownloadComplete.onDownloadCompletePhilippinesDataFromHerokuapp(data, mDownloadStatus);
+                    break;
             }
         }
     }
@@ -111,5 +114,7 @@ public class JSONRawData extends AsyncTask<String, Void, String> {
         void onDownloadCompleteFromApify(String data, DownloadStatus status);
 
         void onDownloadCompleteDOHDataFromHerokuapp(String data, DownloadStatus status);
+
+        void onDownloadCompletePhilippinesDataFromHerokuapp(String data, DownloadStatus status);
     }
 }

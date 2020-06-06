@@ -19,7 +19,8 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     private RawDataReceiver mReceiver;//callback
     private IBinder mIBinder = new RawDataServiceBinder();
     private JSONRawData mRawDataFromApify;
-    private JSONRawData mRawDataFromHerokuapp;
+    private JSONRawData mRawDataDOHFromHerokuapp;
+    private JSONRawData mRawDataPhilippinesFromHerokuapp;
 
     @Override
     public void onDownloadCompleteFromApify(String data, JSONRawData.DownloadStatus status) {
@@ -31,9 +32,17 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
 
     @Override
     public void onDownloadCompleteDOHDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mRawDataFromHerokuapp.isCancelled()) {
-            Log.d(TAG, "onDownloadComplete() received data from apify link.");
+        if (status == JSONRawData.DownloadStatus.OK && !mRawDataDOHFromHerokuapp.isCancelled()) {
+            Log.d(TAG, "onDownloadComplete() received DOH data from herokuapp link.");
             mReceiver.onReceivedDOHDropHerokuappData(true, data);
+        }
+    }
+
+    @Override
+    public void onDownloadCompletePhilippinesDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
+        if (status == JSONRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
+            Log.d(TAG, "onDownloadComplete() received Philippines data from herokuapp link.");
+            mReceiver.onReceivedPhilippinesDropHerokuappData(true, data);
         }
     }
 
@@ -50,18 +59,19 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     @Override
     public void onCreate() {
         mRawDataFromApify = new JSONRawData(this);
-        mRawDataFromHerokuapp = new JSONRawData(this);
+        mRawDataDOHFromHerokuapp = new JSONRawData(this);
+        mRawDataPhilippinesFromHerokuapp = new JSONRawData(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() service is now running on different thread.");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mRawDataFromApify.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
-                mRawDataFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_DOHDATA_DROP_FROM_HEROKUAPP);
-            }
+        new Thread(() -> {
+
+            mRawDataFromApify.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
+            mRawDataDOHFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_DOHDATA_DROP_FROM_HEROKUAPP);
+            mRawDataPhilippinesFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP);
+
         }).start();
         return START_STICKY;
     }
@@ -70,6 +80,8 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
         void onReceivedApifyData(boolean isReceived, String data);
 
         void onReceivedDOHDropHerokuappData(boolean isReceived, String data);
+
+        void onReceivedPhilippinesDropHerokuappData(boolean isReceived, String data);
 
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 
 import kiz.austria.tracker.model.PHListDOHDrop;
 
-public class PHDOHParser extends AsyncTask<String, Void, List<PHListDOHDrop>> {
+public class PHDOHDataParser extends AsyncTask<String, Void, List<PHListDOHDrop>> {
 
     private static final String TAG = "RawDataParser";
 
@@ -26,7 +26,7 @@ public class PHDOHParser extends AsyncTask<String, Void, List<PHListDOHDrop>> {
         mParseData = parseData;
     }
 
-    public PHDOHParser(OnDataAvailable onDataAvailable) {
+    public PHDOHDataParser(OnDataAvailable onDataAvailable) {
         mOnDataAvailable = onDataAvailable;
     }
 
@@ -61,6 +61,7 @@ public class PHDOHParser extends AsyncTask<String, Void, List<PHListDOHDrop>> {
                 mDownloadStatus = JSONRawData.DownloadStatus.FAILED_OR_EMPTY;
             }
         }
+
         return mPHListDOHDrop;
     }
 
@@ -71,7 +72,7 @@ public class PHDOHParser extends AsyncTask<String, Void, List<PHListDOHDrop>> {
         }
     }
 
-    public enum ParseData {DOH_DROP}
+    public enum ParseData {DOH_DROP, PHILIPPINES}
 
     private String getObjectLocation(JSONObject doh_drop) {
         try {

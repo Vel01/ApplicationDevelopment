@@ -6,10 +6,12 @@ public class DownloadedData {
 
     private String mApifyData;
     private String mHerokuappDOHData;
+    private String mHerokuappPhilippinesData;
 
     private DownloadedData() {
         mApifyData = "";
         mHerokuappDOHData = "";
+        mHerokuappPhilippinesData = "";
     }
 
     public static DownloadedData getInstance() {
@@ -28,6 +30,10 @@ public class DownloadedData {
         mHerokuappDOHData = data;
     }
 
+    public void savePhilippinesData(String data) {
+        mHerokuappPhilippinesData = data;
+    }
+
 
     public String getApifyData() {
         return mApifyData;
@@ -35,5 +41,9 @@ public class DownloadedData {
 
     public String getHerokuappDOHData() {
         return mHerokuappDOHData;
+    }
+
+    public String getHerokuappPhilippinesData() {
+        return mHerokuappPhilippinesData;
     }
 }

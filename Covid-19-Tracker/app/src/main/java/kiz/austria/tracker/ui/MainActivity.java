@@ -94,7 +94,6 @@ public class MainActivity extends BaseActivity implements
     public void onReceivedApifyData(boolean isReceived, String data) {
         if (isReceived) {
             Log.d(TAG, "onReceivedApifyData() data received by host activity.");
-//            mArgument.putString("apify_data", data);
             DownloadedData.getInstance().saveApifyData(data);
         }
     }
@@ -103,10 +102,18 @@ public class MainActivity extends BaseActivity implements
     public void onReceivedDOHDropHerokuappData(boolean isReceived, String data) {
         if (isReceived) {
             Log.d(TAG, "onReceivedDOHDropHerokuappData() data received by host activity.");
-//            mArgument.putString("DOHDropHerokuapp", data);
             DownloadedData.getInstance().saveDOHData(data);
         }
     }
+
+    @Override
+    public void onReceivedPhilippinesDropHerokuappData(boolean isReceived, String data) {
+        if (isReceived) {
+            Log.d(TAG, "onReceivedDOHDropHerokuappData() data received by host activity.");
+            DownloadedData.getInstance().savePhilippinesData(data);
+        }
+    }
+
 
     private void bindDownloadDataService() {
         if (mDownloadDataServiceConnection == null) {
@@ -225,7 +232,6 @@ public class MainActivity extends BaseActivity implements
 
     private void initPhilippinesFragment() {
         PhilippinesFragment fragment = new PhilippinesFragment();
-//        fragment.setArguments(mArgument);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_philippines));
         transaction.addToBackStack(getString(R.string.tag_fragment_philippines));
