@@ -85,8 +85,8 @@ public class TrackerLineChart {
 
     private LineDataSet lineDataConfig(List<Entry> values, String label, int color) {
         LineDataSet lineData = new LineDataSet(values, label);
-        lineData.setLineWidth(1f);
-        lineData.setCircleRadius(2f);
+        lineData.setLineWidth(2f);
+        lineData.setCircleRadius(3f);
         lineData.setDrawCircleHole(false);
         lineData.setColor(color);
         lineData.setCircleColor(color);

@@ -28,15 +28,11 @@ public class TrackerHorizontalChart {
     }
 
     public void attributes() {
-        chart.setFitBars(true);
-        chart.setTouchEnabled(true);
-        chart.setDragEnabled(true);
-        chart.setScaleEnabled(true);
-        chart.setPinchZoom(true);
+        chart.setFitBars(false);
+        chart.setScaleEnabled(false);
         chart.animateY(2500);
         chart.setMaxVisibleValueCount(10);
         chart.getDescription().setEnabled(false);
-        chart.setExtraOffsets(10, 10, 10, 10);
     }
 
     public XAxis setXAxis(XAxis.XAxisPosition position) {

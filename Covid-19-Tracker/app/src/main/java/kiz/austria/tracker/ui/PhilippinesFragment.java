@@ -318,10 +318,10 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
     }
 
     private void initBarChart(int total) {
+        barChart.setOnChartValueSelectedListener(this);
         barChart.getLegend().setEnabled(false);
         barChart.setDrawBarShadow(true);
         TrackerHorizontalChart chart = new TrackerHorizontalChart(barChart);
-        barChart.setOnChartValueSelectedListener(this);
         chart.attributes();
         chart.setXAxis(XAxis.XAxisPosition.BOTTOM).setValueFormatter(new IndexAxisValueFormatter(Arrays.asList("1-17", "18-30", "31-45", "46-60", "60+")));
         chart.setAxisLeft();
@@ -336,7 +336,7 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
         ArrayList<PieEntry> entries = new ArrayList<>();
         entries.add(new PieEntry(mGenderMale, "Male"));
         entries.add(new PieEntry(mGenderFemale, "Female"));
-        TrackerPieChart chart = new TrackerPieChart(pieChart, entries, "Cases by Gender");
+        TrackerPieChart chart = new TrackerPieChart(pieChart, entries, "");
         chart.initPieChart(tfRegular, 12f, WHITE);
         chart.setLegend();
         PieDataSet dataSet = chart.getDataSet();

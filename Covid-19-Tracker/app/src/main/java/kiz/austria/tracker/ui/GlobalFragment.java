@@ -296,8 +296,10 @@ public class GlobalFragment extends BaseFragment implements
 
     private void initHorizontalChart() {
 
-        TrackerHorizontalChart chart = new TrackerHorizontalChart(horizontalChart);
+        horizontalChart.setExtraOffsets(10, 10, 10, 10);
         horizontalChart.setOnChartValueSelectedListener(this);
+
+        TrackerHorizontalChart chart = new TrackerHorizontalChart(horizontalChart);
         chart.setFonts(tfLight);
         chart.attributes();
         chart.setXAxis(XAxis.XAxisPosition.TOP).

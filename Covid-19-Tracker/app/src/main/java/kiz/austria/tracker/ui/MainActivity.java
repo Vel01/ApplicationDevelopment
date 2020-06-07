@@ -101,7 +101,7 @@ public class MainActivity extends BaseActivity implements
     private boolean isRawCountriesFromHerokuappCompleted = false;
     private View mSplashScreen;
     private ViewGroup mRootSplash;
-    private boolean show = false;
+    private boolean showSplash = false;
 
     @Override
     public void onDataCompleted() {
@@ -110,46 +110,21 @@ public class MainActivity extends BaseActivity implements
                 && isRawPhilippinesFromHerokuappCompleted
                 && isRawCountriesFromHerokuappCompleted) {
             Log.d(TAG, "onDataCompleted() is completed ");
-            //remove splash screen here....
             mSplashScreen.clearAnimation();
-            show = false;
-            toggle();
+            showSplash = false;
+            initSplashScreen();
             initGlobalFragment();
-//            TrackerUtility.runFadeAnimationOn(mRoot, true);
-
         }
     }
 
-    private void toggle() {
+    private void initSplashScreen() {
         Transition transition = new Fade();
         transition.setDuration(500);
         transition.addTarget(R.id.tracker_splash);
 
         TransitionManager.beginDelayedTransition(mRootSplash, transition);
-        mSplashScreen.setVisibility(show ? View.VISIBLE : View.GONE);
+        mSplashScreen.setVisibility(showSplash ? View.VISIBLE : View.GONE);
     }
-
-//    private final int ANIMATION_DURATION = 500;
-//
-//    public void show() {
-//        mSplashScreen.setVisibility(View.VISIBLE);
-//        mSplashScreen.animate()
-//                .alpha(1f)
-//                .setDuration(ANIMATION_DURATION)
-//                .setListener(null);
-//    }
-//
-//    private void hide() {
-//        mSplashScreen.animate()
-//                .alpha(0f)
-//                .setDuration(ANIMATION_DURATION)
-//                .setListener(new AnimatorListenerAdapter() {
-//                    @Override
-//                    public void onAnimationEnd(Animator animation) {
-//                        mSplashScreen.setVisibility(View.GONE);
-//                    }
-//                });
-//    }
 
     @Override
     public void onReceivedApifyData(boolean isReceived, String data) {
@@ -223,21 +198,17 @@ public class MainActivity extends BaseActivity implements
         Log.e(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        activateToolbar(false);
+
+        //================== Host Animation ==================/
         mSplashScreen = findViewById(R.id.tracker_splash);
         mRootSplash = findViewById(R.id.coordinator_layout);
         mRoot = findViewById(R.id.main_activity);
-        show = true;
-        toggle();
-        activateToolbar(false);
+        showSplash = true;
+        initSplashScreen();
 
         //================ Service Instantiation ==================//
         mDownloadDataServiceIntent = new Intent(this, GetRawDataService.class);
-//        startService(mDownloadDataServiceIntent);
-//        bindDownloadDataService();
-
-//        if (savedInstanceState == null) {
-////            initGlobalFragment();
-//        }
 
         initTrackerListener();
         if (ConnectivityReceiver.isNotConnected()) {
@@ -246,6 +217,7 @@ public class MainActivity extends BaseActivity implements
                     R.color.toast_connection_lost);
         }
 
+        //================ Material Drawer Instantiation ===========//
         initMaterialDrawer();
         if (savedInstanceState != null) {
             int currentSelection = savedInstanceState.getInt(TrackerKeys.STATE_SELECTION_DRAWER);
