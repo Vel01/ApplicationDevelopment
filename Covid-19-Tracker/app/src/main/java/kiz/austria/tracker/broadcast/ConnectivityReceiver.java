@@ -16,7 +16,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
         super();
     }
 
-    public static boolean isConnected() {
+    public static boolean isNotConnected() {
         ConnectivityManager manager = (ConnectivityManager) TrackerApplication.getInstance().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         assert manager != null;
 
@@ -31,7 +31,6 @@ public class ConnectivityReceiver extends BroadcastReceiver {
         } else {
 
             NetworkInfo info = manager.getActiveNetworkInfo();
-
 
             return info == null || !info.isConnected() && !info.isAvailable();
         }

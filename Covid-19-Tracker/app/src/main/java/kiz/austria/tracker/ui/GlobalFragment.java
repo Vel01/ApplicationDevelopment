@@ -42,11 +42,9 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
 import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.APIFYDataParser;
-import kiz.austria.tracker.data.DataParser;
 import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.data.NationDataParser;
-import kiz.austria.tracker.data.PHTrendDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.model.PHListUpdatesCases;
 import kiz.austria.tracker.model.Philippines;
@@ -59,47 +57,10 @@ import static android.graphics.Color.BLACK;
 import static android.graphics.Color.rgb;
 
 public class GlobalFragment extends BaseFragment implements
-        View.OnClickListener, PHTrendDataParser.OnDataAvailable, DataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener, OnChartValueSelectedListener, NationDataParser.OnDataAvailable, APIFYDataParser.OnDataAvailable {
+        View.OnClickListener, ConnectivityReceiver.ConnectivityReceiverListener, OnChartValueSelectedListener, NationDataParser.OnDataAvailable, APIFYDataParser.OnDataAvailable {
 
     private static final String TAG = "GlobalFragment";
 
-    //widgets
-    @BindView(R.id.chart_global_top_10)
-    HorizontalBarChart horizontalChart;
-    //layouts
-    @BindView(R.id.layout_shimmer)
-    ShimmerFrameLayout mShimmerFrameLayout;
-    //ButterKnife
-    private Unbinder mUnbinder;
-
-    @Override
-    public void onDataAvailable(List<Nation> nations, JSONRawData.DownloadStatus status) {
-//        if (status == JSONRawData.DownloadStatus.OK && !mDataParser.isCancelled()) {
-//
-//            Collections.sort(nations, (o1, o2) ->
-//                    TrackerUtility.sort(Integer.parseInt(o1.getTodayCases()),
-//                            Integer.parseInt(o2.getTodayCases())));
-//            for (int i = 0; i < nations.size(); i++) {
-//                Nation nation = nations.get(i);
-//                if (nation.getCountry().toLowerCase().equals("world")) {
-//                    Log.d(TAG, "onDataAvailable() data received from itself: " + nation.toString());
-//                    disCases = Integer.parseInt(nation.getConfirmed());
-//                    disDeaths = Integer.parseInt(nation.getDeaths());
-//                    disRecovered = Integer.parseInt(nation.getRecovered());
-//                    disNewCases = Integer.parseInt(nation.getTodayCases());
-//                    disNewDeaths = Integer.parseInt(nation.getTodayDeaths());
-//                    disActive = Integer.parseInt(nation.getActive());
-//                    continue;
-//                }
-//                if (topNations.size() != 10) {
-//                    topNations.add(nation);
-//                    continue;
-//                }
-//                break;
-//            }
-//            Log.d(TAG, "onDataAvailable: " + topNations.toString());
-//        }
-    }
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
@@ -107,7 +68,6 @@ public class GlobalFragment extends BaseFragment implements
 
         if (entry.getYVals() != null) {
             Log.i("VAL SELECTED", "Value: " + entry.getYVals()[h.getStackIndex()]);
-
 
             switch (h.getStackIndex()) {
                 case 0:
@@ -120,110 +80,25 @@ public class GlobalFragment extends BaseFragment implements
                     break;
                 default:
             }
-
-
         }
     }
 
-    @BindView(R.id.chart_global_cases)
-    PieChart chart;
-    @BindView(R.id.tv_cases)
-    TextView tvCases;
-    @BindView(R.id.tv_recovered)
-    TextView tvRecovered;
-    @BindView(R.id.tv_deaths)
-    TextView tvDeaths;
-    @BindView(R.id.tv_new_cases)
-    TextView tvNewCases;
-    @BindView(R.id.tv_active)
-    TextView tvActive;
-    @BindView(R.id.tv_new_deaths)
-    TextView tvNewDeaths;
-    @BindView(R.id.tv_update_date)
-    TextView tvUpdate;
-    @BindView(R.id.btn_view_all_countries)
-    CardView btnViewAllCountries;
-    @BindView(R.id.include_layout_global_results)
-    ConstraintLayout mChildMain;
-    @BindView(R.id.child_layout_global_shimmer)
-    View mChildShimmer;
-    @BindView(R.id.container_refresher)
-    SwipeRefreshLayout mRefreshLayout;
-
-    //vars
-    private boolean isPaused = false;
-    private int disCases, disDeaths, disRecovered, disActive, disNewCases, disNewDeaths;
-    private static String mRawDataCountriesFromHerokuapp;
-    private static String mRawDataDateFromApify;
-
-    //references
-    private List<Nation> topNations = new ArrayList<>();
-    private Inflatable mListener;
-    private DataParser mDataParser = null;
-    private NationDataParser mNationDataParser = null;
-    private APIFYDataParser mAPIFYDataParser = null;
-    private PHTrendDataParser mPHTrendDataParser = null;
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
         if (isConnected) {
-//            mDataParser = new DataParser(this);
-//            mDataParser.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
-//
-//            mPHTrendDataParser = new PHTrendDataParser(this);
-//            mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.DATE_ONLY);
-//            mPHTrendDataParser.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
-
-            mRawDataCountriesFromHerokuapp = DownloadedData.getInstance().getHerokuappCountriesData();
-            mRawDataDateFromApify = DownloadedData.getInstance().getApifyData();
-
-            if (!mRawDataCountriesFromHerokuapp.isEmpty() && mNationDataParser.getStatus() != NationDataParser.Status.RUNNING) {
-                mNationDataParser.cancel(true);
-                mNationDataParser = new NationDataParser(GlobalFragment.this);
-                mNationDataParser.parse(NationDataParser.ParseData.COUNTRIES);
-                mNationDataParser.execute(mRawDataCountriesFromHerokuapp);
-            }
-
-            if (!mRawDataDateFromApify.isEmpty() && mAPIFYDataParser.getStatus() != APIFYDataParser.Status.RUNNING) {
-                mAPIFYDataParser.cancel(true);
-                mAPIFYDataParser = new APIFYDataParser(GlobalFragment.this);
-                mAPIFYDataParser.parse(APIFYDataParser.ParseData.DATE_ONLY);
-                mAPIFYDataParser.execute(mRawDataDateFromApify);
-            }
-            return;
+            reParseRawData();
+        } else {
+            TrackerUtility.message(getActivity(), "No Internet Connection",
+                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+                    R.color.toast_connection_lost);
         }
-        TrackerUtility.message(getActivity(), "No Internet Connection",
-                R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                R.color.toast_connection_lost);
     }
 
     private static final int[] JOYFUL_COLORS = {
             Color.rgb(255, 68, 51), Color.rgb(233, 236, 239)
     };
-
-    @Override
-    public void onDataTrendAvailable(List<PHListUpdatesCases> trends, JSONRawData.DownloadStatus status) {
-        //this method is not supported
-    }
-
-    @Override
-    public void onDataCasualtiesTrendAvailable(List<PHListUpdatesCases> casualties, JSONRawData.DownloadStatus status) {
-        //this method is not supported
-    }
-
-    @Override
-    public void onDataUnderinvestigationTrendAvailable(List<PHListUpdatesCases> casualties, JSONRawData.DownloadStatus status) {
-        //this method is not supported
-    }
-
-    @Override
-    public void onDataLastUpdateAvailable(PHListUpdatesCases date, JSONRawData.DownloadStatus status) {
-//        if (status == JSONRawData.DownloadStatus.OK && !mPHTrendDataParser.isCancelled()) {
-//            setLatestUpdate(date);
-//            displayData();
-//        }
-    }
 
     @Override
     public void onNothingSelected() {
@@ -241,12 +116,12 @@ public class GlobalFragment extends BaseFragment implements
                 Nation nation = nations.get(i);
                 if (nation.getCountry().toLowerCase().equals("world")) {
                     Log.d(TAG, "onCountriesDataAvailable() data received from itself.");
-                    disCases = Integer.parseInt(nation.getConfirmed());
-                    disDeaths = Integer.parseInt(nation.getDeaths());
-                    disRecovered = Integer.parseInt(nation.getRecovered());
-                    disNewCases = Integer.parseInt(nation.getTodayCases());
-                    disNewDeaths = Integer.parseInt(nation.getTodayDeaths());
-                    disActive = Integer.parseInt(nation.getActive());
+                    mCases = Integer.parseInt(nation.getConfirmed());
+                    mDeaths = Integer.parseInt(nation.getDeaths());
+                    mRecovered = Integer.parseInt(nation.getRecovered());
+                    mNewCases = Integer.parseInt(nation.getTodayCases());
+                    mNewDeaths = Integer.parseInt(nation.getTodayDeaths());
+                    mActive = Integer.parseInt(nation.getActive());
                     continue;
                 }
                 if (topNations.size() != 10) {
@@ -256,6 +131,8 @@ public class GlobalFragment extends BaseFragment implements
                 break;
             }
             displayData();
+            initPieChart();
+            initHorizontalChart();
         }
     }
 
@@ -291,16 +168,19 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
 
-        mRawDataCountriesFromHerokuapp = DownloadedData.getInstance().getHerokuappCountriesData();
-        mRawDataDateFromApify = DownloadedData.getInstance().getApifyData();
-
+        initRawDataForParsing();
         initInflatable();
         initTrackerListener();
-        if (ConnectivityReceiver.isConnected()) {
+        if (ConnectivityReceiver.isNotConnected()) {
             TrackerUtility.message(getActivity(), "No Internet Connection",
                     R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
                     R.color.toast_connection_lost);
         }
+    }
+
+    private void initRawDataForParsing() {
+        mRawDataCountriesFromHerokuapp = DownloadedData.getInstance().getHerokuappCountriesData();
+        mRawDataDateFromApify = DownloadedData.getInstance().getApifyData();
     }
 
     private void initTrackerListener() {
@@ -314,6 +194,59 @@ public class GlobalFragment extends BaseFragment implements
                     + " must implement Inflatable interface");
         }
         mListener = (Inflatable) activity;
+    }
+
+
+    //ButterKnife
+    private Unbinder mUnbinder;
+    @BindView(R.id.chart_global_cases)
+    PieChart chart;
+    @BindView(R.id.tv_cases)
+    TextView tvCases;
+    @BindView(R.id.tv_recovered)
+    TextView tvRecovered;
+    @BindView(R.id.tv_deaths)
+    TextView tvDeaths;
+    @BindView(R.id.tv_new_cases)
+    TextView tvNewCases;
+    @BindView(R.id.tv_active)
+    TextView tvActive;
+    @BindView(R.id.tv_new_deaths)
+    TextView tvNewDeaths;
+    @BindView(R.id.tv_update_date)
+    TextView tvUpdate;
+    @BindView(R.id.layout_shimmer)
+    ShimmerFrameLayout mShimmerFrameLayout;
+    @BindView(R.id.chart_global_top_10)
+    HorizontalBarChart horizontalChart;
+    @BindView(R.id.btn_view_all_countries)
+    CardView btnViewAllCountries;
+    @BindView(R.id.include_layout_global_results)
+    ConstraintLayout mChildMain;
+    @BindView(R.id.child_layout_global_shimmer)
+    View mChildShimmer;
+    @BindView(R.id.container_refresher)
+    SwipeRefreshLayout mRefreshLayout;
+
+    //vars
+    private boolean isPaused = false;
+    private int mCases, mDeaths, mRecovered, mActive, mNewCases, mNewDeaths;
+    private static String mRawDataCountriesFromHerokuapp;
+    private static String mRawDataDateFromApify;
+
+    //references
+    private List<Nation> topNations = new ArrayList<>();
+    private Inflatable mListener;
+    private NationDataParser mNationDataParser = null;
+    private APIFYDataParser mAPIFYDataParser = null;
+
+    private void resetStats() {
+        mCases = 0;
+        mDeaths = 0;
+        mRecovered = 0;
+        mActive = 0;
+        mNewCases = 0;
+        mNewDeaths = 0;
     }
 
     @Nullable
@@ -344,9 +277,9 @@ public class GlobalFragment extends BaseFragment implements
     private void initPieChart() {
 
         ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(disCases, "Confirmed"));
-        entries.add(new PieEntry(disDeaths, "Deaths"));
-        entries.add(new PieEntry(disRecovered, "Recovered"));
+        entries.add(new PieEntry(mCases, "Confirmed"));
+        entries.add(new PieEntry(mDeaths, "Deaths"));
+        entries.add(new PieEntry(mRecovered, "Recovered"));
 
         // add a lot of colors
         ArrayList<Integer> colors = new ArrayList<>();
@@ -420,30 +353,11 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onResume: was called!");
 
         mRefreshLayout.setOnRefreshListener(() -> {
-
-            mRawDataCountriesFromHerokuapp = DownloadedData.getInstance().getHerokuappCountriesData();
-            mRawDataDateFromApify = DownloadedData.getInstance().getApifyData();
-
-            if (!mRawDataCountriesFromHerokuapp.isEmpty() && mNationDataParser.getStatus() != NationDataParser.Status.RUNNING) {
-                mNationDataParser.cancel(true);
-                mNationDataParser = new NationDataParser(GlobalFragment.this);
-                mNationDataParser.parse(NationDataParser.ParseData.COUNTRIES);
-                mNationDataParser.execute(mRawDataCountriesFromHerokuapp);
-            }
-
-            if (!mRawDataDateFromApify.isEmpty() && mAPIFYDataParser.getStatus() != APIFYDataParser.Status.RUNNING) {
-                mAPIFYDataParser.cancel(true);
-                mAPIFYDataParser = new APIFYDataParser(GlobalFragment.this);
-                mAPIFYDataParser.parse(APIFYDataParser.ParseData.DATE_ONLY);
-                mAPIFYDataParser.execute(mRawDataDateFromApify);
-            }
-
+            reParseRawData();
             mRefreshLayout.setRefreshing(false);
         });
 
         if (!isPausedToStopReDownload()) {
-//            mDataParser = new DataParser(this);
-//            mDataParser.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
 
             if (!mRawDataCountriesFromHerokuapp.isEmpty()) {
                 mNationDataParser.parse(NationDataParser.ParseData.COUNTRIES);
@@ -455,9 +369,25 @@ public class GlobalFragment extends BaseFragment implements
                 mAPIFYDataParser.execute(mRawDataDateFromApify);
             }
 
-//            mPHTrendDataParser = new PHTrendDataParser(this);
-//            mPHTrendDataParser.setInterestData(PHTrendDataParser.InterestedData.DATE_ONLY);
-//            mPHTrendDataParser.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
+        }
+    }
+
+    private void reParseRawData() {
+        resetStats();
+        initRawDataForParsing();
+        restartShimmer();
+        if (!mRawDataCountriesFromHerokuapp.isEmpty() && mNationDataParser.getStatus() != NationDataParser.Status.RUNNING) {
+            mNationDataParser.cancel(true);
+            mNationDataParser = new NationDataParser(GlobalFragment.this);
+            mNationDataParser.parse(NationDataParser.ParseData.COUNTRIES);
+            mNationDataParser.execute(mRawDataCountriesFromHerokuapp);
+        }
+
+        if (!mRawDataDateFromApify.isEmpty() && mAPIFYDataParser.getStatus() != APIFYDataParser.Status.RUNNING) {
+            mAPIFYDataParser.cancel(true);
+            mAPIFYDataParser = new APIFYDataParser(GlobalFragment.this);
+            mAPIFYDataParser.parse(APIFYDataParser.ParseData.DATE_ONLY);
+            mAPIFYDataParser.execute(mRawDataDateFromApify);
         }
     }
 
@@ -467,6 +397,13 @@ public class GlobalFragment extends BaseFragment implements
 
     private boolean isPausedToStopReDownload() {
         return isPaused;
+    }
+
+    private void restartShimmer() {
+        mChildShimmer.setVisibility(View.VISIBLE);
+        mChildMain.setVisibility(View.INVISIBLE);
+        mShimmerFrameLayout.startShimmer();
+        mShimmerFrameLayout.showShimmer(true);
     }
 
     private void stopShimmer() {
@@ -480,32 +417,27 @@ public class GlobalFragment extends BaseFragment implements
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause()");
-        cancelDownload();
         stopShimmer();
         pausedToStopReDownload();
     }
 
     private void cancelDownload() {
-        if (mDataParser != null) mDataParser.cancel(true);
         if (mNationDataParser != null) mNationDataParser.cancel(true);
         if (mAPIFYDataParser != null) mAPIFYDataParser.cancel(true);
-        if (mPHTrendDataParser != null) mPHTrendDataParser.cancel(true);
     }
 
     private void displayData() {
         Log.d(TAG, "displayData() preparing to display");
         if (mChildShimmer != null && mChildShimmer.getVisibility() == View.VISIBLE) {
-            Log.d(TAG, "setting up data for display " + mChildShimmer.getVisibility());
             Log.d(TAG, "data is displayed!");
             stopShimmer();
-            TrackerNumber.display(tvCases, disCases);
-            TrackerNumber.display(tvDeaths, disDeaths);
-            TrackerNumber.display(tvRecovered, disRecovered);
-            TrackerNumber.display(tvActive, disActive);
-            TrackerNumber.display(tvNewCases, disNewCases);
-            TrackerNumber.display(tvNewDeaths, disNewDeaths);
-            initPieChart();
-            initHorizontalChart();
+            TrackerNumber.display(tvCases, mCases);
+            TrackerNumber.display(tvDeaths, mDeaths);
+            TrackerNumber.display(tvRecovered, mRecovered);
+            TrackerNumber.display(tvActive, mActive);
+            TrackerNumber.display(tvNewCases, mNewCases);
+            TrackerNumber.display(tvNewDeaths, mNewDeaths);
+
         }
     }
 

@@ -156,7 +156,7 @@ public class CountriesFragment extends BaseFragment implements
         super.onAttach(context);
         initInflatable();
         initTrackerListener();
-        if (ConnectivityReceiver.isConnected()) {
+        if (ConnectivityReceiver.isNotConnected()) {
             TrackerUtility.message(getActivity(), "No Internet Connection",
                     R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
                     R.color.toast_connection_lost);

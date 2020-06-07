@@ -121,7 +121,6 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
     private int mGenderMale;
     private int mGenderFemale;
     private boolean isPaused = false;
-    private boolean isConnectionLoss = false;
     private static String mRawDataFromApify;
     private static String mRawDataDOHDropFromHerokuapp;
     private static String mRawDataPhilippinesFromHerokuapp;
@@ -139,38 +138,13 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
-        if (isConnected && isConnectionLoss) {
-
-            resetStats();
-            initRawDataForParsing();
-
-            if (!mRawDataPhilippinesFromHerokuapp.isEmpty() && mNationDataParser.getStatus() != NationDataParser.Status.RUNNING) {
-                mNationDataParser.cancel(true);
-                mNationDataParser = new NationDataParser(PhilippinesFragment.this);
-                mNationDataParser.parse(NationDataParser.ParseData.PHILIPPINES);
-                mNationDataParser.execute(mRawDataPhilippinesFromHerokuapp);
-            }
-
-            if (!mRawDataFromApify.isEmpty() && mAPIFYDataParser.getStatus() != APIFYDataParser.Status.RUNNING) {
-                mAPIFYDataParser.cancel(true);
-                mAPIFYDataParser = new APIFYDataParser(PhilippinesFragment.this);
-                mAPIFYDataParser.parse(APIFYDataParser.ParseData.ESSENTIAL_DATA);
-                mAPIFYDataParser.execute(mRawDataFromApify);
-            }
-
-            if (!mRawDataDOHDropFromHerokuapp.isEmpty() && mPHDOHDataParser.getStatus() != PHDOHDataParser.Status.RUNNING) {
-                mPHDOHDataParser.cancel(true);
-                mPHDOHDataParser = new PHDOHDataParser(PhilippinesFragment.this);
-                mPHDOHDataParser.parse(PHDOHDataParser.ParseData.DOH_DROP);
-                mPHDOHDataParser.execute(mRawDataDOHDropFromHerokuapp);
-            }
-
-            return;
+        if (isConnected) {
+            reParseRawData();
+        } else {
+            TrackerUtility.message(getActivity(), "No Internet Connection",
+                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+                    R.color.toast_connection_lost);
         }
-        isConnectionLoss = true;
-        TrackerUtility.message(getActivity(), "No Internet Connection",
-                R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                R.color.toast_connection_lost);
     }
 
     @Override
@@ -183,9 +157,6 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
     public void onDataPHDOHAvailable(List<PHListDOHDrop> dohDrops, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK && !mPHDOHDataParser.isCancelled()) {
             Log.d(TAG, "onDataPHDOHAvailable() size = " + dohDrops.size());
-            Log.d(TAG, "onDataPHDOHAvailable() data = " + dohDrops);
-
-
             retrievedStats(dohDrops);
             initPieChart();
         }
@@ -300,8 +271,7 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
         super.onAttach(context);
         initRawDataForParsing();
         initTrackerListener();
-        if (ConnectivityReceiver.isConnected()) {
-            isConnectionLoss = true;
+        if (ConnectivityReceiver.isNotConnected()) {
             TrackerUtility.message(getActivity(), "No Internet Connection",
                     R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
                     R.color.toast_connection_lost);
@@ -408,31 +378,7 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
         Log.d(TAG, "onResume()");
 
         mRefreshLayout.setOnRefreshListener(() -> {
-
-            resetStats();
-            initRawDataForParsing();
-
-            if (!mRawDataPhilippinesFromHerokuapp.isEmpty() && mNationDataParser.getStatus() != NationDataParser.Status.RUNNING) {
-                mNationDataParser.cancel(true);
-                mNationDataParser = new NationDataParser(PhilippinesFragment.this);
-                mNationDataParser.parse(NationDataParser.ParseData.PHILIPPINES);
-                mNationDataParser.execute(mRawDataPhilippinesFromHerokuapp);
-            }
-
-            if (!mRawDataFromApify.isEmpty() && mAPIFYDataParser.getStatus() != APIFYDataParser.Status.RUNNING) {
-                mAPIFYDataParser.cancel(true);
-                mAPIFYDataParser = new APIFYDataParser(PhilippinesFragment.this);
-                mAPIFYDataParser.parse(APIFYDataParser.ParseData.ESSENTIAL_DATA);
-                mAPIFYDataParser.execute(mRawDataFromApify);
-            }
-
-            if (!mRawDataDOHDropFromHerokuapp.isEmpty() && mPHDOHDataParser.getStatus() != PHDOHDataParser.Status.RUNNING) {
-                mPHDOHDataParser.cancel(true);
-                mPHDOHDataParser = new PHDOHDataParser(PhilippinesFragment.this);
-                mPHDOHDataParser.parse(PHDOHDataParser.ParseData.DOH_DROP);
-                mPHDOHDataParser.execute(mRawDataDOHDropFromHerokuapp);
-            }
-
+            reParseRawData();
             mRefreshLayout.setRefreshing(false);
         });
 
@@ -453,6 +399,33 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
                 mPHDOHDataParser.parse(PHDOHDataParser.ParseData.DOH_DROP);
                 mPHDOHDataParser.execute(mRawDataDOHDropFromHerokuapp);
             }
+        }
+    }
+
+    private void reParseRawData() {
+        resetStats();
+        initRawDataForParsing();
+        restartShimmer();
+
+        if (!mRawDataPhilippinesFromHerokuapp.isEmpty() && mNationDataParser.getStatus() != NationDataParser.Status.RUNNING) {
+            mNationDataParser.cancel(true);
+            mNationDataParser = new NationDataParser(PhilippinesFragment.this);
+            mNationDataParser.parse(NationDataParser.ParseData.PHILIPPINES);
+            mNationDataParser.execute(mRawDataPhilippinesFromHerokuapp);
+        }
+
+        if (!mRawDataFromApify.isEmpty() && mAPIFYDataParser.getStatus() != APIFYDataParser.Status.RUNNING) {
+            mAPIFYDataParser.cancel(true);
+            mAPIFYDataParser = new APIFYDataParser(PhilippinesFragment.this);
+            mAPIFYDataParser.parse(APIFYDataParser.ParseData.ESSENTIAL_DATA);
+            mAPIFYDataParser.execute(mRawDataFromApify);
+        }
+
+        if (!mRawDataDOHDropFromHerokuapp.isEmpty() && mPHDOHDataParser.getStatus() != PHDOHDataParser.Status.RUNNING) {
+            mPHDOHDataParser.cancel(true);
+            mPHDOHDataParser = new PHDOHDataParser(PhilippinesFragment.this);
+            mPHDOHDataParser.parse(PHDOHDataParser.ParseData.DOH_DROP);
+            mPHDOHDataParser.execute(mRawDataDOHDropFromHerokuapp);
         }
     }
 
@@ -491,6 +464,13 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
         }
     }
 
+    private void restartShimmer() {
+        mChildShimmer.setVisibility(View.VISIBLE);
+        mChildMain.setVisibility(View.INVISIBLE);
+        mShimmerFrameLayout.startShimmer();
+        mShimmerFrameLayout.showShimmer(true);
+    }
+
     private void stopShimmer() {
         mShimmerFrameLayout.stopShimmer();
         mShimmerFrameLayout.hideShimmer();
@@ -505,6 +485,4 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
         mUnbinder.unbind();
         cancelDownload();
     }
-
-
 }
