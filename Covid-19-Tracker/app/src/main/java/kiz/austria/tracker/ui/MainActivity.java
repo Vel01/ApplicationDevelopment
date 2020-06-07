@@ -107,10 +107,18 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
-    public void onReceivedPhilippinesDropHerokuappData(boolean isReceived, String data) {
+    public void onReceivedPhilippinesHerokuappData(boolean isReceived, String data) {
         if (isReceived) {
-            Log.d(TAG, "onReceivedDOHDropHerokuappData() data received by host activity.");
+            Log.d(TAG, "onReceivedPhilippinesHerokuappData() data received by host activity.");
             DownloadedData.getInstance().savePhilippinesData(data);
+        }
+    }
+
+    @Override
+    public void onReceivedCountriesHerokuappData(boolean isReceived, String data) {
+        if (isReceived) {
+            Log.d(TAG, "onReceivedCountriesHerokuappData() data received by host activity.");
+            DownloadedData.getInstance().saveCountriesData(data);
         }
     }
 

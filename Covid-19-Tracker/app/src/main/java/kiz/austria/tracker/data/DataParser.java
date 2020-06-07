@@ -105,4 +105,9 @@ public class DataParser extends AsyncTask<String, Void, List<Nation>> implements
     public void onDownloadCompletePhilippinesDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
 
     }
+
+    @Override
+    public void onDownloadCompleteCountriesDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
+
+    }
 }

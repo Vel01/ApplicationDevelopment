@@ -21,6 +21,7 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     private JSONRawData mRawDataFromApify;
     private JSONRawData mRawDataDOHFromHerokuapp;
     private JSONRawData mRawDataPhilippinesFromHerokuapp;
+    private JSONRawData mRawDataCountriesFromHerokuapp;
 
     @Override
     public void onDownloadCompleteFromApify(String data, JSONRawData.DownloadStatus status) {
@@ -42,7 +43,15 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     public void onDownloadCompletePhilippinesDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
         if (status == JSONRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received Philippines data from herokuapp link.");
-            mReceiver.onReceivedPhilippinesDropHerokuappData(true, data);
+            mReceiver.onReceivedPhilippinesHerokuappData(true, data);
+        }
+    }
+
+    @Override
+    public void onDownloadCompleteCountriesDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
+        if (status == JSONRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
+            Log.d(TAG, "onDownloadComplete() received Countries data from herokuapp link.");
+            mReceiver.onReceivedCountriesHerokuappData(true, data);
         }
     }
 
@@ -61,6 +70,7 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
         mRawDataFromApify = new JSONRawData(this);
         mRawDataDOHFromHerokuapp = new JSONRawData(this);
         mRawDataPhilippinesFromHerokuapp = new JSONRawData(this);
+        mRawDataCountriesFromHerokuapp = new JSONRawData(this);
     }
 
     @Override
@@ -71,6 +81,7 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
             mRawDataFromApify.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
             mRawDataDOHFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_DOHDATA_DROP_FROM_HEROKUAPP);
             mRawDataPhilippinesFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP);
+            mRawDataCountriesFromHerokuapp.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
 
         }).start();
         return START_STICKY;
@@ -81,7 +92,9 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
 
         void onReceivedDOHDropHerokuappData(boolean isReceived, String data);
 
-        void onReceivedPhilippinesDropHerokuappData(boolean isReceived, String data);
+        void onReceivedPhilippinesHerokuappData(boolean isReceived, String data);
+
+        void onReceivedCountriesHerokuappData(boolean isReceived, String data);
 
     }
 
