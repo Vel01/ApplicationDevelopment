@@ -44,11 +44,9 @@ import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.data.JSONRawData;
 import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.data.PHDOHDataParser;
-import kiz.austria.tracker.data.PHRecordParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.model.PHListDOHDrop;
 import kiz.austria.tracker.model.PHListUpdatesCases;
-import kiz.austria.tracker.model.PHRecord;
 import kiz.austria.tracker.model.Philippines;
 import kiz.austria.tracker.util.TrackerHorizontalChart;
 import kiz.austria.tracker.util.TrackerLineChart;
@@ -62,7 +60,7 @@ import static android.graphics.Color.rgb;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PhilippinesFragment extends BaseFragment implements ConnectivityReceiver.ConnectivityReceiverListener, PHRecordParser.OnDataAvailable, PHDOHDataParser.OnDataAvailable, OnChartValueSelectedListener, APIFYDataParser.OnDataAvailable, NationDataParser.OnDataAvailable {
+public class PhilippinesFragment extends BaseFragment implements ConnectivityReceiver.ConnectivityReceiverListener, PHDOHDataParser.OnDataAvailable, OnChartValueSelectedListener, APIFYDataParser.OnDataAvailable, NationDataParser.OnDataAvailable {
 
     private static final String TAG = "PhilippinesFragment";
     private static final int[] COLORS = {
@@ -145,12 +143,6 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
                     R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
                     R.color.toast_connection_lost);
         }
-    }
-
-    @Override
-    public void onDataPHRecordAvailable(List<PHRecord> records, JSONRawData.DownloadStatus status) {
-        Log.d(TAG, "onDataPHRecordAvailable() status " + status);
-
     }
 
     @Override

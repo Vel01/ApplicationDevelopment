@@ -28,6 +28,7 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
         if (status == JSONRawData.DownloadStatus.OK && !mRawDataFromApify.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received data from apify link.");
             mReceiver.onReceivedApifyData(true, data);
+            mReceiver.onDataCompleted();
         }
     }
 
@@ -36,6 +37,7 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
         if (status == JSONRawData.DownloadStatus.OK && !mRawDataDOHFromHerokuapp.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received DOH data from herokuapp link.");
             mReceiver.onReceivedDOHDropHerokuappData(true, data);
+            mReceiver.onDataCompleted();
         }
     }
 
@@ -44,6 +46,7 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
         if (status == JSONRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received Philippines data from herokuapp link.");
             mReceiver.onReceivedPhilippinesHerokuappData(true, data);
+            mReceiver.onDataCompleted();
         }
     }
 
@@ -52,6 +55,7 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
         if (status == JSONRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received Countries data from herokuapp link.");
             mReceiver.onReceivedCountriesHerokuappData(true, data);
+            mReceiver.onDataCompleted();
         }
     }
 
@@ -88,6 +92,9 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     }
 
     public interface RawDataReceiver {
+
+        void onDataCompleted();
+
         void onReceivedApifyData(boolean isReceived, String data);
 
         void onReceivedDOHDropHerokuappData(boolean isReceived, String data);

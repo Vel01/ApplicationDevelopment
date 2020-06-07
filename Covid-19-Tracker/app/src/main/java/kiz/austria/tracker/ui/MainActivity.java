@@ -90,8 +90,27 @@ public class MainActivity extends BaseActivity implements
     private GetRawDataService mGetRawDataService;
     private boolean mIsServiceBound = false;
 
+
+    private boolean isRawFromApifyCompleted = false;
+    private boolean isRawDOHFromHerokuappCompleted = false;
+    private boolean isRawPhilippinesFromHerokuappCompleted = false;
+    private boolean isRawCountriesFromHerokuappCompleted = false;
+
+
+    @Override
+    public void onDataCompleted() {
+        if (isRawFromApifyCompleted
+                && isRawDOHFromHerokuappCompleted
+                && isRawPhilippinesFromHerokuappCompleted
+                && isRawCountriesFromHerokuappCompleted) {
+            Log.d(TAG, "onDataCompleted() is completed ");
+            //remove splash screen here....
+        }
+    }
+
     @Override
     public void onReceivedApifyData(boolean isReceived, String data) {
+        isRawFromApifyCompleted = isReceived;
         if (isReceived) {
             Log.d(TAG, "onReceivedApifyData() data received by host activity.");
             DownloadedData.getInstance().saveApifyData(data);
@@ -100,6 +119,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onReceivedDOHDropHerokuappData(boolean isReceived, String data) {
+        isRawDOHFromHerokuappCompleted = isReceived;
         if (isReceived) {
             Log.d(TAG, "onReceivedDOHDropHerokuappData() data received by host activity.");
             DownloadedData.getInstance().saveDOHData(data);
@@ -108,6 +128,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onReceivedPhilippinesHerokuappData(boolean isReceived, String data) {
+        isRawPhilippinesFromHerokuappCompleted = isReceived;
         if (isReceived) {
             Log.d(TAG, "onReceivedPhilippinesHerokuappData() data received by host activity.");
             DownloadedData.getInstance().savePhilippinesData(data);
@@ -116,6 +137,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onReceivedCountriesHerokuappData(boolean isReceived, String data) {
+        isRawCountriesFromHerokuappCompleted = isReceived;
         if (isReceived) {
             Log.d(TAG, "onReceivedCountriesHerokuappData() data received by host activity.");
             DownloadedData.getInstance().saveCountriesData(data);

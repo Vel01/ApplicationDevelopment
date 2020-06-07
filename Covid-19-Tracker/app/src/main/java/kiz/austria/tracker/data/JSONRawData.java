@@ -114,6 +114,7 @@ public class JSONRawData extends AsyncTask<String, Void, String> {
     }
 
     public interface OnDownloadComplete {
+
         void onDownloadCompleteFromApify(String data, DownloadStatus status);
 
         void onDownloadCompleteDOHDataFromHerokuapp(String data, DownloadStatus status);
