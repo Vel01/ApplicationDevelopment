@@ -81,12 +81,10 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() service is now running on different thread.");
         new Thread(() -> {
-
             mRawDataFromApify.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
             mRawDataDOHFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_DOHDATA_DROP_FROM_HEROKUAPP);
             mRawDataPhilippinesFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP);
             mRawDataCountriesFromHerokuapp.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
-
         }).start();
         return START_STICKY;
     }
@@ -109,5 +107,14 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
         public GetRawDataService getInstance() {
             return GetRawDataService.this;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mRawDataFromApify != null) mRawDataFromApify.cancel(true);
+        if (mRawDataDOHFromHerokuapp != null) mRawDataDOHFromHerokuapp.cancel(true);
+        if (mRawDataPhilippinesFromHerokuapp != null) mRawDataPhilippinesFromHerokuapp.cancel(true);
+        if (mRawDataCountriesFromHerokuapp != null) mRawDataCountriesFromHerokuapp.cancel(true);
     }
 }

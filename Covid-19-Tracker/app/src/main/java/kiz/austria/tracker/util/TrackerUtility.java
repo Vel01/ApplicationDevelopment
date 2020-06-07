@@ -74,7 +74,7 @@ public class TrackerUtility {
 
     private static final int FADEOUT_DELAY_MS = 500;
 
-    public static void runFadeAnimationOn(Activity ctx, View target, boolean in) {
+    public static void runFadeAnimationOn(View target, boolean in) {
         int start, finish;
         if (in) {
             start = 0;
@@ -90,7 +90,7 @@ public class TrackerUtility {
     }
 
     public static void finishFade(Activity activity, View root) {
-        TrackerUtility.runFadeAnimationOn(activity, root, false);
+        TrackerUtility.runFadeAnimationOn(root, false);
         new Thread(() -> {
             try {
                 Thread.sleep(FADEOUT_DELAY_MS);

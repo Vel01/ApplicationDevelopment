@@ -11,10 +11,14 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.transition.Fade;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
@@ -27,6 +31,7 @@ import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
+import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.services.GetRawDataService;
 import kiz.austria.tracker.util.TrackerDialog;
@@ -37,13 +42,20 @@ public class MainActivity extends BaseActivity implements
         GetRawDataService.RawDataReceiver,
         TrackerDialog.OnDialogListener,
         Inflatable,
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = "MainActivity";
 
     @Override
     public void onDialogPositiveEvent(int id, Bundle args) {
 
+    }
+
+    @Override
+    public void onDialogNegativeEvent(int id, Bundle args) {
+        if (id == TrackerKeys.ACTION_DIALOG_ON_BACK_PRESSED) {
+            TrackerUtility.finishFade(this, mRoot);
+        }
     }
 
     @Override
@@ -69,23 +81,15 @@ public class MainActivity extends BaseActivity implements
     }
 
 
-    @Override
-    public void onDialogNegativeEvent(int id, Bundle args) {
-        if (id == TrackerKeys.ACTION_DIALOG_ON_BACK_PRESSED) {
-            finish();
-        }
-    }
-
     //variables
     private int mTapToClose = 0;
     //references
     private ConnectivityReceiver receiver;
-//    private Bundle mArgument = new Bundle();
 
     private Drawer mDrawer;
     //Service
     private ServiceConnection mDownloadDataServiceConnection;
-    private View root;
+    private ViewGroup mRoot;
     private Intent mDownloadDataServiceIntent;
     private GetRawDataService mGetRawDataService;
     private boolean mIsServiceBound = false;
@@ -95,7 +99,9 @@ public class MainActivity extends BaseActivity implements
     private boolean isRawDOHFromHerokuappCompleted = false;
     private boolean isRawPhilippinesFromHerokuappCompleted = false;
     private boolean isRawCountriesFromHerokuappCompleted = false;
-
+    private View mSplashScreen;
+    private ViewGroup mRootSplash;
+    private boolean show = false;
 
     @Override
     public void onDataCompleted() {
@@ -105,8 +111,45 @@ public class MainActivity extends BaseActivity implements
                 && isRawCountriesFromHerokuappCompleted) {
             Log.d(TAG, "onDataCompleted() is completed ");
             //remove splash screen here....
+            mSplashScreen.clearAnimation();
+            show = false;
+            toggle();
+            initGlobalFragment();
+//            TrackerUtility.runFadeAnimationOn(mRoot, true);
+
         }
     }
+
+    private void toggle() {
+        Transition transition = new Fade();
+        transition.setDuration(500);
+        transition.addTarget(R.id.tracker_splash);
+
+        TransitionManager.beginDelayedTransition(mRootSplash, transition);
+        mSplashScreen.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+//    private final int ANIMATION_DURATION = 500;
+//
+//    public void show() {
+//        mSplashScreen.setVisibility(View.VISIBLE);
+//        mSplashScreen.animate()
+//                .alpha(1f)
+//                .setDuration(ANIMATION_DURATION)
+//                .setListener(null);
+//    }
+//
+//    private void hide() {
+//        mSplashScreen.animate()
+//                .alpha(0f)
+//                .setDuration(ANIMATION_DURATION)
+//                .setListener(new AnimatorListenerAdapter() {
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        mSplashScreen.setVisibility(View.GONE);
+//                    }
+//                });
+//    }
 
     @Override
     public void onReceivedApifyData(boolean isReceived, String data) {
@@ -180,18 +223,27 @@ public class MainActivity extends BaseActivity implements
         Log.e(TAG, "onCreate: started");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        root = findViewById(R.id.main_activity);
-        TrackerUtility.runFadeAnimationOn(this, root, true);
+        mSplashScreen = findViewById(R.id.tracker_splash);
+        mRootSplash = findViewById(R.id.coordinator_layout);
+        mRoot = findViewById(R.id.main_activity);
+        show = true;
+        toggle();
         activateToolbar(false);
-
 
         //================ Service Instantiation ==================//
         mDownloadDataServiceIntent = new Intent(this, GetRawDataService.class);
-        startService(mDownloadDataServiceIntent);
-        bindDownloadDataService();
+//        startService(mDownloadDataServiceIntent);
+//        bindDownloadDataService();
 
-        if (savedInstanceState == null) {
-            initGlobalFragment();
+//        if (savedInstanceState == null) {
+////            initGlobalFragment();
+//        }
+
+        initTrackerListener();
+        if (ConnectivityReceiver.isNotConnected()) {
+            TrackerUtility.message(this, "No Internet Connection",
+                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+                    R.color.toast_connection_lost);
         }
 
         initMaterialDrawer();
@@ -202,9 +254,27 @@ public class MainActivity extends BaseActivity implements
     }
 
     @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        if (isConnected) {
+            startService(mDownloadDataServiceIntent);
+            bindDownloadDataService();
+        } else {
+            TrackerUtility.message(this, "No Internet Connection",
+                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+                    R.color.toast_connection_lost);
+            unbindDownloadDataService();
+            if (!mIsServiceBound) stopService(mDownloadDataServiceIntent);
+        }
+    }
+
+    private void initTrackerListener() {
+        TrackerApplication.getInstance().setConnectivityListener(this);
+    }
+
+    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putInt(TrackerKeys.STATE_SELECTION_DRAWER, mDrawer.getCurrentSelectedPosition());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -212,7 +282,6 @@ public class MainActivity extends BaseActivity implements
         super.onResume();
         Log.e(TAG, "onResume() was called!");
         registerTrackerReceiver();
-
     }
 
     private void registerTrackerReceiver() {
@@ -250,7 +319,7 @@ public class MainActivity extends BaseActivity implements
                             initPhilippinesFragment();
                             break;
                         case -1:
-                            finish();
+                            TrackerUtility.finishFade(this, mRoot);
                             break;
                     }
                     return false;
@@ -263,6 +332,7 @@ public class MainActivity extends BaseActivity implements
     private void initPhilippinesFragment() {
         PhilippinesFragment fragment = new PhilippinesFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.fade_in_start_activity, R.anim.fade_out_end_activity);
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_philippines));
         transaction.addToBackStack(getString(R.string.tag_fragment_philippines));
         transaction.commit();
@@ -272,10 +342,10 @@ public class MainActivity extends BaseActivity implements
         onTapToCloseReset();
         GlobalFragment fragment = new GlobalFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
+        transaction.setCustomAnimations(R.anim.fade_in_start_activity, R.anim.fade_out_end_activity);
         transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_global));
         transaction.addToBackStack(getString(R.string.tag_fragment_global));
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     private void initCountriesFragment() {
@@ -317,7 +387,7 @@ public class MainActivity extends BaseActivity implements
 
             onTapToClose();
             if (mTapToClose >= 2) {
-                TrackerUtility.finishFade(this, root);
+                TrackerUtility.finishFade(this, mRoot);
             }
         } else {
 
