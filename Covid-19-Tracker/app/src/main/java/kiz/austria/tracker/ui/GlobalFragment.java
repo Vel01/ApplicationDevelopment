@@ -2,9 +2,7 @@ package kiz.austria.tracker.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,14 +34,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import kiz.austria.tracker.R;
-import kiz.austria.tracker.broadcast.ConnectivityReceiver;
-import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.APIFYDataParser;
 import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.data.JSONRawData;
@@ -60,10 +55,9 @@ import static android.graphics.Color.BLACK;
 import static android.graphics.Color.rgb;
 
 public class GlobalFragment extends BaseFragment implements
-        View.OnClickListener, ConnectivityReceiver.ConnectivityReceiverListener, OnChartValueSelectedListener, NationDataParser.OnDataAvailable, APIFYDataParser.OnDataAvailable {
+        View.OnClickListener, OnChartValueSelectedListener, NationDataParser.OnDataAvailable, APIFYDataParser.OnDataAvailable {
 
     private static final String TAG = "GlobalFragment";
-
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
@@ -85,23 +79,6 @@ public class GlobalFragment extends BaseFragment implements
             }
         }
     }
-
-
-    @Override
-    public void onNetworkConnectionChanged(boolean isConnected) {
-        Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
-        if (isConnected) {
-            reParseRawData();
-        } else {
-            TrackerUtility.message(getActivity(), "No Internet Connection",
-                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                    R.color.toast_connection_lost);
-        }
-    }
-
-    private static final int[] JOYFUL_COLORS = {
-            Color.rgb(255, 68, 51), Color.rgb(233, 236, 239)
-    };
 
     @Override
     public void onNothingSelected() {
@@ -170,19 +147,8 @@ public class GlobalFragment extends BaseFragment implements
     public void onAttach(@NonNull Context context) {
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
-
-        initTrackerListener();
         initRawDataForParsing();
         initInflatable();
-        if (ConnectivityReceiver.isNotConnected()) {
-            TrackerUtility.message(getActivity(), "No Internet Connection",
-                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                    R.color.toast_connection_lost);
-        }
-    }
-
-    private void initTrackerListener() {
-        TrackerApplication.getInstance().setConnectivityListener(this);
     }
 
     private void initInflatable() {
@@ -194,6 +160,10 @@ public class GlobalFragment extends BaseFragment implements
         mListener = (Inflatable) activity;
     }
 
+
+    private static final int[] JOYFUL_COLORS = {
+            Color.rgb(255, 68, 51), Color.rgb(233, 236, 239)
+    };
 
     //ButterKnife
     private Unbinder mUnbinder;
@@ -233,7 +203,6 @@ public class GlobalFragment extends BaseFragment implements
     private static String mRawDataDateFromApify;
 
     //references
-    private ConnectivityReceiver receiver;
     private List<Nation> topNations = new ArrayList<>();
     private Inflatable mListener;
     private NationDataParser mNationDataParser = null;
@@ -352,7 +321,6 @@ public class GlobalFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
-        registerTrackerReceiver();
         mRefreshLayout.setOnRefreshListener(() -> {
             reParseRawData();
             mRefreshLayout.setRefreshing(false);
@@ -394,21 +362,6 @@ public class GlobalFragment extends BaseFragment implements
             mAPIFYDataParser = new APIFYDataParser(GlobalFragment.this);
             mAPIFYDataParser.parse(APIFYDataParser.ParseData.DATE_ONLY);
             mAPIFYDataParser.execute(mRawDataDateFromApify);
-        }
-    }
-
-    private void registerTrackerReceiver() {
-        IntentFilter filter = new IntentFilter();
-        //note: ConnectivityManager.CONNECTIVITY_ACTION is deprecated in api 28 above
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-
-        receiver = new ConnectivityReceiver();
-        Objects.requireNonNull(getActivity()).registerReceiver(receiver, filter);
-    }
-
-    private void unregisterTrackerReceiver() {
-        if (receiver != null) {
-            Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
         }
     }
 
@@ -473,7 +426,6 @@ public class GlobalFragment extends BaseFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView() data retained!");
-        unregisterTrackerReceiver();
         mUnbinder.unbind();
         cancelDownload();
     }

@@ -37,8 +37,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import kiz.austria.tracker.R;
-import kiz.austria.tracker.broadcast.ConnectivityReceiver;
-import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.APIFYDataParser;
 import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.data.JSONRawData;
@@ -60,7 +58,7 @@ import static android.graphics.Color.rgb;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PhilippinesFragment extends BaseFragment implements ConnectivityReceiver.ConnectivityReceiverListener, PHDOHDataParser.OnDataAvailable, OnChartValueSelectedListener, APIFYDataParser.OnDataAvailable, NationDataParser.OnDataAvailable {
+public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser.OnDataAvailable, OnChartValueSelectedListener, APIFYDataParser.OnDataAvailable, NationDataParser.OnDataAvailable {
 
     private static final String TAG = "PhilippinesFragment";
     private static final int[] COLORS = {
@@ -131,18 +129,6 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
         mCount61up = 0;
         mGenderMale = 0;
         mGenderFemale = 0;
-    }
-
-    @Override
-    public void onNetworkConnectionChanged(boolean isConnected) {
-        Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
-        if (isConnected) {
-            reParseRawData();
-        } else {
-            TrackerUtility.message(getActivity(), "No Internet Connection",
-                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                    R.color.toast_connection_lost);
-        }
     }
 
     @Override
@@ -262,22 +248,13 @@ public class PhilippinesFragment extends BaseFragment implements ConnectivityRec
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
         initRawDataForParsing();
-        initTrackerListener();
-        if (ConnectivityReceiver.isNotConnected()) {
-            TrackerUtility.message(getActivity(), "No Internet Connection",
-                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                    R.color.toast_connection_lost);
-        }
+
     }
 
     private void initRawDataForParsing() {
         mRawDataFromApify = DownloadedData.getInstance().getApifyData();
         mRawDataDOHDropFromHerokuapp = DownloadedData.getInstance().getHerokuappDOHData();
         mRawDataPhilippinesFromHerokuapp = DownloadedData.getInstance().getHerokuappPhilippinesData();
-    }
-
-    private void initTrackerListener() {
-        TrackerApplication.getInstance().setConnectivityListener(this);
     }
 
     @Override

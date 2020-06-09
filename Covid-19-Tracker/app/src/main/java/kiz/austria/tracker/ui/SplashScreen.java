@@ -33,7 +33,7 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
 
     private ServiceConnection mDownloadDataServiceConnection;
     private Intent mDownloadDataServiceIntent;
-    private GetRawDataService mGetRawDataService;
+    private GetRawDataService mGetRawDataServiceReference;
     private boolean mIsServiceBound = false;
 
     private ViewGroup mRootSplash;
@@ -107,8 +107,8 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     Log.d(TAG, "onServiceConnected() service is now bound");
                     GetRawDataService.RawDataServiceBinder binder = (GetRawDataService.RawDataServiceBinder) service;
-                    mGetRawDataService = binder.getInstance();
-                    mGetRawDataService.registerClientReceiver(SplashScreen.this);
+                    mGetRawDataServiceReference = binder.getInstance();
+                    mGetRawDataServiceReference.registerClientReceiver(SplashScreen.this);
                     mIsServiceBound = true;
                 }
 
@@ -153,7 +153,7 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
         Log.e(TAG, "onDestroy()");
         unregisterTrackerReceiver();
         unbindDownloadDataService();
-        if (!mIsServiceBound) stopService(mDownloadDataServiceIntent);
+        if (!mIsServiceBound) mGetRawDataServiceReference.shutdown();
     }
 
     private void unregisterTrackerReceiver() {
