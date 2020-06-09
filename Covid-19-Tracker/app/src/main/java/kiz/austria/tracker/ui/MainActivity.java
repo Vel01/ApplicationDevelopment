@@ -1,24 +1,13 @@
 package kiz.austria.tracker.ui;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.transition.Fade;
-import androidx.transition.Transition;
-import androidx.transition.TransitionManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
@@ -30,19 +19,16 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
 import kiz.austria.tracker.R;
-import kiz.austria.tracker.broadcast.ConnectivityReceiver;
-import kiz.austria.tracker.broadcast.TrackerApplication;
-import kiz.austria.tracker.data.DownloadedData;
-import kiz.austria.tracker.services.GetRawDataService;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
 import kiz.austria.tracker.util.TrackerUtility;
 
 public class MainActivity extends BaseActivity implements
-        GetRawDataService.RawDataReceiver,
+//        GetRawDataService.RawDataReceiver,
         TrackerDialog.OnDialogListener,
         Inflatable,
-        NavigationView.OnNavigationItemSelectedListener, ConnectivityReceiver.ConnectivityReceiverListener {
+        NavigationView.OnNavigationItemSelectedListener{
+//        ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = "MainActivity";
 
@@ -84,114 +70,114 @@ public class MainActivity extends BaseActivity implements
     //variables
     private int mTapToClose = 0;
     //references
-    private ConnectivityReceiver receiver;
+//    private ConnectivityReceiver receiver;
 
     private Drawer mDrawer;
-    //Service
-    private ServiceConnection mDownloadDataServiceConnection;
     private ViewGroup mRoot;
-    private Intent mDownloadDataServiceIntent;
-    private GetRawDataService mGetRawDataService;
-    private boolean mIsServiceBound = false;
+    //Service
+//    private ServiceConnection mDownloadDataServiceConnection;
+//    private Intent mDownloadDataServiceIntent;
+//    private GetRawDataService mGetRawDataService;
+//    private boolean mIsServiceBound = false;
 
 
-    private boolean isRawFromApifyCompleted = false;
-    private boolean isRawDOHFromHerokuappCompleted = false;
-    private boolean isRawPhilippinesFromHerokuappCompleted = false;
-    private boolean isRawCountriesFromHerokuappCompleted = false;
-    private View mSplashScreen;
-    private ViewGroup mRootSplash;
-    private boolean showSplash = false;
+//    private boolean isRawFromApifyCompleted = false;
+//    private boolean isRawDOHFromHerokuappCompleted = false;
+//    private boolean isRawPhilippinesFromHerokuappCompleted = false;
+//    private boolean isRawCountriesFromHerokuappCompleted = false;
+//    private View mSplashScreen;
+//    private ViewGroup mRootSplash;
+//    private boolean showSplash = false;
 
-    @Override
-    public void onDataCompleted() {
-        if (isRawFromApifyCompleted
-                && isRawDOHFromHerokuappCompleted
-                && isRawPhilippinesFromHerokuappCompleted
-                && isRawCountriesFromHerokuappCompleted) {
-            Log.d(TAG, "onDataCompleted() is completed ");
-            mSplashScreen.clearAnimation();
-            showSplash = false;
-            initSplashScreen();
-            initGlobalFragment();
-        }
-    }
+//    @Override
+//    public void onDataCompleted() {
+//        if (isRawFromApifyCompleted
+//                && isRawDOHFromHerokuappCompleted
+//                && isRawPhilippinesFromHerokuappCompleted
+//                && isRawCountriesFromHerokuappCompleted) {
+//            Log.d(TAG, "onDataCompleted() is completed ");
+//            mSplashScreen.clearAnimation();
+//            showSplash = false;
+//            initSplashScreen();
+//            initGlobalFragment();
+//        }
+//    }
+//
+//    private void initSplashScreen() {
+//        Transition transition = new Fade();
+//        transition.setDuration(500);
+//        transition.addTarget(R.id.tracker_splash);
+//
+//        TransitionManager.beginDelayedTransition(mRootSplash, transition);
+//        mSplashScreen.setVisibility(showSplash ? View.VISIBLE : View.GONE);
+//    }
+//
+//    @Override
+//    public void onReceivedApifyData(boolean isReceived, String data) {
+//        isRawFromApifyCompleted = isReceived;
+//        if (isReceived) {
+//            Log.d(TAG, "onReceivedApifyData() data received by host activity.");
+//            DownloadedData.getInstance().saveApifyData(data);
+//        }
+//    }
+//
+//    @Override
+//    public void onReceivedDOHDropHerokuappData(boolean isReceived, String data) {
+//        isRawDOHFromHerokuappCompleted = isReceived;
+//        if (isReceived) {
+//            Log.d(TAG, "onReceivedDOHDropHerokuappData() data received by host activity.");
+//            DownloadedData.getInstance().saveDOHData(data);
+//        }
+//    }
+//
+//    @Override
+//    public void onReceivedPhilippinesHerokuappData(boolean isReceived, String data) {
+//        isRawPhilippinesFromHerokuappCompleted = isReceived;
+//        if (isReceived) {
+//            Log.d(TAG, "onReceivedPhilippinesHerokuappData() data received by host activity.");
+//            DownloadedData.getInstance().savePhilippinesData(data);
+//        }
+//    }
+//
+//    @Override
+//    public void onReceivedCountriesHerokuappData(boolean isReceived, String data) {
+//        isRawCountriesFromHerokuappCompleted = isReceived;
+//        if (isReceived) {
+//            Log.d(TAG, "onReceivedCountriesHerokuappData() data received by host activity.");
+//            DownloadedData.getInstance().saveCountriesData(data);
+//        }
+//    }
 
-    private void initSplashScreen() {
-        Transition transition = new Fade();
-        transition.setDuration(500);
-        transition.addTarget(R.id.tracker_splash);
-
-        TransitionManager.beginDelayedTransition(mRootSplash, transition);
-        mSplashScreen.setVisibility(showSplash ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void onReceivedApifyData(boolean isReceived, String data) {
-        isRawFromApifyCompleted = isReceived;
-        if (isReceived) {
-            Log.d(TAG, "onReceivedApifyData() data received by host activity.");
-            DownloadedData.getInstance().saveApifyData(data);
-        }
-    }
-
-    @Override
-    public void onReceivedDOHDropHerokuappData(boolean isReceived, String data) {
-        isRawDOHFromHerokuappCompleted = isReceived;
-        if (isReceived) {
-            Log.d(TAG, "onReceivedDOHDropHerokuappData() data received by host activity.");
-            DownloadedData.getInstance().saveDOHData(data);
-        }
-    }
-
-    @Override
-    public void onReceivedPhilippinesHerokuappData(boolean isReceived, String data) {
-        isRawPhilippinesFromHerokuappCompleted = isReceived;
-        if (isReceived) {
-            Log.d(TAG, "onReceivedPhilippinesHerokuappData() data received by host activity.");
-            DownloadedData.getInstance().savePhilippinesData(data);
-        }
-    }
-
-    @Override
-    public void onReceivedCountriesHerokuappData(boolean isReceived, String data) {
-        isRawCountriesFromHerokuappCompleted = isReceived;
-        if (isReceived) {
-            Log.d(TAG, "onReceivedCountriesHerokuappData() data received by host activity.");
-            DownloadedData.getInstance().saveCountriesData(data);
-        }
-    }
-
-
-    private void bindDownloadDataService() {
-        if (mDownloadDataServiceConnection == null) {
-            mDownloadDataServiceConnection = new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    Log.d(TAG, "onServiceConnected() service is now bound");
-                    GetRawDataService.RawDataServiceBinder binder = (GetRawDataService.RawDataServiceBinder) service;
-                    mGetRawDataService = binder.getInstance();
-                    mGetRawDataService.registerClientReceiver(MainActivity.this);
-                    mIsServiceBound = true;
-                }
-
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-                    mIsServiceBound = false;
-                }
-            };
-        }
-
-        bindService(mDownloadDataServiceIntent, mDownloadDataServiceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    private void unbindDownloadDataService() {
-        if (mIsServiceBound) {
-            Log.d(TAG, "unbindDownloadDataService() service is unbound");
-            unbindService(mDownloadDataServiceConnection);
-            mIsServiceBound = false;
-        }
-    }
+//
+//    private void bindDownloadDataService() {
+//        if (mDownloadDataServiceConnection == null) {
+//            mDownloadDataServiceConnection = new ServiceConnection() {
+//                @Override
+//                public void onServiceConnected(ComponentName name, IBinder service) {
+//                    Log.d(TAG, "onServiceConnected() service is now bound");
+//                    GetRawDataService.RawDataServiceBinder binder = (GetRawDataService.RawDataServiceBinder) service;
+//                    mGetRawDataService = binder.getInstance();
+//                    mGetRawDataService.registerClientReceiver(MainActivity.this);
+//                    mIsServiceBound = true;
+//                }
+//
+//                @Override
+//                public void onServiceDisconnected(ComponentName name) {
+//                    mIsServiceBound = false;
+//                }
+//            };
+//        }
+//
+//        bindService(mDownloadDataServiceIntent, mDownloadDataServiceConnection, Context.BIND_AUTO_CREATE);
+//    }
+//
+//    private void unbindDownloadDataService() {
+//        if (mIsServiceBound) {
+//            Log.d(TAG, "unbindDownloadDataService() service is unbound");
+//            unbindService(mDownloadDataServiceConnection);
+//            mIsServiceBound = false;
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,47 +187,50 @@ public class MainActivity extends BaseActivity implements
         activateToolbar(false);
 
         //================== Host Animation ==================/
-        mSplashScreen = findViewById(R.id.tracker_splash);
-        mRootSplash = findViewById(R.id.coordinator_layout);
+//        mSplashScreen = findViewById(R.id.tracker_splash);
+//        mRootSplash = findViewById(R.id.coordinator_layout);
         mRoot = findViewById(R.id.main_activity);
-        showSplash = true;
-        initSplashScreen();
+//        showSplash = true;
+//        initSplashScreen();
 
         //================ Service Instantiation ==================//
-        mDownloadDataServiceIntent = new Intent(this, GetRawDataService.class);
-
-        initTrackerListener();
-        if (ConnectivityReceiver.isNotConnected()) {
-            TrackerUtility.message(this, "No Internet Connection",
-                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                    R.color.toast_connection_lost);
-        }
+//        mDownloadDataServiceIntent = new Intent(this, GetRawDataService.class);
+//
+//        initTrackerListener();
+//        if (ConnectivityReceiver.isNotConnected()) {
+//            TrackerUtility.message(this, "No Internet Connection",
+//                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+//                    R.color.toast_connection_lost);
+//        }
 
         //================ Material Drawer Instantiation ===========//
+        if (savedInstanceState == null){
+            initGlobalFragment();
+        }
         initMaterialDrawer();
         if (savedInstanceState != null) {
             int currentSelection = savedInstanceState.getInt(TrackerKeys.STATE_SELECTION_DRAWER);
             mDrawer.setSelection(currentSelection);
         }
     }
+//
+//    @Override
+//    public void onNetworkConnectionChanged(boolean isConnected) {
+//        if (isConnected) {
+//            startService(mDownloadDataServiceIntent);
+//            bindDownloadDataService();
+//        } else {
+//            TrackerUtility.message(this, "No Internet Connection",
+//                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
+//                    R.color.toast_connection_lost);
+//            unbindDownloadDataService();
+//            if (!mIsServiceBound) stopService(mDownloadDataServiceIntent);
+//        }
+//    }
 
-    @Override
-    public void onNetworkConnectionChanged(boolean isConnected) {
-        if (isConnected) {
-            startService(mDownloadDataServiceIntent);
-            bindDownloadDataService();
-        } else {
-            TrackerUtility.message(this, "No Internet Connection",
-                    R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                    R.color.toast_connection_lost);
-            unbindDownloadDataService();
-            if (!mIsServiceBound) stopService(mDownloadDataServiceIntent);
-        }
-    }
-
-    private void initTrackerListener() {
-        TrackerApplication.getInstance().setConnectivityListener(this);
-    }
+//    private void initTrackerListener() {
+//        TrackerApplication.getInstance().setConnectivityListener(this);
+//    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -253,17 +242,17 @@ public class MainActivity extends BaseActivity implements
     protected void onResume() {
         super.onResume();
         Log.e(TAG, "onResume() was called!");
-        registerTrackerReceiver();
+//        registerTrackerReceiver();
     }
 
-    private void registerTrackerReceiver() {
-        IntentFilter filter = new IntentFilter();
-        //note: ConnectivityManager.CONNECTIVITY_ACTION is deprecated in api 28 above
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-
-        receiver = new ConnectivityReceiver();
-        registerReceiver(receiver, filter);
-    }
+//    private void registerTrackerReceiver() {
+//        IntentFilter filter = new IntentFilter();
+//        //note: ConnectivityManager.CONNECTIVITY_ACTION is deprecated in api 28 above
+//        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+//
+//        receiver = new ConnectivityReceiver();
+//        registerReceiver(receiver, filter);
+//    }
 
     private void initMaterialDrawer() {
         AccountHeader headerResult = new AccountHeaderBuilder()
@@ -328,13 +317,15 @@ public class MainActivity extends BaseActivity implements
         transaction.commit();
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.e(TAG, "onDestroy()");
-        unregisterReceiver(receiver);
-        unbindDownloadDataService();
-        if (!mIsServiceBound) stopService(mDownloadDataServiceIntent);
+//        unregisterReceiver(receiver);
+//        unbindDownloadDataService();
+//        stopService(new Intent(MainActivity.this, GetRawDataService.class));
+//        if (!mIsServiceBound) stopService(mDownloadDataServiceIntent);
     }
 
     private void onTapToClose() {

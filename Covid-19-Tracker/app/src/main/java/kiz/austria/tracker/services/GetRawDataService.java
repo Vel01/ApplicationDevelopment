@@ -109,9 +109,14 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
         }
     }
 
+    public void shutdown() {
+        stopSelf();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy() was stopped by host!");
         if (mRawDataFromApify != null) mRawDataFromApify.cancel(true);
         if (mRawDataDOHFromHerokuapp != null) mRawDataDOHFromHerokuapp.cancel(true);
         if (mRawDataPhilippinesFromHerokuapp != null) mRawDataPhilippinesFromHerokuapp.cancel(true);
