@@ -345,7 +345,7 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume()");
-
+        mRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         mRefreshLayout.setOnRefreshListener(() -> {
             reParseRawData();
             mRefreshLayout.setRefreshing(false);

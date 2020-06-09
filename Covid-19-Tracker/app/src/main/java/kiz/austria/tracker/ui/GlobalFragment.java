@@ -321,6 +321,7 @@ public class GlobalFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
+        mRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         mRefreshLayout.setOnRefreshListener(() -> {
             reParseRawData();
             mRefreshLayout.setRefreshing(false);

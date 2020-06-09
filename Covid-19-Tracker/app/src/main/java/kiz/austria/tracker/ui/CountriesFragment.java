@@ -25,12 +25,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -40,11 +40,11 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.AdapterClickListener;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
-import kiz.austria.tracker.broadcast.TrackerApplication;
-import kiz.austria.tracker.data.Addresses;
-import kiz.austria.tracker.data.DataParser;
+import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.data.JSONRawData;
+import kiz.austria.tracker.data.NationDataParser;
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.model.Philippines;
 import kiz.austria.tracker.util.TrackerDialog;
 import kiz.austria.tracker.util.TrackerKeys;
 import kiz.austria.tracker.util.TrackerPlate;
@@ -55,20 +55,9 @@ public class CountriesFragment extends BaseFragment implements
         Returnable,
         AdapterClickListener.OnAdapterClickListener,
         View.OnClickListener,
-        DataParser.OnDataAvailable, ConnectivityReceiver.ConnectivityReceiverListener {
+        NationDataParser.OnDataAvailable {
 
     private static final String TAG = "CountriesFragment";
-
-    @Override
-    public void onDataAvailable(List<Nation> nations, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK) {
-            Log.d(TAG, "onDataAvailable() data received from itself: " + nations.toString());
-            mNations.addAll(nations);
-            if (mNations != null && mNations.size() > 0) {
-                displayData();
-            }
-        }
-    }
 
     @Override
     public void onItemClick(View view, int position) {
@@ -87,12 +76,12 @@ public class CountriesFragment extends BaseFragment implements
     TextView mCountryLabel;
     @BindView(R.id.tv_countries_list_label)
     TextView mSimpleLabel;
+    @BindView(R.id.container_refresher)
+    SwipeRefreshLayout mRefreshLayout;
+
     //layouts
     @BindView(R.id.child_layout_countries_shimmer)
     View mChildShimmer;
-
-    //vars
-    private boolean isPaused = false;
     @BindView(R.id.child_layout_countries_main)
     View mChildMain;
     @BindView(R.id.constraint_legend)
@@ -101,13 +90,20 @@ public class CountriesFragment extends BaseFragment implements
     FrameLayout mSelectedFrameLayout;
     @BindView(R.id.layout_countries_shimmer)
     ShimmerFrameLayout mShimmerFrameLayout;
+
     //ButterKnife
     private Unbinder mUnbinder;
+
     //references
     private CountriesRecyclerAdapter mCountriesRecyclerAdapter;
     private ArrayList<Nation> mNations = new ArrayList<>();
     private Inflatable mListener;
     private TrackerDialog mDialog = null;
+    private NationDataParser mNationDataParser;
+
+    //variables
+    private boolean isPaused = false;
+    private String mRawDataCountriesFromHerokuapp;
 
     @Override
     public void onItemLongClick(View view, int position) {
@@ -139,32 +135,15 @@ public class CountriesFragment extends BaseFragment implements
     }
 
     @Override
-    public void onNetworkConnectionChanged(boolean isConnected) {
-        Log.d(TAG, "onNetworkConnectionChanged() connected? " + isConnected);
-        if (isConnected) {
-            DataParser dataParser = new DataParser(this);
-            dataParser.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
-            return;
-        }
-        TrackerUtility.message(getActivity(), "No Internet Connection",
-                R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                R.color.toast_connection_lost);
-    }
-
-    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        initRawDataForParsing();
         initInflatable();
-        initTrackerListener();
         if (ConnectivityReceiver.isNotConnected()) {
             TrackerUtility.message(getActivity(), "No Internet Connection",
                     R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
                     R.color.toast_connection_lost);
         }
-    }
-
-    private void initTrackerListener() {
-        TrackerApplication.getInstance().setConnectivityListener(this);
     }
 
     private void initInflatable() {
@@ -176,12 +155,28 @@ public class CountriesFragment extends BaseFragment implements
         mListener = (Inflatable) activity;
     }
 
+    @Override
+    public void onCountriesDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
+        if (status == JSONRawData.DownloadStatus.OK && !mNationDataParser.isCancelled()) {
+            Log.d(TAG, "onDataAvailable() data received from itself: " + nations.toString());
+            mNations.addAll(nations);
+            if (mNations != null && mNations.size() > 0) {
+                displayData();
+            }
+        }
+    }
+
+    @Override
+    public void onPhilippinesDataAvailable(Philippines philippines, JSONRawData.DownloadStatus status) {
+        //not supported.
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_countries, container, false);
         mUnbinder = ButterKnife.bind(this, view);
-
+        mNationDataParser = new NationDataParser(this);
         ImageView btnBack = view.findViewById(R.id.imb_countries_back);
         btnBack.setOnClickListener(this);
 
@@ -192,14 +187,52 @@ public class CountriesFragment extends BaseFragment implements
         return view;
     }
 
+    private void initRawDataForParsing() {
+        mRawDataCountriesFromHerokuapp = DownloadedData.getInstance().getHerokuappCountriesData();
+    }
+
+    private void reParseRawData() {
+
+        if (!mRawDataCountriesFromHerokuapp.isEmpty() && mNationDataParser.getStatus() != NationDataParser.Status.RUNNING) {
+            mNationDataParser.cancel(true);
+            mNationDataParser = new NationDataParser(this);
+            mNationDataParser.parse(NationDataParser.ParseData.COUNTRIES);
+            mNationDataParser.execute(mRawDataCountriesFromHerokuapp);
+        }
+
+    }
+
+    private void restartShimmer() {
+        mChildShimmer.setVisibility(View.VISIBLE);
+        mChildMain.setVisibility(View.INVISIBLE);
+        mShimmerFrameLayout.startShimmer();
+        mShimmerFrameLayout.showShimmer(true);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
+        mRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        mRefreshLayout.setOnRefreshListener(() -> {
+            restartShimmer();
+            initRawDataForParsing();
+            reParseRawData();
+            mRefreshLayout.setRefreshing(false);
+        });
+
         if (!isPausedToStopReDownload()) {
-            DataParser dataParser = new DataParser(this);
-            dataParser.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
+
+            if (!mRawDataCountriesFromHerokuapp.isEmpty()) {
+                mNationDataParser.parse(NationDataParser.ParseData.COUNTRIES);
+                mNationDataParser.execute(mRawDataCountriesFromHerokuapp);
+            }
+
         }
+    }
+
+    private void cancelJSONParsing() {
+        if (mNationDataParser != null) mNationDataParser.cancel(true);
     }
 
     @Override
@@ -363,7 +396,6 @@ public class CountriesFragment extends BaseFragment implements
         super.onDestroyView();
         Log.d(TAG, "onDestroyView()");
         mUnbinder.unbind();
+        cancelJSONParsing();
     }
-
-
 }
