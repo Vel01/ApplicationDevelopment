@@ -38,7 +38,6 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
 
     private ViewGroup mRootSplash;
 
-
     @Override
     public void onDataCompleted() {
         if (isRawFromApifyCompleted
@@ -152,9 +151,15 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
     protected void onDestroy() {
         super.onDestroy();
         Log.e(TAG, "onDestroy()");
-        unregisterReceiver(receiver);
+        unregisterTrackerReceiver();
         unbindDownloadDataService();
         if (!mIsServiceBound) stopService(mDownloadDataServiceIntent);
+    }
+
+    private void unregisterTrackerReceiver() {
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
     }
 
     private void registerTrackerReceiver() {

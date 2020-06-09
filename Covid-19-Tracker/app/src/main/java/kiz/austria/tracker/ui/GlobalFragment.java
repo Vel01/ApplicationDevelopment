@@ -2,7 +2,9 @@ package kiz.austria.tracker.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -168,19 +171,14 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onAttach: started");
         super.onAttach(context);
 
+        initTrackerListener();
         initRawDataForParsing();
         initInflatable();
-        initTrackerListener();
         if (ConnectivityReceiver.isNotConnected()) {
             TrackerUtility.message(getActivity(), "No Internet Connection",
                     R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
                     R.color.toast_connection_lost);
         }
-    }
-
-    private void initRawDataForParsing() {
-        mRawDataCountriesFromHerokuapp = DownloadedData.getInstance().getHerokuappCountriesData();
-        mRawDataDateFromApify = DownloadedData.getInstance().getApifyData();
     }
 
     private void initTrackerListener() {
@@ -235,6 +233,7 @@ public class GlobalFragment extends BaseFragment implements
     private static String mRawDataDateFromApify;
 
     //references
+    private ConnectivityReceiver receiver;
     private List<Nation> topNations = new ArrayList<>();
     private Inflatable mListener;
     private NationDataParser mNationDataParser = null;
@@ -353,7 +352,7 @@ public class GlobalFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: was called!");
-
+        registerTrackerReceiver();
         mRefreshLayout.setOnRefreshListener(() -> {
             reParseRawData();
             mRefreshLayout.setRefreshing(false);
@@ -374,6 +373,11 @@ public class GlobalFragment extends BaseFragment implements
         }
     }
 
+    private void initRawDataForParsing() {
+        mRawDataCountriesFromHerokuapp = DownloadedData.getInstance().getHerokuappCountriesData();
+        mRawDataDateFromApify = DownloadedData.getInstance().getApifyData();
+    }
+
     private void reParseRawData() {
         resetStats();
         initRawDataForParsing();
@@ -390,6 +394,21 @@ public class GlobalFragment extends BaseFragment implements
             mAPIFYDataParser = new APIFYDataParser(GlobalFragment.this);
             mAPIFYDataParser.parse(APIFYDataParser.ParseData.DATE_ONLY);
             mAPIFYDataParser.execute(mRawDataDateFromApify);
+        }
+    }
+
+    private void registerTrackerReceiver() {
+        IntentFilter filter = new IntentFilter();
+        //note: ConnectivityManager.CONNECTIVITY_ACTION is deprecated in api 28 above
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+
+        receiver = new ConnectivityReceiver();
+        Objects.requireNonNull(getActivity()).registerReceiver(receiver, filter);
+    }
+
+    private void unregisterTrackerReceiver() {
+        if (receiver != null) {
+            Objects.requireNonNull(getActivity()).unregisterReceiver(receiver);
         }
     }
 
@@ -454,6 +473,7 @@ public class GlobalFragment extends BaseFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView() data retained!");
+        unregisterTrackerReceiver();
         mUnbinder.unbind();
         cancelDownload();
     }
