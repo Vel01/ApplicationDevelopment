@@ -37,11 +37,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import kiz.austria.tracker.R;
-import kiz.austria.tracker.data.APIFYDataParser;
+import kiz.austria.tracker.data.DownloadRawData;
 import kiz.austria.tracker.data.DownloadedData;
-import kiz.austria.tracker.data.JSONRawData;
-import kiz.austria.tracker.data.NationDataParser;
-import kiz.austria.tracker.data.PHDOHDataParser;
+import kiz.austria.tracker.data.parser.APIFYDataParser;
+import kiz.austria.tracker.data.parser.NationDataParser;
+import kiz.austria.tracker.data.parser.PHDOHDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.model.PHListDOHDrop;
 import kiz.austria.tracker.model.PHListUpdatesCases;
@@ -132,8 +132,8 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onDataPHDOHAvailable(List<PHListDOHDrop> dohDrops, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mPHDOHDataParser.isCancelled()) {
+    public void onDataPHDOHAvailable(List<PHListDOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
+        if (status == DownloadRawData.DownloadStatus.OK && !mPHDOHDataParser.isCancelled()) {
             Log.d(TAG, "onDataPHDOHAvailable() size = " + dohDrops.size());
             retrievedStats(dohDrops);
             initPieChart();
@@ -201,18 +201,18 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onFullDataAvailable(ArrayList<PHListUpdatesCases> dataList, JSONRawData.DownloadStatus status) {
+    public void onFullDataAvailable(ArrayList<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onDateAvailable(PHListUpdatesCases data, JSONRawData.DownloadStatus status) {
+    public void onDateAvailable(PHListUpdatesCases data, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onEssentialDataAvailable(List<PHListUpdatesCases> dataList, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
+    public void onEssentialDataAvailable(List<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
+        if (status == DownloadRawData.DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
             Log.d(TAG, "onEssentialDataAvailable() data received by PhilippinesFragment " + dataList.toString());
             initLineChart(dataList);
             getLatestUpdate(dataList.get(dataList.size() - 1));
@@ -220,18 +220,18 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onBasicDataAvailable(List<PHListUpdatesCases> dataList, JSONRawData.DownloadStatus status) {
+    public void onBasicDataAvailable(List<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onCountriesDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
+    public void onCountriesDataAvailable(ArrayList<Nation> nations, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onPhilippinesDataAvailable(Philippines philippines, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mNationDataParser.isCancelled()) {
+    public void onPhilippinesDataAvailable(Philippines philippines, DownloadRawData.DownloadStatus status) {
+        if (status == DownloadRawData.DownloadStatus.OK && !mNationDataParser.isCancelled()) {
             Log.d(TAG, "onEssentialDataAvailable() data received by PhilippinesFragment " + philippines);
             mCountCases = Integer.parseInt(philippines.getConfirmed());
             mCountRecovered = Integer.parseInt(philippines.getRecovered());

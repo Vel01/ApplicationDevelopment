@@ -17,7 +17,7 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
 import kiz.austria.tracker.broadcast.TrackerApplication;
 import kiz.austria.tracker.data.DownloadedData;
-import kiz.austria.tracker.services.GetRawDataService;
+import kiz.austria.tracker.data.services.GetRawDataService;
 import kiz.austria.tracker.util.TrackerUtility;
 
 public class SplashScreen extends AppCompatActivity implements GetRawDataService.RawDataReceiver, ConnectivityReceiver.ConnectivityReceiverListener {

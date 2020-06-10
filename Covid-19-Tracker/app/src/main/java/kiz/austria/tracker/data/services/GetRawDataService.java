@@ -1,4 +1,4 @@
-package kiz.austria.tracker.services;
+package kiz.austria.tracker.data.services;
 
 import android.app.Activity;
 import android.app.Service;
@@ -10,22 +10,22 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import kiz.austria.tracker.data.Addresses;
-import kiz.austria.tracker.data.JSONRawData;
+import kiz.austria.tracker.data.DownloadRawData;
 
-public class GetRawDataService extends Service implements JSONRawData.OnDownloadComplete {
+public class GetRawDataService extends Service implements DownloadRawData.OnDownloadComplete {
 
     private static final String TAG = "GetRawDataService";
 
     private RawDataReceiver mReceiver;//callback
     private IBinder mIBinder = new RawDataServiceBinder();
-    private JSONRawData mRawDataFromApify;
-    private JSONRawData mRawDataDOHFromHerokuapp;
-    private JSONRawData mRawDataPhilippinesFromHerokuapp;
-    private JSONRawData mRawDataCountriesFromHerokuapp;
+    private DownloadRawData mRawDataFromApify;
+    private DownloadRawData mRawDataDOHFromHerokuapp;
+    private DownloadRawData mRawDataPhilippinesFromHerokuapp;
+    private DownloadRawData mRawDataCountriesFromHerokuapp;
 
     @Override
-    public void onDownloadCompleteFromApify(String data, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mRawDataFromApify.isCancelled()) {
+    public void onDownloadCompleteFromApify(String data, DownloadRawData.DownloadStatus status) {
+        if (status == DownloadRawData.DownloadStatus.OK && !mRawDataFromApify.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received data from apify link.");
             mReceiver.onReceivedApifyData(true, data);
             mReceiver.onDataCompleted();
@@ -33,8 +33,8 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     }
 
     @Override
-    public void onDownloadCompleteDOHDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mRawDataDOHFromHerokuapp.isCancelled()) {
+    public void onDownloadCompleteDOHDataFromHerokuapp(String data, DownloadRawData.DownloadStatus status) {
+        if (status == DownloadRawData.DownloadStatus.OK && !mRawDataDOHFromHerokuapp.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received DOH data from herokuapp link.");
             mReceiver.onReceivedDOHDropHerokuappData(true, data);
             mReceiver.onDataCompleted();
@@ -42,8 +42,8 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     }
 
     @Override
-    public void onDownloadCompletePhilippinesDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
+    public void onDownloadCompletePhilippinesDataFromHerokuapp(String data, DownloadRawData.DownloadStatus status) {
+        if (status == DownloadRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received Philippines data from herokuapp link.");
             mReceiver.onReceivedPhilippinesHerokuappData(true, data);
             mReceiver.onDataCompleted();
@@ -51,8 +51,8 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
     }
 
     @Override
-    public void onDownloadCompleteCountriesDataFromHerokuapp(String data, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
+    public void onDownloadCompleteCountriesDataFromHerokuapp(String data, DownloadRawData.DownloadStatus status) {
+        if (status == DownloadRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received Countries data from herokuapp link.");
             mReceiver.onReceivedCountriesHerokuappData(true, data);
             mReceiver.onDataCompleted();
@@ -71,10 +71,10 @@ public class GetRawDataService extends Service implements JSONRawData.OnDownload
 
     @Override
     public void onCreate() {
-        mRawDataFromApify = new JSONRawData(this);
-        mRawDataDOHFromHerokuapp = new JSONRawData(this);
-        mRawDataPhilippinesFromHerokuapp = new JSONRawData(this);
-        mRawDataCountriesFromHerokuapp = new JSONRawData(this);
+        mRawDataFromApify = new DownloadRawData(this);
+        mRawDataDOHFromHerokuapp = new DownloadRawData(this);
+        mRawDataPhilippinesFromHerokuapp = new DownloadRawData(this);
+        mRawDataCountriesFromHerokuapp = new DownloadRawData(this);
     }
 
     @Override

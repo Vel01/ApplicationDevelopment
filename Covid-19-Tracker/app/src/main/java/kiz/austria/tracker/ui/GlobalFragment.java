@@ -39,10 +39,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import kiz.austria.tracker.R;
-import kiz.austria.tracker.data.APIFYDataParser;
+import kiz.austria.tracker.data.DownloadRawData;
 import kiz.austria.tracker.data.DownloadedData;
-import kiz.austria.tracker.data.JSONRawData;
-import kiz.austria.tracker.data.NationDataParser;
+import kiz.austria.tracker.data.parser.APIFYDataParser;
+import kiz.austria.tracker.data.parser.NationDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.model.PHListUpdatesCases;
 import kiz.austria.tracker.model.Philippines;
@@ -86,8 +86,8 @@ public class GlobalFragment extends BaseFragment implements
     }
 
     @Override
-    public void onCountriesDataAvailable(ArrayList<Nation> nations, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mNationDataParser.isCancelled()) {
+    public void onCountriesDataAvailable(ArrayList<Nation> nations, DownloadRawData.DownloadStatus status) {
+        if (status == DownloadRawData.DownloadStatus.OK && !mNationDataParser.isCancelled()) {
 
             Collections.sort(nations, (o1, o2) ->
                     TrackerUtility.sort(Integer.parseInt(o1.getTodayCases()),
@@ -117,29 +117,29 @@ public class GlobalFragment extends BaseFragment implements
     }
 
     @Override
-    public void onPhilippinesDataAvailable(Philippines philippines, JSONRawData.DownloadStatus status) {
+    public void onPhilippinesDataAvailable(Philippines philippines, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onFullDataAvailable(ArrayList<PHListUpdatesCases> dataList, JSONRawData.DownloadStatus status) {
+    public void onFullDataAvailable(ArrayList<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onDateAvailable(PHListUpdatesCases data, JSONRawData.DownloadStatus status) {
-        if (status == JSONRawData.DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
+    public void onDateAvailable(PHListUpdatesCases data, DownloadRawData.DownloadStatus status) {
+        if (status == DownloadRawData.DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
             setLatestUpdate(data);
         }
     }
 
     @Override
-    public void onEssentialDataAvailable(List<PHListUpdatesCases> dataList, JSONRawData.DownloadStatus status) {
+    public void onEssentialDataAvailable(List<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onBasicDataAvailable(List<PHListUpdatesCases> dataList, JSONRawData.DownloadStatus status) {
+    public void onBasicDataAvailable(List<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
 
     }
 

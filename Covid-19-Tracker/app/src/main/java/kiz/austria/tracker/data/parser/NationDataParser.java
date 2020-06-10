@@ -1,4 +1,4 @@
-package kiz.austria.tracker.data;
+package kiz.austria.tracker.data.parser;
 
 import android.os.AsyncTask;
 
@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import kiz.austria.tracker.data.DownloadRawData;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.model.Philippines;
 
@@ -18,25 +19,11 @@ public class NationDataParser extends AsyncTask<String, Void, ArrayList<Nation>>
     public enum ParseData {PHILIPPINES, COUNTRIES}
 
 
-    private JSONRawData.DownloadStatus mDownloadStatus;
+    private DownloadRawData.DownloadStatus mDownloadStatus;
     private final OnDataAvailable mOnDataAvailable;
     private ArrayList<Nation> mNations;
     private Philippines mPhilippines;
     private ParseData mParseData;
-
-    public interface OnDataAvailable {
-        void onCountriesDataAvailable(ArrayList<Nation> nations, final JSONRawData.DownloadStatus status);
-
-        void onPhilippinesDataAvailable(Philippines philippines, final JSONRawData.DownloadStatus status);
-    }
-
-    public NationDataParser(OnDataAvailable onDataAvailable) {
-        mOnDataAvailable = onDataAvailable;
-    }
-
-    public void parse(ParseData parseData) {
-        mParseData = parseData;
-    }
 
     @Override
     protected ArrayList<Nation> doInBackground(String... raw) {
@@ -57,11 +44,11 @@ public class NationDataParser extends AsyncTask<String, Void, ArrayList<Nation>>
                     String critical = currentCovered.getString("critical");
                     mNations.add(new Nation(country, cases, deaths, todayCases, todayDeaths, recovered, active, critical));
                 }
-                mDownloadStatus = JSONRawData.DownloadStatus.OK;
+                mDownloadStatus = DownloadRawData.DownloadStatus.OK;
             } catch (JSONException e) {
                 e.getMessage();
                 e.printStackTrace();
-                mDownloadStatus = JSONRawData.DownloadStatus.FAILED_OR_EMPTY;
+                mDownloadStatus = DownloadRawData.DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
@@ -77,14 +64,28 @@ public class NationDataParser extends AsyncTask<String, Void, ArrayList<Nation>>
                 String active = jsonObject.getString("active");
                 String critical = jsonObject.getString("critical");
                 mPhilippines = new Philippines(cases, todayCases, deaths, todayDeaths, recovered, active, critical);
-                mDownloadStatus = JSONRawData.DownloadStatus.OK;
+                mDownloadStatus = DownloadRawData.DownloadStatus.OK;
             } catch (JSONException e) {
                 e.printStackTrace();
-                mDownloadStatus = JSONRawData.DownloadStatus.FAILED_OR_EMPTY;
+                mDownloadStatus = DownloadRawData.DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
         return mNations;
+    }
+
+    public NationDataParser(OnDataAvailable onDataAvailable) {
+        mOnDataAvailable = onDataAvailable;
+    }
+
+    public void parse(ParseData parseData) {
+        mParseData = parseData;
+    }
+
+    public interface OnDataAvailable {
+        void onCountriesDataAvailable(ArrayList<Nation> nations, final DownloadRawData.DownloadStatus status);
+
+        void onPhilippinesDataAvailable(Philippines philippines, final DownloadRawData.DownloadStatus status);
     }
 
     @Override

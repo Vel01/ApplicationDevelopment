@@ -11,7 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-public class JSONRawData extends AsyncTask<String, Void, String> {
+public class DownloadRawData extends AsyncTask<String, Void, String> {
 
     public enum DownloadStatus {IDLE, PROCESSING, NOT_INITIALISED, FAILED_OR_EMPTY, OK}
 
@@ -29,7 +29,7 @@ public class JSONRawData extends AsyncTask<String, Void, String> {
         }
     }
 
-    public JSONRawData(OnDownloadComplete onDownloadComplete) {
+    public DownloadRawData(OnDownloadComplete onDownloadComplete) {
         mOnDownloadComplete = onDownloadComplete;
         mDownloadStatus = DownloadStatus.IDLE;
     }
