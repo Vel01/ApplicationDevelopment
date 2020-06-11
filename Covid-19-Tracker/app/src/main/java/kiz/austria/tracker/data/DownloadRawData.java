@@ -91,7 +91,7 @@ public class DownloadRawData extends AsyncTask<String, Void, String> {
                 case Addresses.Link.DATA_PHILIPPINES_FROM_APIFY:
                     mOnDownloadComplete.onDownloadCompleteFromApify(data, mDownloadStatus);
                     break;
-                case Addresses.Link.DATA_PHILIPPINES_DOHDATA_DROP_FROM_HEROKUAPP:
+                case Addresses.Link.DATA_PHILIPPINES_DOH_DROP_FROM_HEROKUAPP:
                     mOnDownloadComplete.onDownloadCompleteDOHDataFromHerokuapp(data, mDownloadStatus);
                     break;
                 case Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP:

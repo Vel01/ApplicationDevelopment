@@ -8,6 +8,9 @@
     <color name="shimmer_bg">#dddddd</color>
     <color name="toast_connection_lost">#D32F2F</color>
 
+    <color name="color_bottom_nav_red">#F44336</color>
+    <color name="color_bottom_nav_grey">#c3c3c3</color>
+
     <color name="green_one">#97F295</color>
     <color name="green_two">#DDFFDD</color>
     <color name="red_one">#FF4433</color>

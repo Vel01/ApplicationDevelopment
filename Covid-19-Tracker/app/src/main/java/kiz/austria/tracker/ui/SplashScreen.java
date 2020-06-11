@@ -148,6 +148,12 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        //TODO: bug when it paused
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.e(TAG, "onDestroy()");

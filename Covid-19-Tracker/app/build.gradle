@@ -59,4 +59,7 @@ dependencies {
     implementation 'com.mikepenz:community-material-typeface:3.5.95.1@aar'
     //toast
     implementation 'com.muddzdev:styleabletoast:2.2.3'
+    //BottomNavigationDrawerEx
+    implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
+
 }

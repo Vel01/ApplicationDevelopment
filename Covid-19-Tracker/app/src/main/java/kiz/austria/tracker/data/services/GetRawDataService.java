@@ -82,7 +82,7 @@ public class GetRawDataService extends Service implements DownloadRawData.OnDown
         Log.d(TAG, "onStartCommand() service is now running on different thread.");
         new Thread(() -> {
             mRawDataFromApify.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
-            mRawDataDOHFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_DOHDATA_DROP_FROM_HEROKUAPP);
+            mRawDataDOHFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_DOH_DROP_FROM_HEROKUAPP);
             mRawDataPhilippinesFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP);
             mRawDataCountriesFromHerokuapp.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
         }).start();

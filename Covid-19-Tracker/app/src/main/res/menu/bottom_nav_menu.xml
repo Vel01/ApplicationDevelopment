@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottom_nav_philippines"
+        android:layout_centerVertical="true"
+        android:icon="@drawable/ic_philippines"
+        android:title="" />
+
+    <item
+        android:id="@+id/bottom_nav_drop"
+        android:layout_centerVertical="true"
+        android:icon="@drawable/ic_drop_data"
+        android:title="" />
+
+    <item
+        android:id="@+id/bottom_nav_cases"
+        android:layout_centerVertical="true"
+        android:icon="@drawable/ic_cases"
+        android:title="" />
+
+    <item
+        android:id="@+id/bottom_nav_more"
+        android:layout_centerVertical="true"
+        android:icon="@drawable/ic_more"
+        android:title="" />
+
+</menu>
