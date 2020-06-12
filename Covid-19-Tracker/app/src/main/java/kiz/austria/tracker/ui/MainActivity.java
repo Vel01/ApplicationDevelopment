@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -32,7 +31,6 @@ import kiz.austria.tracker.util.TrackerUtility;
 public class MainActivity extends BaseActivity implements
         TrackerDialog.OnDialogListener,
         Inflatable,
-//        NavigationView.OnNavigationItemSelectedListener,
         BottomNavigationViewEx.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
@@ -381,23 +379,23 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed: called");
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))
-                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_countries)))
-                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_philippines)))
-                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_drop)))
-                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_cases))
-                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_more))))) {
+//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+//        if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))
+//                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_countries)))
+//                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_philippines)))
+//                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_drop)))
+//                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_cases))
+//                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_more))))) {
 
-            if (mDrawer.isDrawerOpen()) {
-                mDrawer.closeDrawer();
-                return;
-            }
+        if (mDrawer.isDrawerOpen()) {
+            mDrawer.closeDrawer();
+            return;
+        }
 
-            int backStackCount = mFragmentTags.size();
-            if (backStackCount > 1) {
-                //Nav backwards
-                String topFragmentTag = mFragmentTags.get(backStackCount - 1);
+        int backStackCount = mFragmentTags.size();
+        if (backStackCount > 1) {
+            //Nav backwards
+            String topFragmentTag = mFragmentTags.get(backStackCount - 1);
                 String newTopFragmentTag = mFragmentTags.get(backStackCount - 2);
                 setFragmentVisibilities(newTopFragmentTag);
 
@@ -412,7 +410,7 @@ public class MainActivity extends BaseActivity implements
             if (mTapToClose >= 2) {
                 TrackerUtility.finishFade(this, mRoot);
             }
-        }
+//        }
     }
 
 }

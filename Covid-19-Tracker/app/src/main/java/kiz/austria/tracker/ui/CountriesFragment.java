@@ -375,6 +375,7 @@ public class CountriesFragment extends BaseFragment implements
 
     }
 
+
     @Override
     public void onBackPressed(boolean returnable) {
         Objects.requireNonNull(getView()).setFocusableInTouchMode(true);
@@ -398,4 +399,5 @@ public class CountriesFragment extends BaseFragment implements
         mUnbinder.unbind();
         cancelJSONParsing();
     }
+
 }

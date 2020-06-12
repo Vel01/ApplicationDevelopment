@@ -5,4 +5,5 @@ public interface Inflatable {
     void onInflateCountriesFragment();
 
     void onInflateGlobalFragment();
+
 }
