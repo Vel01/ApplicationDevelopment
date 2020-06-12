@@ -1,6 +1,7 @@
 package kiz.austria.tracker.util;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Toast;
@@ -18,6 +19,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
+
+import kiz.austria.tracker.R;
 
 public class TrackerUtility {
 
@@ -101,4 +104,18 @@ public class TrackerUtility {
         }).start();
     }
 
+    public static void warnUserToExit(FragmentActivity host) {
+        TrackerDialog dialog = new TrackerDialog();
+
+        Bundle args = new Bundle();
+        args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_NORMAL);
+        args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_ON_BACK_PRESSED);
+        args.putString(TrackerKeys.KEY_DIALOG_TITLE, "Do you want to exit?");
+        args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, "You can check the update later.");
+        args.putInt(TrackerKeys.KEY_DIALOG_POSITIVE_RID, R.string.label_dialog_continue);
+        args.putInt(TrackerKeys.KEY_DIALOG_NEGATIVE_RID, R.string.label_dialog_exit);
+
+        dialog.setArguments(args);
+        dialog.show(host.getSupportFragmentManager(), null);
+    }
 }

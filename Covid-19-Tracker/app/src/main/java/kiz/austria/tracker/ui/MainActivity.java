@@ -37,10 +37,7 @@ public class MainActivity extends BaseActivity implements
 
     private static final String TAG = "MainActivity";
 
-    @Override
-    public void onDialogPositiveEvent(int id, Bundle args) {
-
-    }
+    private static final int PHILIPPINES_FRAGMENT = 0;
 
     @Override
     public void onDialogNegativeEvent(int id, Bundle args) {
@@ -59,32 +56,6 @@ public class MainActivity extends BaseActivity implements
         Log.e(TAG, "inflateCountriesFragment: inflate CountriesFragment");
         initCountriesFragment();
     }
-
-    @Override
-    public void onInflateGlobalFragment() {
-        Log.e(TAG, "inflateCountriesFragment: inflate GlobalFragment");
-        initGlobalFragment();
-    }
-
-    private static final int PHILIPPINES_FRAGMENT = 0;
-    private static final int DROP_FRAGMENT = 1;
-    private static final int CASES_FRAGMENT = 2;
-    private static final int MORE_FRAGMENT = 3;
-    //views
-    private ViewGroup mRoot;
-    //references
-    private Drawer mDrawer;
-    private BottomNavigationViewEx mBottomNavigationViewEx;
-    //fragments
-    private GlobalFragment mGlobalFragment;
-    private PhilippinesFragment mPhilippinesFragment;
-    private DropFragment mDropFragment;
-    private CasesFragment mCasesFragment;
-    private MoreFragment mMoreFragment;
-    //custom backStack
-    private ArrayList<String> mFragmentTags = new ArrayList<>();
-    private ArrayList<FragmentTag> mFragments = new ArrayList<>();
-    private int mTapToClose = 0;
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -158,6 +129,38 @@ public class MainActivity extends BaseActivity implements
         return false;
     }
 
+    private static final int DROP_FRAGMENT = 1;
+    private static final int CASES_FRAGMENT = 2;
+    private static final int MORE_FRAGMENT = 3;
+    //views
+    private ViewGroup mRoot;
+    //references
+    private Drawer mDrawer;
+    private BottomNavigationViewEx mBottomNavigationViewEx;
+    //fragments
+    private GlobalFragment mGlobalFragment;
+    private CountriesFragment mCountriesFragment;
+    private PhilippinesFragment mPhilippinesFragment;
+    private DropFragment mDropFragment;
+    private CasesFragment mCasesFragment;
+    private MoreFragment mMoreFragment;
+    //custom backStack
+    private ArrayList<String> mFragmentTags = new ArrayList<>();
+    private ArrayList<FragmentTag> mFragments = new ArrayList<>();
+    private int mTapToClose = 0;
+    private int mSavedLastSelection = 1;
+
+    @Override
+    public void onDialogPositiveEvent(int id, Bundle args) {
+        mDrawer.setSelection(mSavedLastSelection, false);
+    }
+
+    @Override
+    public void onInflateGlobalFragment() {
+        Log.e(TAG, "inflateCountriesFragment: inflate GlobalFragment");
+        initGlobalFragment();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate: started");
@@ -167,6 +170,7 @@ public class MainActivity extends BaseActivity implements
 
         //======= BottomNavigationView Instantiation & Initialization =======//
         mBottomNavigationViewEx = findViewById(R.id.bottom_nav_view);
+
         initBottomNavigationView();
 
         //================== Host Animation ==================/
@@ -187,6 +191,7 @@ public class MainActivity extends BaseActivity implements
 
     private void initBottomNavigationView() {
         mBottomNavigationViewEx.setOnNavigationItemSelectedListener(this);
+        mBottomNavigationViewEx.enableShiftingMode(false);
         mBottomNavigationViewEx.enableAnimation(false);
     }
 
@@ -201,6 +206,8 @@ public class MainActivity extends BaseActivity implements
         else if (tag.equals(getString(R.string.tag_fragment_more)))
             showBottomNavigation();
         else if (tag.equals(getString(R.string.tag_fragment_global)))
+            hideBottomNavigation();
+        else if (tag.equals(getString(R.string.tag_fragment_countries)))
             hideBottomNavigation();
 
         for (int i = 0; i < mFragments.size(); i++) {
@@ -238,6 +245,24 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
+    private void hideBottomNavigation() {
+        if (mBottomNavigationViewEx != null) {
+            mBottomNavigationViewEx.setVisibility(View.GONE);
+        }
+    }
+
+    private void showBottomNavigation() {
+        if (mBottomNavigationViewEx != null) {
+            mBottomNavigationViewEx.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void resetBackStack() {
+        mFragmentTags.clear();
+        mFragmentTags = new ArrayList<>();
+        onTapToCloseReset();
+    }
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(TrackerKeys.STATE_SELECTION_DRAWER, mDrawer.getCurrentSelectedPosition());
@@ -267,24 +292,23 @@ public class MainActivity extends BaseActivity implements
                         new PrimaryDrawerItem().withIdentifier(3).withName("What is Covid-19?").withIcon(CommunityMaterial.Icon.cmd_comment_question_outline),
                         new PrimaryDrawerItem().withIdentifier(4).withName("About").withIcon(CommunityMaterial.Icon2.cmd_information))
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
-                    //selected item functionality here...
                     switch (position) {
                         case 1:
+                            mSavedLastSelection = 1;
+                            resetBackStack();
                             initGlobalFragment();
                             break;
                         case 2:
-                            //TODO: reset backstack here...
-                            mFragmentTags.clear();
-                            mFragmentTags = new ArrayList<>();
+                            mSavedLastSelection = 2;
+                            resetBackStack();
                             initPhilippinesFragment();
                             break;
                         case -1:
-                            TrackerUtility.finishFade(this, mRoot);
+                            TrackerUtility.warnUserToExit(this);
                             break;
                     }
                     return false;
                 }).build();
-
         mDrawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
         mDrawer.addStickyFooterItem(new PrimaryDrawerItem().withName("Exit").withIcon(CommunityMaterial.Icon.cmd_exit_to_app));
     }
@@ -306,7 +330,6 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initGlobalFragment() {
-        onTapToCloseReset();
 
         if (mGlobalFragment != null) {
             getSupportFragmentManager().beginTransaction().remove(mGlobalFragment).commitAllowingStateLoss();
@@ -324,11 +347,20 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initCountriesFragment() {
-        CountriesFragment fragment = new CountriesFragment();
+
+        if (mCountriesFragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(mCountriesFragment).commitAllowingStateLoss();
+        }
+
+        mCountriesFragment = new CountriesFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment, getString(R.string.tag_fragment_countries));
-        transaction.addToBackStack(getString(R.string.tag_fragment_countries));
+        transaction.add(R.id.fragment_container, mCountriesFragment, getString(R.string.tag_fragment_countries));
         transaction.commit();
+        mFragmentTags.add(getString(R.string.tag_fragment_countries));
+        mFragments.add(new FragmentTag(mCountriesFragment, getString(R.string.tag_fragment_countries)));
+
+        setFragmentVisibilities(getString(R.string.tag_fragment_countries));
+
     }
 
 
@@ -351,6 +383,7 @@ public class MainActivity extends BaseActivity implements
         Log.d(TAG, "onBackPressed: called");
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))
+                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_countries)))
                 || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_philippines)))
                 || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_drop)))
                 || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_cases))
@@ -371,39 +404,14 @@ public class MainActivity extends BaseActivity implements
                 mFragmentTags.remove(topFragmentTag);
                 onTapToCloseReset();
             } else if (backStackCount == 1) {
-                Toast.makeText(this, "1 more click to exit", Toast.LENGTH_SHORT).show();
+                if (mTapToClose == 0)
+                    Toast.makeText(this, "1 more click to exit", Toast.LENGTH_SHORT).show();
                 onTapToClose();
             }
 
             if (mTapToClose >= 2) {
                 TrackerUtility.finishFade(this, mRoot);
             }
-        } else {
-
-            TrackerDialog dialog = new TrackerDialog();
-
-            Bundle args = new Bundle();
-            args.putString(TrackerKeys.KEY_STYLE, TrackerKeys.STYLE_DIALOG_NORMAL);
-            args.putInt(TrackerKeys.KEY_DIALOG_ID, TrackerKeys.ACTION_DIALOG_ON_BACK_PRESSED);
-            args.putString(TrackerKeys.KEY_DIALOG_TITLE, "Do you want to exit?");
-            args.putString(TrackerKeys.KEY_DIALOG_MESSAGE, "Use the back navigation instead.");
-            args.putInt(TrackerKeys.KEY_DIALOG_POSITIVE_RID, R.string.label_dialog_continue);
-            args.putInt(TrackerKeys.KEY_DIALOG_NEGATIVE_RID, R.string.label_dialog_exit);
-
-            dialog.setArguments(args);
-            dialog.show(getSupportFragmentManager(), null);
-        }
-    }
-
-    private void hideBottomNavigation() {
-        if (mBottomNavigationViewEx != null) {
-            mBottomNavigationViewEx.setVisibility(View.GONE);
-        }
-    }
-
-    private void showBottomNavigation() {
-        if (mBottomNavigationViewEx != null) {
-            mBottomNavigationViewEx.setVisibility(View.VISIBLE);
         }
     }
 

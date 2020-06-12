@@ -26,10 +26,6 @@
 
     <include layout="@layout/content_main" />
 
-    <include
-        android:id="@+id/tracker_splash"
-        layout="@layout/layout_splash"
-        android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
