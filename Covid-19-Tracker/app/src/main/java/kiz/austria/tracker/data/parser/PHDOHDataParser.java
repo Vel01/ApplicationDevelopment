@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kiz.austria.tracker.data.DownloadRawData;
-import kiz.austria.tracker.model.PHListDOHDrop;
+import kiz.austria.tracker.model.DOHDrop;
 
-public class PHDOHDataParser extends AsyncTask<String, Void, List<PHListDOHDrop>> {
+public class PHDOHDataParser extends AsyncTask<String, Void, List<DOHDrop>> {
 
     private static final String TAG = "RawDataParser";
 
     private ParseData mParseData;
-    private List<PHListDOHDrop> mPHListDOHDrop;
+    private List<DOHDrop> mDOHDrop;
 
 
     private OnDataAvailable mOnDataAvailable;
@@ -32,9 +32,9 @@ public class PHDOHDataParser extends AsyncTask<String, Void, List<PHListDOHDrop>
     }
 
     @Override
-    protected List<PHListDOHDrop> doInBackground(String... path) {
+    protected List<DOHDrop> doInBackground(String... path) {
         if (mParseData == ParseData.DOH_DROP) {
-            mPHListDOHDrop = new ArrayList<>();
+            mDOHDrop = new ArrayList<>();
             try {
                 JSONObject object = new JSONObject(path[0]);
                 JSONArray jsonList = object.getJSONArray("data");
@@ -53,7 +53,7 @@ public class PHDOHDataParser extends AsyncTask<String, Void, List<PHListDOHDrop>
                     String latitude = doh_drop.getString("latitude");
                     String longitude = doh_drop.getString("longitude");
 
-                    mPHListDOHDrop.add(new PHListDOHDrop(caseCode, age, sex, isAdmitted, date_reported, date_died,
+                    mDOHDrop.add(new DOHDrop(caseCode, age, sex, isAdmitted, date_reported, date_died,
                             recovered_on, region_res, prov_city_res, location, latitude, longitude));
                 }
                 mDownloadStatus = DownloadRawData.DownloadStatus.OK;
@@ -63,11 +63,11 @@ public class PHDOHDataParser extends AsyncTask<String, Void, List<PHListDOHDrop>
             }
         }
 
-        return mPHListDOHDrop;
+        return mDOHDrop;
     }
 
     @Override
-    protected void onPostExecute(List<PHListDOHDrop> dohDrops) {
+    protected void onPostExecute(List<DOHDrop> dohDrops) {
         if (mOnDataAvailable != null) {
             mOnDataAvailable.onDataPHDOHAvailable(dohDrops, mDownloadStatus);
         }
@@ -85,6 +85,6 @@ public class PHDOHDataParser extends AsyncTask<String, Void, List<PHListDOHDrop>
     }
 
     public interface OnDataAvailable {
-        void onDataPHDOHAvailable(List<PHListDOHDrop> dohDrops, final DownloadRawData.DownloadStatus status);
+        void onDataPHDOHAvailable(List<DOHDrop> dohDrops, final DownloadRawData.DownloadStatus status);
     }
 }

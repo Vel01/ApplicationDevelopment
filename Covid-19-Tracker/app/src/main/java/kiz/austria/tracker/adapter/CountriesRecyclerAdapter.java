@@ -52,11 +52,6 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.setFadeInAnimation();
-//        holder.mExpand.setOnClickListener(v -> {
-//            Nation nation = mNationsAdapterList.get(position);
-//            nation.setExpanded(!nation.isExpanded());
-//            notifyItemChanged(position, position);
-//        });
         holder.onBind(position);
     }
 
@@ -70,7 +65,7 @@ public class CountriesRecyclerAdapter extends RecyclerView.Adapter<CountriesRecy
     }
 
     public void addList(ArrayList<Nation> nations) {
-        TrackerDiffUtil util = new TrackerDiffUtil(mNationsAdapterList, nations);
+        TrackerDiffUtil<Nation> util = new TrackerDiffUtil<>(mNationsAdapterList, nations);
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(util);
 
         mNationsAdapterList.clear();

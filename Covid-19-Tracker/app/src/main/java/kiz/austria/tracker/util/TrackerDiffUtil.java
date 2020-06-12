@@ -1,17 +1,17 @@
 package kiz.austria.tracker.util;
 
+import android.os.Parcelable;
+
 import androidx.recyclerview.widget.DiffUtil;
 
 import java.util.List;
 
-import kiz.austria.tracker.model.Nation;
+public class TrackerDiffUtil<T extends Parcelable> extends DiffUtil.Callback {
 
-public class TrackerDiffUtil extends DiffUtil.Callback {
+    private List<T> mOldList;
+    private List<T> mNewList;
 
-    private List<Nation> mOldList;
-    private List<Nation> mNewList;
-
-    public TrackerDiffUtil(List<Nation> oldList, List<Nation> newList) {
+    public TrackerDiffUtil(List<T> oldList, List<T> newList) {
         mOldList = oldList;
         mNewList = newList;
     }

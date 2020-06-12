@@ -43,8 +43,8 @@ import kiz.austria.tracker.data.DownloadRawData;
 import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.data.parser.APIFYDataParser;
 import kiz.austria.tracker.data.parser.NationDataParser;
+import kiz.austria.tracker.model.Cases;
 import kiz.austria.tracker.model.Nation;
-import kiz.austria.tracker.model.PHListUpdatesCases;
 import kiz.austria.tracker.model.Philippines;
 import kiz.austria.tracker.util.TrackerHorizontalChart;
 import kiz.austria.tracker.util.TrackerNumber;
@@ -122,24 +122,24 @@ public class GlobalFragment extends BaseFragment implements
     }
 
     @Override
-    public void onFullDataAvailable(ArrayList<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onFullDataAvailable(ArrayList<Cases> dataList, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onDateAvailable(PHListUpdatesCases data, DownloadRawData.DownloadStatus status) {
+    public void onDateAvailable(Cases data, DownloadRawData.DownloadStatus status) {
         if (status == DownloadRawData.DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
             setLatestUpdate(data);
         }
     }
 
     @Override
-    public void onEssentialDataAvailable(List<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onEssentialDataAvailable(List<Cases> dataList, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onBasicDataAvailable(List<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onBasicDataAvailable(List<Cases> dataList, DownloadRawData.DownloadStatus status) {
 
     }
 
@@ -233,7 +233,7 @@ public class GlobalFragment extends BaseFragment implements
         return view;
     }
 
-    private void setLatestUpdate(PHListUpdatesCases trend) {
+    private void setLatestUpdate(Cases trend) {
         Log.d(TAG, "onDataTrendAvailable() " + trend.getLatestUpdate());
         try {
             tvUpdate.setText(TrackerUtility.formatDate(trend.getLatestUpdate()));

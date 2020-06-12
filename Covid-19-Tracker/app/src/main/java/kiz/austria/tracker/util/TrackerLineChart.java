@@ -12,7 +12,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import kiz.austria.tracker.model.PHListUpdatesCases;
+import kiz.austria.tracker.model.Cases;
 
 import static android.graphics.Color.rgb;
 
@@ -74,7 +74,7 @@ public class TrackerLineChart {
 
     private LineData data = new LineData();
 
-    public void setLineChartData(List<PHListUpdatesCases> trends) {
+    public void setLineChartData(List<Cases> trends) {
         data.addDataSet(dataForInfected(trends));
         data.addDataSet(dataForRecovered(trends));
         data.addDataSet(dataForDeceased(trends));
@@ -103,7 +103,7 @@ public class TrackerLineChart {
     }
 
 
-    private ILineDataSet dataForInfected(List<PHListUpdatesCases> trends) {
+    private ILineDataSet dataForInfected(List<Cases> trends) {
         TrackerSort.quickSort(trends, "INFECTED", 0, trends.size());
         List<Entry> values = new ArrayList<>();
         float currentValue = -1;
@@ -115,7 +115,7 @@ public class TrackerLineChart {
         return lineDataConfig(values, "Confirmed", colors[0]);
     }
 
-    private ILineDataSet dataForRecovered(List<PHListUpdatesCases> trends) {
+    private ILineDataSet dataForRecovered(List<Cases> trends) {
         TrackerSort.quickSort(trends, "RECOVERED", 0, trends.size());
 
         List<Entry> values = new ArrayList<>();
@@ -129,7 +129,7 @@ public class TrackerLineChart {
         return lineDataConfig(values, "Recovered", colors[1]);
     }
 
-    private LineDataSet dataForDeceased(List<PHListUpdatesCases> trends) {
+    private LineDataSet dataForDeceased(List<Cases> trends) {
         TrackerSort.quickSort(trends, "DECEASED", 0, trends.size());
 
         List<Entry> values = new ArrayList<>();

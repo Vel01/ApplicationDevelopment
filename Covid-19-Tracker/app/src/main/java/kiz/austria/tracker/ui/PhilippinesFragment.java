@@ -42,9 +42,9 @@ import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.data.parser.APIFYDataParser;
 import kiz.austria.tracker.data.parser.NationDataParser;
 import kiz.austria.tracker.data.parser.PHDOHDataParser;
+import kiz.austria.tracker.model.Cases;
+import kiz.austria.tracker.model.DOHDrop;
 import kiz.austria.tracker.model.Nation;
-import kiz.austria.tracker.model.PHListDOHDrop;
-import kiz.austria.tracker.model.PHListUpdatesCases;
 import kiz.austria.tracker.model.Philippines;
 import kiz.austria.tracker.util.TrackerHorizontalChart;
 import kiz.austria.tracker.util.TrackerLineChart;
@@ -132,7 +132,7 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onDataPHDOHAvailable(List<PHListDOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
+    public void onDataPHDOHAvailable(List<DOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
         if (status == DownloadRawData.DownloadStatus.OK && !mPHDOHDataParser.isCancelled()) {
             Log.d(TAG, "onDataPHDOHAvailable() size = " + dohDrops.size());
             retrievedStats(dohDrops);
@@ -140,8 +140,8 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
         }
     }
 
-    private void retrievedStats(List<PHListDOHDrop> dohDrops) {
-        for (PHListDOHDrop drop : dohDrops) {
+    private void retrievedStats(List<DOHDrop> dohDrops) {
+        for (DOHDrop drop : dohDrops) {
 
             if (Integer.parseInt(drop.getAge()) >= 61) {
                 mCount61up++;
@@ -192,7 +192,7 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
 
     }
 
-    private void getLatestUpdate(PHListUpdatesCases trend) {
+    private void getLatestUpdate(Cases trend) {
         try {
             tvLatestUpdate.setText(TrackerUtility.formatDate(trend.getLatestUpdate()));
         } catch (ParseException e) {
@@ -201,17 +201,17 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onFullDataAvailable(ArrayList<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onFullDataAvailable(ArrayList<Cases> dataList, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onDateAvailable(PHListUpdatesCases data, DownloadRawData.DownloadStatus status) {
+    public void onDateAvailable(Cases data, DownloadRawData.DownloadStatus status) {
 
     }
 
     @Override
-    public void onEssentialDataAvailable(List<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onEssentialDataAvailable(List<Cases> dataList, DownloadRawData.DownloadStatus status) {
         if (status == DownloadRawData.DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
             Log.d(TAG, "onEssentialDataAvailable() data received by PhilippinesFragment " + dataList.toString());
             initLineChart(dataList);
@@ -220,7 +220,7 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onBasicDataAvailable(List<PHListUpdatesCases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onBasicDataAvailable(List<Cases> dataList, DownloadRawData.DownloadStatus status) {
 
     }
 
@@ -268,7 +268,7 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
         return view;
     }
 
-    private void initLineChart(List<PHListUpdatesCases> casualties) {
+    private void initLineChart(List<Cases> casualties) {
 
         TrackerLineChart chart = new TrackerLineChart(lineChart);
         chart.setAttributes();
@@ -280,10 +280,10 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
 
     }
 
-    private List<String> getLineChartLabel(List<PHListUpdatesCases> casualties) {
+    private List<String> getLineChartLabel(List<Cases> casualties) {
         List<String> labels = new ArrayList<>();
 
-        for (PHListUpdatesCases trend : casualties) {
+        for (Cases trend : casualties) {
             try {
                 labels.add(TrackerUtility.formatSimpleDate(trend.getLatestUpdate()));
             } catch (ParseException e) {

@@ -10,15 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kiz.austria.tracker.data.DownloadRawData;
-import kiz.austria.tracker.model.PHListUpdatesCases;
+import kiz.austria.tracker.model.Cases;
 
-public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpdatesCases>> {
+public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<Cases>> {
 
     private static final String TAG = "APIFYDataParser";
     private final OnDataAvailable mOnDataAvailable;
-    private ArrayList<PHListUpdatesCases> mPHListUpdatesCasesList;
+    private ArrayList<Cases> mPHListUpdatesCasesList;
     private DownloadRawData.DownloadStatus mDownloadStatus;
-    private PHListUpdatesCases mLatestDateUpdated;
+    private Cases mLatestDateUpdated;
     private ParseData mParseData;
 
     public APIFYDataParser(final OnDataAvailable onDataAvailable) {
@@ -30,7 +30,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
     }
 
     @Override
-    protected ArrayList<PHListUpdatesCases> doInBackground(String... raw) {
+    protected ArrayList<Cases> doInBackground(String... raw) {
 
         if (mParseData == ParseData.FULL_DATA) {
             mPHListUpdatesCasesList = new ArrayList<>();
@@ -49,7 +49,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
                     String pui = getObjectPUI(jsonObject);
                     String pum = getObjectPUM(jsonObject);
 
-                    mPHListUpdatesCasesList.add(new PHListUpdatesCases(country, infected, tested, recovered, deceased, pui, pum, latestUpdate));
+                    mPHListUpdatesCasesList.add(new Cases(country, infected, tested, recovered, deceased, pui, pum, latestUpdate));
                 }
                 mDownloadStatus = DownloadRawData.DownloadStatus.OK;
             } catch (JSONException e) {
@@ -64,7 +64,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
                 JSONArray jsonList = new JSONArray(raw[0]);
                 JSONObject jsonObject = jsonList.getJSONObject(jsonList.length() - 1);
                 String latestUpdate = jsonObject.getString("lastUpdatedAtApify");
-                mLatestDateUpdated = new PHListUpdatesCases(latestUpdate);
+                mLatestDateUpdated = new Cases(latestUpdate);
                 mDownloadStatus = DownloadRawData.DownloadStatus.OK;
             } catch (JSONException e) {
                 e.getMessage();
@@ -83,7 +83,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
                     String recovered = jsonObject.getString("recovered");
                     String deceased = jsonObject.getString("deceased");
                     String latestUpdate = jsonObject.getString("lastUpdatedAtApify");
-                    mPHListUpdatesCasesList.add(new PHListUpdatesCases(infected, recovered, deceased, latestUpdate));
+                    mPHListUpdatesCasesList.add(new Cases(infected, recovered, deceased, latestUpdate));
                 }
                 mDownloadStatus = DownloadRawData.DownloadStatus.OK;
             } catch (JSONException e) {
@@ -104,7 +104,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
                     String pui = getObjectPUI(jsonObject);
                     String pum = getObjectPUM(jsonObject);
 
-                    mPHListUpdatesCasesList.add(new PHListUpdatesCases(tested, pui, pum));
+                    mPHListUpdatesCasesList.add(new Cases(tested, pui, pum));
                 }
                 mDownloadStatus = DownloadRawData.DownloadStatus.OK;
             } catch (JSONException e) {
@@ -118,17 +118,17 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
     }
 
     @Override
-    protected void onPostExecute(ArrayList<PHListUpdatesCases> phListUpdatesCases) {
+    protected void onPostExecute(ArrayList<Cases> aCases) {
         if (mOnDataAvailable != null) {
             switch (mParseData) {
                 case FULL_DATA:
-                    mOnDataAvailable.onFullDataAvailable(phListUpdatesCases, mDownloadStatus);
+                    mOnDataAvailable.onFullDataAvailable(aCases, mDownloadStatus);
                     break;
                 case ESSENTIAL_DATA:
-                    mOnDataAvailable.onEssentialDataAvailable(phListUpdatesCases, mDownloadStatus);
+                    mOnDataAvailable.onEssentialDataAvailable(aCases, mDownloadStatus);
                     break;
                 case BASIC_DATA:
-                    mOnDataAvailable.onBasicDataAvailable(phListUpdatesCases, mDownloadStatus);
+                    mOnDataAvailable.onBasicDataAvailable(aCases, mDownloadStatus);
                     break;
                 case DATE_ONLY:
                     mOnDataAvailable.onDateAvailable(mLatestDateUpdated, mDownloadStatus);
@@ -167,13 +167,13 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<PHListUpd
     public enum ParseData {FULL_DATA, DATE_ONLY, ESSENTIAL_DATA, BASIC_DATA}
 
     public interface OnDataAvailable {
-        void onFullDataAvailable(ArrayList<PHListUpdatesCases> dataList, final DownloadRawData.DownloadStatus status);
+        void onFullDataAvailable(ArrayList<Cases> dataList, final DownloadRawData.DownloadStatus status);
 
-        void onDateAvailable(PHListUpdatesCases data, final DownloadRawData.DownloadStatus status);
+        void onDateAvailable(Cases data, final DownloadRawData.DownloadStatus status);
 
-        void onEssentialDataAvailable(List<PHListUpdatesCases> dataList, final DownloadRawData.DownloadStatus status);
+        void onEssentialDataAvailable(List<Cases> dataList, final DownloadRawData.DownloadStatus status);
 
-        void onBasicDataAvailable(List<PHListUpdatesCases> dataList, final DownloadRawData.DownloadStatus status);
+        void onBasicDataAvailable(List<Cases> dataList, final DownloadRawData.DownloadStatus status);
 
     }
 

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import kiz.austria.tracker.util.TrackerUtility;
 
-public class PHListUpdatesCases implements Parcelable {
+public class Cases implements Parcelable {
 
     private String mCountry;
     private String mInfected;
@@ -16,35 +16,35 @@ public class PHListUpdatesCases implements Parcelable {
     private String mPUM;
     private String mLatestUpdate;
 
-    public static final Creator<PHListUpdatesCases> CREATOR = new Creator<PHListUpdatesCases>() {
+    public static final Creator<Cases> CREATOR = new Creator<Cases>() {
         @Override
-        public PHListUpdatesCases createFromParcel(Parcel in) {
-            return new PHListUpdatesCases(in);
+        public Cases createFromParcel(Parcel in) {
+            return new Cases(in);
         }
 
         @Override
-        public PHListUpdatesCases[] newArray(int size) {
-            return new PHListUpdatesCases[size];
+        public Cases[] newArray(int size) {
+            return new Cases[size];
         }
     };
 
-    public PHListUpdatesCases() {
+    public Cases() {
         this("N/A", "0", "0", "0", "0", "0", "0", TrackerUtility.getCurrentDate());
     }
 
-    public PHListUpdatesCases(String latestUpdate) {
+    public Cases(String latestUpdate) {
         this("N/A", "0", "0", "0", "0", "0", "0", latestUpdate);
     }
 
-    public PHListUpdatesCases(String tested, String PUI, String PUM) {
+    public Cases(String tested, String PUI, String PUM) {
         this("N/A", "0", tested, "0", "0", PUI, PUM, TrackerUtility.getCurrentDate());
     }
 
-    public PHListUpdatesCases(String infected, String recovered, String deceased, String latestUpdate) {
+    public Cases(String infected, String recovered, String deceased, String latestUpdate) {
         this("N/A", infected, "0", recovered, deceased, "0", "0", latestUpdate);
     }
 
-    public PHListUpdatesCases(String country, String infected, String tested, String recovered, String deceased, String PUI, String PUM, String latestUpdate) {
+    public Cases(String country, String infected, String tested, String recovered, String deceased, String PUI, String PUM, String latestUpdate) {
         mCountry = country;
         mInfected = infected;
         mTested = tested;
@@ -55,7 +55,7 @@ public class PHListUpdatesCases implements Parcelable {
         setLatestUpdate(latestUpdate);
     }
 
-    protected PHListUpdatesCases(Parcel in) {
+    protected Cases(Parcel in) {
         mCountry = in.readString();
         mInfected = in.readString();
         mTested = in.readString();
@@ -122,7 +122,7 @@ public class PHListUpdatesCases implements Parcelable {
 
     @Override
     public String toString() {
-        return "PHListUpdatesCases{" +
+        return "Cases{" +
                 "mCountry='" + mCountry + '\'' +
                 ", mInfected='" + mInfected + '\'' +
                 ", mTested='" + mTested + '\'' +
