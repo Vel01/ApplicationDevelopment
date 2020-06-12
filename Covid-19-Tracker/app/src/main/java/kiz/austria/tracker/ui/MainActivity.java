@@ -379,14 +379,6 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed: called");
-//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-//        if ((fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_global)))
-//                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_countries)))
-//                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_philippines)))
-//                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_drop)))
-//                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_cases))
-//                || (fragment == getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_fragment_more))))) {
-
         if (mDrawer.isDrawerOpen()) {
             mDrawer.closeDrawer();
             return;
@@ -396,21 +388,20 @@ public class MainActivity extends BaseActivity implements
         if (backStackCount > 1) {
             //Nav backwards
             String topFragmentTag = mFragmentTags.get(backStackCount - 1);
-                String newTopFragmentTag = mFragmentTags.get(backStackCount - 2);
-                setFragmentVisibilities(newTopFragmentTag);
+            String newTopFragmentTag = mFragmentTags.get(backStackCount - 2);
+            setFragmentVisibilities(newTopFragmentTag);
 
-                mFragmentTags.remove(topFragmentTag);
-                onTapToCloseReset();
-            } else if (backStackCount == 1) {
-                if (mTapToClose == 0)
-                    Toast.makeText(this, "1 more click to exit", Toast.LENGTH_SHORT).show();
-                onTapToClose();
-            }
+            mFragmentTags.remove(topFragmentTag);
+            onTapToCloseReset();
+        } else if (backStackCount == 1) {
+            if (mTapToClose == 0)
+                Toast.makeText(this, "1 more click to exit", Toast.LENGTH_SHORT).show();
+            onTapToClose();
+        }
 
-            if (mTapToClose >= 2) {
-                TrackerUtility.finishFade(this, mRoot);
-            }
-//        }
+        if (mTapToClose >= 2) {
+            TrackerUtility.finishFade(this, mRoot);
+        }
     }
 
 }

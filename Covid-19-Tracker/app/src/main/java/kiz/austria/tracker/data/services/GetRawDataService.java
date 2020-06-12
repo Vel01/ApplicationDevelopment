@@ -80,12 +80,12 @@ public class GetRawDataService extends Service implements DownloadRawData.OnDown
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() service is now running on different thread.");
-        new Thread(() -> {
+//        new Thread(() -> {
             mRawDataFromApify.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
             mRawDataDOHFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_DOH_DROP_FROM_HEROKUAPP);
             mRawDataPhilippinesFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP);
             mRawDataCountriesFromHerokuapp.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
-        }).start();
+//        }).start();
         return START_STICKY;
     }
 
@@ -121,5 +121,11 @@ public class GetRawDataService extends Service implements DownloadRawData.OnDown
         if (mRawDataDOHFromHerokuapp != null) mRawDataDOHFromHerokuapp.cancel(true);
         if (mRawDataPhilippinesFromHerokuapp != null) mRawDataPhilippinesFromHerokuapp.cancel(true);
         if (mRawDataCountriesFromHerokuapp != null) mRawDataCountriesFromHerokuapp.cancel(true);
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        shutdown();
     }
 }

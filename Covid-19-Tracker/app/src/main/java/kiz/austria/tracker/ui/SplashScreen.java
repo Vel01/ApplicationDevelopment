@@ -35,26 +35,32 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
     private Intent mDownloadDataServiceIntent;
     private GetRawDataService mGetRawDataServiceReference;
     private boolean mIsServiceBound = false;
+    private boolean mIsSplashPaused = false;
+    private boolean mIsDownloadCompletedInForeground = true;
 
     private ViewGroup mRootSplash;
 
     @Override
     public void onDataCompleted() {
-        if (isRawFromApifyCompleted
-                && isRawDOHFromHerokuappCompleted
-                && isRawPhilippinesFromHerokuappCompleted
-                && isRawCountriesFromHerokuappCompleted) {
-            Log.d(TAG, "onDataCompleted() is completed ");
-            startActivity(new Intent(this, MainActivity.class));
-            TrackerUtility.finishFade(this, mRootSplash);
+        if (mIsDownloadCompletedInForeground) {
+            if (isRawFromApifyCompleted
+                    && isRawDOHFromHerokuappCompleted
+                    && isRawPhilippinesFromHerokuappCompleted
+                    && isRawCountriesFromHerokuappCompleted) {
+                Log.d(TAG, "onDataCompleted() is completed ");
+                startActivity(new Intent(this, MainActivity.class));
+                TrackerUtility.finishFade(this, mRootSplash);
+            }
         }
     }
 
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         if (isConnected) {
-            startService(mDownloadDataServiceIntent);
-            bindDownloadDataService();
+            if (!mIsSplashPaused) {
+                startService(mDownloadDataServiceIntent);
+                bindDownloadDataService();
+            }
         } else {
             TrackerUtility.message(this, "No Internet Connection",
                     R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
@@ -135,9 +141,17 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         mRootSplash = findViewById(R.id.tracker_splash);
-        initTrackerListener();
         mDownloadDataServiceIntent = new Intent(this, GetRawDataService.class);
+        initTrackerListener();
+    }
 
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mIsSplashPaused = true;
+        mIsDownloadCompletedInForeground = true;
+        onDataCompleted();
     }
 
     @Override
@@ -150,14 +164,14 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
     @Override
     protected void onPause() {
         super.onPause();
-        //TODO: bug when it paused
+        mIsDownloadCompletedInForeground = false;
+        unregisterTrackerReceiver();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.e(TAG, "onDestroy()");
-        unregisterTrackerReceiver();
         unbindDownloadDataService();
         if (!mIsServiceBound) mGetRawDataServiceReference.shutdown();
     }
