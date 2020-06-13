@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,14 +29,20 @@ import kiz.austria.tracker.model.DOHDrop;
 public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvailable {
 
     private static final String TAG = "DropFragment";
-    private final ArrayList<DOHDrop> mDropList = new ArrayList<>();
+
     @BindView(R.id.rv_drop_list)
     RecyclerView mRecyclerView;
+    @BindView(R.id.container_refresher)
+    SwipeRefreshLayout mRefreshLayout;
+
     private Unbinder mUnBinder;
     private PHDOHDataParser mPHDOHDataParser = null;
     private DropRecyclerAdapter mDropRecyclerAdapter;
+    private final ArrayList<DOHDrop> mDropList = new ArrayList<>();
 
     private String mRawDataDropFromHerokuapp;
+    private boolean isPaused = false;
+
 
     @Override
     public void onDataPHDOHAvailable(List<DOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
@@ -55,6 +62,10 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
 
     }
 
+    private void initRawDataForParsing() {
+        mRawDataDropFromHerokuapp = DownloadedData.getInstance().getHerokuappDOHData();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,16 +76,6 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!mRawDataDropFromHerokuapp.isEmpty()) {
-            mPHDOHDataParser = new PHDOHDataParser(this);
-            mPHDOHDataParser.parse(PHDOHDataParser.ParseData.DOH_DROP);
-            mPHDOHDataParser.execute(mRawDataDropFromHerokuapp);
-        }
-    }
-
     private void initRecyclerViewAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDropRecyclerAdapter = new DropRecyclerAdapter();
@@ -82,9 +83,53 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        mRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        mRefreshLayout.setOnRefreshListener(() -> {
+            initRawDataForParsing();
+            if (!mRawDataDropFromHerokuapp.isEmpty() && mPHDOHDataParser.getStatus() != PHDOHDataParser.Status.RUNNING) {
+                mPHDOHDataParser.cancel(true);
+                mPHDOHDataParser = new PHDOHDataParser(DropFragment.this);
+                mPHDOHDataParser.parse(PHDOHDataParser.ParseData.DOH_DROP);
+                mPHDOHDataParser.execute(mRawDataDropFromHerokuapp);
+            }
+            mRefreshLayout.setRefreshing(false);
+        });
+
+        if (!isPausedToStopReDownload()) {
+            if (!mRawDataDropFromHerokuapp.isEmpty()) {
+                mPHDOHDataParser = new PHDOHDataParser(this);
+                mPHDOHDataParser.parse(PHDOHDataParser.ParseData.DOH_DROP);
+                mPHDOHDataParser.execute(mRawDataDropFromHerokuapp);
+            }
+        }
+    }
+
+    private void pausedToStopReDownload() {
+        isPaused = true;
+    }
+
+    private boolean isPausedToStopReDownload() {
+        return isPaused;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        pausedToStopReDownload();
+    }
+
+    private void cancelDownload() {
+        if (mPHDOHDataParser != null) mPHDOHDataParser.cancel(true);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mUnBinder.unbind();
+        cancelDownload();
     }
 
 
