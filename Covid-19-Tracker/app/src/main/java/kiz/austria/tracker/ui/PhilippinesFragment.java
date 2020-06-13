@@ -132,7 +132,7 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onDataPHDOHAvailable(List<DOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
+    public void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
         if (status == DownloadRawData.DownloadStatus.OK && !mPHDOHDataParser.isCancelled()) {
             Log.d(TAG, "onDataPHDOHAvailable() size = " + dohDrops.size());
             retrievedStats(dohDrops);

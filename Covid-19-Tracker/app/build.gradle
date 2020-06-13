@@ -61,5 +61,7 @@ dependencies {
     implementation 'com.muddzdev:styleabletoast:2.2.3'
     //BottomNavigationDrawerEx
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
+    //fast scroll
+    implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.1'
 
 }

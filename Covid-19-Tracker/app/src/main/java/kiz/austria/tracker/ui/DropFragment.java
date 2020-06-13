@@ -14,7 +14,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,21 +44,18 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
 
 
     @Override
-    public void onDataPHDOHAvailable(List<DOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
+    public void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
         if (status == DownloadRawData.DownloadStatus.OK && !mPHDOHDataParser.isCancelled()) {
             Collections.reverse(dohDrops);
             mDropList.addAll(dohDrops);
-            mDropRecyclerAdapter.addList(mDropList);
-
+            adaptWithData();
         }
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
         mRawDataDropFromHerokuapp = DownloadedData.getInstance().getHerokuappDOHData();
-
     }
 
     private void initRawDataForParsing() {
@@ -82,12 +78,26 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
         mRecyclerView.setAdapter(mDropRecyclerAdapter);
     }
 
+    private void adaptWithData() {
+        mDropRecyclerAdapter.addList(mDropList);
+        mRecyclerView.setAdapter(mDropRecyclerAdapter);
+    }
+
+    private void adaptEmptyData() {
+        if (!mDropList.isEmpty()) {
+            mDropList.clear();
+            mDropRecyclerAdapter.addList(mDropList);
+            mRecyclerView.setAdapter(mDropRecyclerAdapter);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
 
         mRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         mRefreshLayout.setOnRefreshListener(() -> {
+            adaptEmptyData();
             initRawDataForParsing();
             if (!mRawDataDropFromHerokuapp.isEmpty() && mPHDOHDataParser.getStatus() != PHDOHDataParser.Status.RUNNING) {
                 mPHDOHDataParser.cancel(true);

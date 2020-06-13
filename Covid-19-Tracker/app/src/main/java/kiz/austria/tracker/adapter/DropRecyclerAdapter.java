@@ -10,6 +10,8 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -18,27 +20,44 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.model.DOHDrop;
 import kiz.austria.tracker.util.TrackerDiffUtil;
 
-public class DropRecyclerAdapter extends RecyclerView.Adapter<DropRecyclerAdapter.ViewHolder> {
+public class DropRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> implements FastScrollRecyclerView.SectionedAdapter {
 
     private static final String TAG = "DropRecyclerAdapter";
+    private static final int VIEW_TYPE_EMPTY = 0;
+    private static final int VIEW_TYPE_NORMAL = 1;
 
     private ArrayList<DOHDrop> mDropList = new ArrayList<>();
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_drop_item, parent, false);
-        return new ViewHolder(view, mDropList);
+    public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case VIEW_TYPE_NORMAL:
+                return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_drop_item, parent, false), mDropList);
+
+            case VIEW_TYPE_EMPTY:
+            default:
+                return new EmptyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.shimmer_drop_item, parent, false));
+
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
         holder.onBind(position);
     }
 
     @Override
     public int getItemCount() {
-        return mDropList.size();
+        return (mDropList != null && mDropList.size() > 0) ? mDropList.size() : 8;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mDropList != null && mDropList.size() > 0) {
+            return VIEW_TYPE_NORMAL;
+        }
+        return VIEW_TYPE_EMPTY;
     }
 
     public void addList(ArrayList<DOHDrop> dropList) {
@@ -50,8 +69,14 @@ public class DropRecyclerAdapter extends RecyclerView.Adapter<DropRecyclerAdapte
         result.dispatchUpdatesTo(this);
     }
 
-    public ArrayList<DOHDrop> getDropList() {
-        return mDropList;
+    @NonNull
+    @Override
+    public String getSectionName(int position) {
+        try {
+            return mDropList.get(position).getCasesCode();
+        } catch (IndexOutOfBoundsException e) {
+            return "";
+        }
     }
 
     public static class ViewHolder extends BaseViewHolder {
@@ -71,6 +96,7 @@ public class DropRecyclerAdapter extends RecyclerView.Adapter<DropRecyclerAdapte
         TextView status;
         @BindView(R.id.v_drop_divider)
         View divider;
+
 
         ViewHolder(@NonNull View itemView, final ArrayList<DOHDrop> dropList) {
             super(itemView);
@@ -111,12 +137,10 @@ public class DropRecyclerAdapter extends RecyclerView.Adapter<DropRecyclerAdapte
 
         @Override
         protected void setFadeScaleAnimation() {
-
         }
 
         @Override
         protected void setFadeInAnimation() {
-
         }
 
         @Override
@@ -127,6 +151,35 @@ public class DropRecyclerAdapter extends RecyclerView.Adapter<DropRecyclerAdapte
             region.setText("");
             province.setText("");
             status.setText("");
+        }
+
+        @Override
+        protected String numberFormat(String value) {
+            return null;
+        }
+    }
+
+
+    static class EmptyViewHolder extends BaseViewHolder {
+
+        EmptyViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+        }
+
+        @Override
+        protected void setFadeScaleAnimation() {
+
+        }
+
+        @Override
+        protected void setFadeInAnimation() {
+
+        }
+
+        @Override
+        protected void clear() {
+
         }
 
         @Override

@@ -15,18 +15,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
             android:id="@+id/rv_drop_list"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layoutAnimation="@anim/fall_down_layout_animation"
-            android:overScrollMode="never"
+            app:fastScrollAutoHide="true"
+            app:fastScrollAutoHideDelay="1000"
+            app:fastScrollEnableThumbInactiveColor="true"
+            app:fastScrollPopupBackgroundSize="50dp"
+            app:fastScrollPopupBgColor="@color/md_red_400"
+            app:fastScrollPopupPosition="adjacent"
+            app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+            app:fastScrollPopupTextSize="14sp"
+            app:fastScrollPopupTextVerticalAlignmentMode="font_metrics"
+            app:fastScrollThumbColor="@color/md_red_400"
+            app:fastScrollThumbEnabled="true"
+            app:fastScrollThumbInactiveColor="@color/md_red_400"
+            app:fastScrollTrackColor="@color/md_white_1000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:itemCount="5"
-            tools:listitem="@layout/layout_drop_item" />
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,17 +7,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import kiz.austria.tracker.data.DownloadRawData;
 import kiz.austria.tracker.model.DOHDrop;
 
-public class PHDOHDataParser extends AsyncTask<String, Void, List<DOHDrop>> {
+public class PHDOHDataParser extends AsyncTask<String, Void, ArrayList<DOHDrop>> {
 
     private static final String TAG = "RawDataParser";
 
     private ParseData mParseData;
-    private List<DOHDrop> mDOHDrop;
+    private ArrayList<DOHDrop> mDOHDrop;
 
 
     private OnDataAvailable mOnDataAvailable;
@@ -32,7 +31,7 @@ public class PHDOHDataParser extends AsyncTask<String, Void, List<DOHDrop>> {
     }
 
     @Override
-    protected List<DOHDrop> doInBackground(String... path) {
+    protected ArrayList<DOHDrop> doInBackground(String... path) {
         if (mParseData == ParseData.DOH_DROP) {
             mDOHDrop = new ArrayList<>();
             try {
@@ -67,7 +66,7 @@ public class PHDOHDataParser extends AsyncTask<String, Void, List<DOHDrop>> {
     }
 
     @Override
-    protected void onPostExecute(List<DOHDrop> dohDrops) {
+    protected void onPostExecute(ArrayList<DOHDrop> dohDrops) {
         if (mOnDataAvailable != null) {
             mOnDataAvailable.onDataPHDOHAvailable(dohDrops, mDownloadStatus);
         }
@@ -85,6 +84,6 @@ public class PHDOHDataParser extends AsyncTask<String, Void, List<DOHDrop>> {
     }
 
     public interface OnDataAvailable {
-        void onDataPHDOHAvailable(List<DOHDrop> dohDrops, final DownloadRawData.DownloadStatus status);
+        void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, final DownloadRawData.DownloadStatus status);
     }
 }
