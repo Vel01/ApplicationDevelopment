@@ -8,6 +8,7 @@
         android:id="@+id/layout_shimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -18,8 +19,9 @@
             android:padding="8dp">
 
 
-            <androidx.cardview.widget.CardView
+            <include
                 android:id="@+id/card_confirmed"
+                layout="@layout/shimmer_global_child"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginStart="8dp"
@@ -31,14 +33,12 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/card_recovered">
+                app:layout_constraintTop_toTopOf="@+id/card_recovered" />
 
-                <include layout="@layout/shimmer_global_child" />
 
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <include
                 android:id="@+id/card_recovered"
+                layout="@layout/shimmer_global_child"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="8dp"
@@ -49,15 +49,12 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@+id/card_confirmed"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <include layout="@layout/shimmer_global_child" />
-
-            </androidx.cardview.widget.CardView>
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-            <androidx.cardview.widget.CardView
+            <include
                 android:id="@+id/card_deaths"
+                layout="@layout/shimmer_global_child"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginEnd="8dp"
@@ -68,15 +65,12 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@+id/card_recovered"
-                app:layout_constraintTop_toTopOf="@+id/card_recovered">
-
-                <include layout="@layout/shimmer_global_child" />
-
-            </androidx.cardview.widget.CardView>
+                app:layout_constraintTop_toTopOf="@+id/card_recovered" />
 
 
-            <androidx.cardview.widget.CardView
+            <include
                 android:id="@+id/card_new_cases"
+                layout="@layout/shimmer_global_child"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginStart="8dp"
@@ -87,15 +81,12 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/card_active">
-
-                <include layout="@layout/shimmer_global_child" />
+                app:layout_constraintTop_toTopOf="@+id/card_active" />
 
 
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <include
                 android:id="@+id/card_active"
+                layout="@layout/shimmer_global_child"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginStart="8dp"
@@ -107,14 +98,12 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@+id/card_new_cases"
-                app:layout_constraintTop_toBottomOf="@+id/card_recovered">
+                app:layout_constraintTop_toBottomOf="@+id/card_recovered" />
 
-                <include layout="@layout/shimmer_global_child" />
 
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <include
                 android:id="@+id/card_new_deaths"
+                layout="@layout/shimmer_global_child"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_marginEnd="8dp"
@@ -125,11 +114,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@+id/card_active"
-                app:layout_constraintTop_toTopOf="@+id/card_active">
-
-                <include layout="@layout/shimmer_global_child" />
-
-            </androidx.cardview.widget.CardView>
+                app:layout_constraintTop_toTopOf="@+id/card_active" />
 
             <TextView
                 android:id="@+id/textView"

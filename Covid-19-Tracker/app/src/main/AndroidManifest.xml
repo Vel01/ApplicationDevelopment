@@ -16,13 +16,17 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
 
+        <activity
+            android:name=".ui.DropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <service android:name=".data.services.GetRawDataService" />
 
         <activity
             android:name=".ui.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            tools:ignore="LockedOrientationActivity" />
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SplashScreen"

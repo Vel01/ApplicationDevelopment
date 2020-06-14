@@ -4,6 +4,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.Objects;
+
 import kiz.austria.tracker.R;
 
 public class BaseActivity extends AppCompatActivity {
@@ -25,6 +27,11 @@ public class BaseActivity extends AppCompatActivity {
                 actionBar.setDisplayHomeAsUpEnabled(homeEnable);
             }
         }
+    }
+
+    protected void activateToolbar(boolean homeEnable, boolean titleEnable) {
+        activateToolbar(homeEnable);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(titleEnable);
     }
 
 }

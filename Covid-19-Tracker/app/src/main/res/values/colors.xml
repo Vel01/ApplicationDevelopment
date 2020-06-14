@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F44336</color>
-    <color name="colorPrimaryDark">#D32F2F</color>
+    <color name="colorPrimary">@color/md_red_400</color>
+    <color name="colorPrimaryDark">@color/md_red_400</color>
     <color name="colorAccent">#F44336</color>
 
     <color name="bar_bg">#F1F1F1</color>
     <color name="shimmer_bg">#dddddd</color>
-    <color name="toast_connection_lost">#D32F2F</color>
+    <color name="toast_connection_lost">@color/md_red_400</color>
 
-    <color name="color_bottom_nav_red">#F44336</color>
+    <color name="color_bottom_nav_red">@color/md_red_400</color>
     <color name="color_bottom_nav_grey">#c3c3c3</color>
 
     <color name="green_one">#97F295</color>
     <color name="green_two">#DDFFDD</color>
-    <color name="red_one">#FF4433</color>
+    <color name="red_one">@color/md_red_400</color>
     <color name="red_two">#fee8e9</color>
     <color name="grey_one">#757575</color>
     <color name="grey_two">#E9ECEF</color>
 
-    <color name="primary">#F44336</color>
-    <color name="primary_dark">#D32F2F</color>
-    <color name="primary_light">#FFCDD2</color>
-    <color name="accent">#FFEB3B</color>
-    <color name="primary_text">#212121</color>
-    <color name="secondary_text">#757575</color>
-    <color name="icons">#FFFFFF</color>
-    <color name="divider">#BDBDBD</color>
+    <!--    <color name="primary">@color/md_red_400</color>-->
+    <!--    <color name="primary_dark">#D32F2F</color>-->
+    <!--    <color name="primary_light">#FFCDD2</color>-->
+    <!--    <color name="accent">#FFEB3B</color>-->
+    <!--    <color name="primary_text">#212121</color>-->
+    <!--    <color name="secondary_text">#757575</color>-->
+    <!--    <color name="icons">#FFFFFF</color>-->
+    <!--    <color name="divider">#BDBDBD</color>-->
 
     <color name="colorConfirmed">@color/red_one</color>
     <color name="colorDeaths">@color/grey_two</color>

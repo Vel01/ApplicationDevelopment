@@ -25,18 +25,27 @@ public class DropRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> im
     private static final String TAG = "DropRecyclerAdapter";
     private static final int VIEW_TYPE_EMPTY = 0;
     private static final int VIEW_TYPE_NORMAL = 1;
+    private boolean mIsNormal = false;
 
     private ArrayList<DOHDrop> mDropList = new ArrayList<>();
+
+    private OnAdapterClickListener mListener;
+
+    public void setOnAdapterClickListener(final OnAdapterClickListener listener) {
+        mListener = listener;
+    }
 
     @NonNull
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_NORMAL:
+                mIsNormal = true;
                 return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_drop_item, parent, false), mDropList);
 
             case VIEW_TYPE_EMPTY:
             default:
+                mIsNormal = false;
                 return new EmptyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.shimmer_drop_item, parent, false));
 
         }
@@ -44,7 +53,14 @@ public class DropRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> im
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        holder.onBind(position);
+        if (mIsNormal) {
+            holder.onBind(position);
+            holder.itemView.setOnClickListener(v -> mListener.onItemClick(holder.getAdapterPosition()));
+        }
+    }
+
+    public interface OnAdapterClickListener {
+        void onItemClick(int position);
     }
 
     @Override

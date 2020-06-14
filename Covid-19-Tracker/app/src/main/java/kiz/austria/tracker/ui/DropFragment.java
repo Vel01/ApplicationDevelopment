@@ -1,7 +1,9 @@
 package kiz.austria.tracker.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +27,10 @@ import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.data.parser.PHDOHDataParser;
 import kiz.austria.tracker.model.DOHDrop;
 
-public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvailable {
+public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvailable, DropRecyclerAdapter.OnAdapterClickListener {
 
     private static final String TAG = "DropFragment";
+
 
     @BindView(R.id.rv_drop_list)
     RecyclerView mRecyclerView;
@@ -42,6 +45,13 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
     private String mRawDataDropFromHerokuapp;
     private boolean isPaused = false;
 
+    @Override
+    public void onItemClick(int position) {
+        Log.d(TAG, "onItemClick() item clicked " + position);
+        DOHDrop data = mDropList.get(position);
+        Log.d(TAG, "onItemClick() data is " + data);
+        startActivity(new Intent(getActivity(), DropActivity.class));
+    }
 
     @Override
     public void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
@@ -75,6 +85,7 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
     private void initRecyclerViewAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDropRecyclerAdapter = new DropRecyclerAdapter();
+        mDropRecyclerAdapter.setOnAdapterClickListener(this);
         mRecyclerView.setAdapter(mDropRecyclerAdapter);
     }
 
@@ -141,6 +152,5 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
         mUnBinder.unbind();
         cancelDownload();
     }
-
 
 }
