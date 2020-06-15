@@ -23,13 +23,13 @@
 
 
     <TextView
-        android:id="@+id/tv_drop_gender"
+        android:id="@+id/tv_drop_gender_age"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Female - 24 years old"
         android:textAlignment="center"
         android:textColor="@color/md_dark_primary_text"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:fontFamily="@font/roboto"
         app:layout_constraintEnd_toEndOf="@+id/tv_drop_code"
         app:layout_constraintStart_toStartOf="@+id/tv_drop_code"
@@ -42,10 +42,187 @@
         android:layout_height="0dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/rounded_top_card"
+        android:paddingTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_drop_gender">
+        app:layout_constraintTop_toBottomOf="@+id/tv_drop_gender_age">
+
+
+        <TextView
+            android:id="@+id/tv_drop_date_reported_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Date reported"
+            android:textSize="16sp"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_drop_date_reported"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="January 04, 2020"
+            app:fontFamily="@font/roboto"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_date_reported_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_date_reported_label" />
+
+        <TextView
+            android:id="@+id/tv_drop_status_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Status"
+            android:textSize="16sp"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_date_reported"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_date_reported" />
+
+        <TextView
+            android:id="@+id/tv_drop_status"
+            android:layout_width="80dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/rounded_status_recovered"
+            android:padding="1dp"
+            android:text="Recovered"
+            android:textAlignment="center"
+            android:textColor="@color/md_white_1000"
+            android:textSize="12sp"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_status_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_status_label" />
+
+
+        <TextView
+            android:id="@+id/tv_drop_admitted_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Is Admitted"
+            android:textSize="16sp"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_status"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_status" />
+
+        <TextView
+            android:id="@+id/tv_drop_admitted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Yes"
+            app:fontFamily="@font/roboto"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_admitted_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_admitted_label" />
+
+        <TextView
+            android:id="@+id/tv_drop_region_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Region"
+            android:textSize="16sp"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_admitted"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_admitted" />
+
+        <TextView
+            android:id="@+id/tv_drop_region"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="NCR"
+            app:fontFamily="@font/roboto"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_region_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_region_label" />
+
+        <TextView
+            android:id="@+id/tv_drop_province_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Province/City"
+            android:textSize="16sp"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_region"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_region" />
+
+        <TextView
+            android:id="@+id/tv_drop_province"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="City of Muntinlupa"
+            app:fontFamily="@font/roboto"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_province_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_province_label" />
+
+        <TextView
+            android:id="@+id/tv_drop_location_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Location"
+            android:textSize="16sp"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_province"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_province" />
+
+        <TextView
+            android:id="@+id/tv_drop_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Muntinlupa City, Metro Manila"
+            app:fontFamily="@font/roboto"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_location_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_location_label" />
+
+        <TextView
+            android:id="@+id/tv_drop_latitude_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Latitude"
+            android:textSize="16sp"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_location"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_location" />
+
+        <TextView
+            android:id="@+id/tv_drop_latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="14.4078284"
+            app:fontFamily="@font/roboto"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_latitude_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_latitude_label" />
+
+        <TextView
+            android:id="@+id/tv_drop_longitude_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Longitude"
+            android:textSize="16sp"
+            app:fontFamily="@font/roboto_bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_latitude"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_latitude" />
+
+        <TextView
+            android:id="@+id/tv_drop_longitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="121.0378368"
+            app:fontFamily="@font/roboto"
+            app:layout_constraintStart_toStartOf="@+id/tv_drop_longitude_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_drop_longitude_label" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

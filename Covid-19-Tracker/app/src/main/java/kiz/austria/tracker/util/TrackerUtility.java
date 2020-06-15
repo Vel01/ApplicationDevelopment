@@ -75,6 +75,16 @@ public class TrackerUtility {
         return outputFormat.format(date);
     }
 
+    public static String formatDateReported(String input) throws ParseException {
+        final String DATE_OLD_FORMAT = "yyyy-MM-dd";
+        final String DATE_NEW_FORMAT = "MMMM dd, yyyy";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(DATE_OLD_FORMAT, Locale.ENGLISH);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(DATE_NEW_FORMAT, Locale.ENGLISH);
+        Date date = inputFormat.parse(input);
+        assert date != null;
+        return outputFormat.format(date);
+    }
+
     private static final int FADEOUT_DELAY_MS = 500;
 
     public static void runFadeAnimationOn(View target, boolean in) {

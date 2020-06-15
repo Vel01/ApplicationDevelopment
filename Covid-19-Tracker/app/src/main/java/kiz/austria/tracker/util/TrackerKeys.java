@@ -29,5 +29,6 @@ public class TrackerKeys {
     //Drawer state
     public static final String STATE_SELECTION_DRAWER = "kiz.austria.tracker.DRAWER_CURRENT_SELECTED";
 
+    public static final String KEY_DROP_DOH_DATA = "kiz.austria.tracker.DROP_DOH_DATA";
 
 }

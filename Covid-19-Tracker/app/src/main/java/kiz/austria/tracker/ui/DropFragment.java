@@ -21,16 +21,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import kiz.austria.tracker.R;
+import kiz.austria.tracker.adapter.AdapterClickListener;
 import kiz.austria.tracker.adapter.DropRecyclerAdapter;
 import kiz.austria.tracker.data.DownloadRawData;
 import kiz.austria.tracker.data.DownloadedData;
 import kiz.austria.tracker.data.parser.PHDOHDataParser;
 import kiz.austria.tracker.model.DOHDrop;
+import kiz.austria.tracker.util.TrackerKeys;
 
-public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvailable, DropRecyclerAdapter.OnAdapterClickListener {
+public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvailable, AdapterClickListener.OnAdapterClickListener {
 
     private static final String TAG = "DropFragment";
-
 
     @BindView(R.id.rv_drop_list)
     RecyclerView mRecyclerView;
@@ -45,13 +46,21 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
     private String mRawDataDropFromHerokuapp;
     private boolean isPaused = false;
 
+
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(View view, int position) {
         Log.d(TAG, "onItemClick() item clicked " + position);
         DOHDrop data = mDropList.get(position);
-        Log.d(TAG, "onItemClick() data is " + data);
-        startActivity(new Intent(getActivity(), DropActivity.class));
+        Intent intent = new Intent(getActivity(), DropActivity.class);
+        intent.putExtra(TrackerKeys.KEY_DROP_DOH_DATA, data);
+        startActivity(intent);
     }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+
+    }
+
 
     @Override
     public void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
@@ -84,8 +93,10 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
 
     private void initRecyclerViewAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        AdapterClickListener listener = new AdapterClickListener(getActivity(), mRecyclerView);
+        listener.setOnAdapterClickListener(this);
         mDropRecyclerAdapter = new DropRecyclerAdapter();
-        mDropRecyclerAdapter.setOnAdapterClickListener(this);
+        mRecyclerView.addOnItemTouchListener(listener);
         mRecyclerView.setAdapter(mDropRecyclerAdapter);
     }
 
@@ -152,5 +163,6 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
         mUnBinder.unbind();
         cancelDownload();
     }
+
 
 }

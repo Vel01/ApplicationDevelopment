@@ -29,12 +29,6 @@ public class DropRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> im
 
     private ArrayList<DOHDrop> mDropList = new ArrayList<>();
 
-    private OnAdapterClickListener mListener;
-
-    public void setOnAdapterClickListener(final OnAdapterClickListener listener) {
-        mListener = listener;
-    }
-
     @NonNull
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -55,12 +49,7 @@ public class DropRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> im
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
         if (mIsNormal) {
             holder.onBind(position);
-            holder.itemView.setOnClickListener(v -> mListener.onItemClick(holder.getAdapterPosition()));
         }
-    }
-
-    public interface OnAdapterClickListener {
-        void onItemClick(int position);
     }
 
     @Override
