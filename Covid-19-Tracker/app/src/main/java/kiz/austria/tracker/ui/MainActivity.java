@@ -21,6 +21,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.model.FragmentTag;
@@ -386,6 +387,7 @@ public class MainActivity extends BaseActivity implements
 
         int backStackCount = mFragmentTags.size();
         if (backStackCount > 1) {
+
             //Nav backwards
             String topFragmentTag = mFragmentTags.get(backStackCount - 1);
             String newTopFragmentTag = mFragmentTags.get(backStackCount - 2);
@@ -394,14 +396,32 @@ public class MainActivity extends BaseActivity implements
             mFragmentTags.remove(topFragmentTag);
             onTapToCloseReset();
         } else if (backStackCount == 1) {
-            if (mTapToClose == 0)
-                Toast.makeText(this, "1 more click to exit", Toast.LENGTH_SHORT).show();
-            onTapToClose();
-        }
 
-        if (mTapToClose >= 2) {
-            TrackerUtility.finishFade(this, mRoot);
+            String fragment = mFragmentTags.get(0);
+            if (fragment.equals(getString(R.string.tag_fragment_philippines))) {
+                PhilippinesFragment frag = (PhilippinesFragment) getSupportFragmentManager().findFragmentByTag(fragment);
+                int position = Objects.requireNonNull(frag).getScrollPosition();
+                if (position > 0) {
+                    frag.resetScrollPosition();
+                    return;
+                }
+            } else if (fragment.equals(getString(R.string.tag_fragment_global))) {
+                GlobalFragment frag = (GlobalFragment) getSupportFragmentManager().findFragmentByTag(fragment);
+                int position = Objects.requireNonNull(frag).getScrollPosition();
+                if (position > 0) {
+                    frag.resetScrollPosition();
+                    return;
+                }
+            }
+
+            if (mTapToClose == 0) {
+                Toast.makeText(this, "1 more click to exit", Toast.LENGTH_SHORT).show();
+            }
+            onTapToClose();
+
+            if (mTapToClose >= 2) {
+                TrackerUtility.finishFade(this, mRoot);
+            }
         }
     }
-
 }

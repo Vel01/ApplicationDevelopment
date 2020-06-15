@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -183,6 +184,9 @@ public class GlobalFragment extends BaseFragment implements
     TextView tvNewDeaths;
     @BindView(R.id.tv_update_date)
     TextView tvUpdate;
+
+    @BindView(R.id.layout_scroll)
+    ScrollView mScrollView;
     @BindView(R.id.layout_shimmer)
     ShimmerFrameLayout mShimmerFrameLayout;
     @BindView(R.id.chart_global_top_10)
@@ -423,6 +427,14 @@ public class GlobalFragment extends BaseFragment implements
         mListener.onInflateCountriesFragment();
     }
 
+    public int getScrollPosition() {
+        return mScrollView.getScrollY();
+    }
+
+    public void resetScrollPosition() {
+        mScrollView.scrollTo(0, 0);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -443,4 +455,6 @@ public class GlobalFragment extends BaseFragment implements
         Log.d(TAG, "onDetach() data is still retained! (may not if onDestroy() is called)");
         mListener = null;
     }
+
+
 }

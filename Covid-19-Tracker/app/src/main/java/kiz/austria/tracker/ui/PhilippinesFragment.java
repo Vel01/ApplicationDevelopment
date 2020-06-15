@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -88,6 +89,8 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     @BindView(R.id.tv_update_date)
     TextView tvLatestUpdate;
     //layouts
+    @BindView(R.id.layout_scroll)
+    ScrollView mScrollView;
     @BindView(R.id.layout_shimmer)
     ShimmerFrameLayout mShimmerFrameLayout;
     @BindView(R.id.include_layout_ph_results)
@@ -445,6 +448,14 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
         mShimmerFrameLayout.hideShimmer();
         mChildShimmer.setVisibility(View.GONE);
         mChildMain.setVisibility(View.VISIBLE);
+    }
+
+    public int getScrollPosition() {
+        return mScrollView.getScrollY();
+    }
+
+    public void resetScrollPosition() {
+        mScrollView.scrollTo(0, 0);
     }
 
     @Override
