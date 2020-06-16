@@ -30,6 +30,7 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
     private boolean isRawDOHFromHerokuappCompleted = false;
     private boolean isRawPhilippinesFromHerokuappCompleted = false;
     private boolean isRawCountriesFromHerokuappCompleted = false;
+    private boolean isRawCasesFromHerokuappCompleted = false;
 
     private ServiceConnection mDownloadDataServiceConnection;
     private Intent mDownloadDataServiceIntent;
@@ -46,7 +47,8 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
             if (isRawFromApifyCompleted
                     && isRawDOHFromHerokuappCompleted
                     && isRawPhilippinesFromHerokuappCompleted
-                    && isRawCountriesFromHerokuappCompleted) {
+                    && isRawCountriesFromHerokuappCompleted
+                    && isRawCasesFromHerokuappCompleted) {
                 Log.d(TAG, "onDataCompleted() is completed ");
                 startActivity(new Intent(this, MainActivity.class));
                 overridePendingTransition(R.anim.fade_in_start_activity, R.anim.fade_out_end_activity);
@@ -103,6 +105,15 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
         if (isReceived) {
             Log.d(TAG, "onReceivedCountriesHerokuappData() data received by host activity.");
             DownloadedData.getInstance().saveCountriesData(data);
+        }
+    }
+
+    @Override
+    public void onReceivedCasesHerokuappData(boolean isReceived, String data) {
+        isRawCasesFromHerokuappCompleted = isReceived;
+        if (isReceived) {
+            Log.d(TAG, "onReceivedCountriesHerokuappData() data received by host activity.");
+            DownloadedData.getInstance().saveCasesData(data);
         }
     }
 

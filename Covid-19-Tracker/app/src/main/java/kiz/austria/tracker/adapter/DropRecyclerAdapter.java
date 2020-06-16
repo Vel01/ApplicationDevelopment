@@ -40,7 +40,7 @@ public class DropRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> im
             case VIEW_TYPE_EMPTY:
             default:
                 mIsNormal = false;
-                return new EmptyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.shimmer_drop_item, parent, false));
+                return new EmptyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.shimmer_drop_case_item, parent, false));
 
         }
     }

@@ -98,6 +98,9 @@ public class RawDataDownloader extends AsyncTask<String, Void, String> {
                     case Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP:
                         mOnDownloadComplete.onDownloadCompleteCountriesDataFromHerokuapp(data, mDownloadStatus);
                         break;
+                    case Addresses.Link.DATA_PHILIPPINES_CASES_FROM_HEROKUAPP:
+                        mOnDownloadComplete.onDownloadCompleteCasesDataFromHerokuapp(data, mDownloadStatus);
+                        break;
                 }
             }
         }
@@ -116,6 +119,8 @@ public class RawDataDownloader extends AsyncTask<String, Void, String> {
         void onDownloadCompletePhilippinesDataFromHerokuapp(String data, DownloadStatus status);
 
         void onDownloadCompleteCountriesDataFromHerokuapp(String data, DownloadStatus status);
+
+        void onDownloadCompleteCasesDataFromHerokuapp(String data, DownloadStatus status);
     }
 
 }

@@ -57,6 +57,15 @@ public class GetRawDataService extends Service implements RawDataDownloader.OnDo
         }
     }
 
+    @Override
+    public void onDownloadCompleteCasesDataFromHerokuapp(String data, RawDataDownloader.DownloadStatus status) {
+        if (status == RawDataDownloader.DownloadStatus.OK && !mRawDataDownloader.isCancelled()) {
+            Log.d(TAG, "onDownloadComplete() received Countries data from herokuapp link.");
+            mReceiver.onReceivedCasesHerokuappData(true, data);
+            mReceiver.onDataCompleted();
+        }
+    }
+
     public void registerClientReceiver(Activity receiver) {
         mReceiver = (RawDataReceiver) receiver;
     }
@@ -79,7 +88,8 @@ public class GetRawDataService extends Service implements RawDataDownloader.OnDo
         mRawDataDownloader.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY,
                 Addresses.Link.DATA_PHILIPPINES_DOH_DROP_FROM_HEROKUAPP,
                 Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP,
-                Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
+                Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP,
+                Addresses.Link.DATA_PHILIPPINES_CASES_FROM_HEROKUAPP);
 
         return START_STICKY;
     }
@@ -95,6 +105,8 @@ public class GetRawDataService extends Service implements RawDataDownloader.OnDo
         void onReceivedPhilippinesHerokuappData(boolean isReceived, String data);
 
         void onReceivedCountriesHerokuappData(boolean isReceived, String data);
+
+        void onReceivedCasesHerokuappData(boolean isReceived, String data);
 
     }
 

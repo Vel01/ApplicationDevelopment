@@ -74,7 +74,7 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mRawDataDropFromHerokuapp = DownloadedData.getInstance().getHerokuappDOHData();
+        initRawDataForParsing();
     }
 
     private void initRawDataForParsing() {

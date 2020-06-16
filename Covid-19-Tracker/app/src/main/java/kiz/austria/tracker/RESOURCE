@@ -14,7 +14,7 @@ GET https://coronavirus-19-api.herokuapp.com/countries/{countryName} -> country 
 ex. https://coronavirus-19-api.herokuapp.com/countries/North%20America
 
 Philippines only
-https://coronavirus-ph-api.herokuapp.com/cases
+https://coronavirus-ph-api.herokuapp.com/aCases
 
 ----------------------------------------------
 chart features

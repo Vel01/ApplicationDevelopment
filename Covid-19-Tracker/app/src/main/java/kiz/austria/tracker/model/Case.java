@@ -1,6 +1,9 @@
 package kiz.austria.tracker.model;
 
-public class PHRecord {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Case implements Parcelable {
 
     private final String caseNo;
     private final String gender;
@@ -15,7 +18,21 @@ public class PHRecord {
     private final String latitude;
     private final String longitude;
 
-    public PHRecord(String caseNo, String gender, String age, String nationality, String residencePh, String travelHistory, String dateOfAnnouncement, String hospitalAdmittedTo, String healthStatus, String location, String latitude, String longitude) {
+    public static final Creator<Case> CREATOR = new Creator<Case>() {
+        @Override
+        public Case createFromParcel(Parcel in) {
+            return new Case(in);
+        }
+
+        @Override
+        public Case[] newArray(int size) {
+            return new Case[size];
+        }
+    };
+
+    public Case(String caseNo, String gender, String age, String nationality,
+                String residencePh, String travelHistory, String dateOfAnnouncement,
+                String hospitalAdmittedTo, String healthStatus, String location, String latitude, String longitude) {
         this.caseNo = caseNo;
         this.gender = gender;
         this.age = age;
@@ -28,6 +45,42 @@ public class PHRecord {
         this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    protected Case(Parcel in) {
+        caseNo = in.readString();
+        gender = in.readString();
+        age = in.readString();
+        nationality = in.readString();
+        residencePh = in.readString();
+        travelHistory = in.readString();
+        dateOfAnnouncement = in.readString();
+        hospitalAdmittedTo = in.readString();
+        healthStatus = in.readString();
+        location = in.readString();
+        latitude = in.readString();
+        longitude = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(caseNo);
+        dest.writeString(gender);
+        dest.writeString(age);
+        dest.writeString(nationality);
+        dest.writeString(residencePh);
+        dest.writeString(travelHistory);
+        dest.writeString(dateOfAnnouncement);
+        dest.writeString(hospitalAdmittedTo);
+        dest.writeString(healthStatus);
+        dest.writeString(location);
+        dest.writeString(latitude);
+        dest.writeString(longitude);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public String getLocation() {
@@ -80,7 +133,7 @@ public class PHRecord {
 
     @Override
     public String toString() {
-        return "PHRecord{" +
+        return "Case{" +
                 "caseNo='" + caseNo + '\'' +
                 ", gender='" + gender + '\'' +
                 ", age='" + age + '\'' +

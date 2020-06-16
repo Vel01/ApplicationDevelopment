@@ -59,8 +59,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tag_fragment_selected_country">tag_fragment_selected_country</string>
-    <string name="label_global_total_cases">Global total cases</string>
-    <string name="label_top_countries_cases">Top countries with daily new cases</string>
+    <string name="label_global_total_cases">Global total aCases</string>
+    <string name="label_top_countries_cases">Top countries with daily new aCases</string>
 
 
 </resources>

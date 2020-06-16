@@ -43,9 +43,9 @@ import kiz.austria.tracker.data.RawDataDownloader.DownloadStatus;
 import kiz.austria.tracker.data.parser.APIFYDataParser;
 import kiz.austria.tracker.data.parser.NationDataParser;
 import kiz.austria.tracker.data.parser.PHDOHDataParser;
-import kiz.austria.tracker.model.Cases;
 import kiz.austria.tracker.model.DOHDrop;
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.model.PHCases;
 import kiz.austria.tracker.model.Philippines;
 import kiz.austria.tracker.util.TrackerHorizontalChart;
 import kiz.austria.tracker.util.TrackerLineChart;
@@ -195,7 +195,7 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
 
     }
 
-    private void getLatestUpdate(Cases trend) {
+    private void getLatestUpdate(PHCases trend) {
         try {
             tvLatestUpdate.setText(TrackerUtility.formatDate(trend.getLatestUpdate()));
         } catch (ParseException e) {
@@ -204,17 +204,17 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onFullDataAvailable(ArrayList<Cases> dataList, DownloadStatus status) {
+    public void onFullDataAvailable(ArrayList<PHCases> dataList, DownloadStatus status) {
 
     }
 
     @Override
-    public void onDateAvailable(Cases data, DownloadStatus status) {
+    public void onDateAvailable(PHCases data, DownloadStatus status) {
 
     }
 
     @Override
-    public void onEssentialDataAvailable(List<Cases> dataList, DownloadStatus status) {
+    public void onEssentialDataAvailable(List<PHCases> dataList, DownloadStatus status) {
         if (status == DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
             Log.d(TAG, "onEssentialDataAvailable() data received by PhilippinesFragment " + dataList.toString());
             initLineChart(dataList);
@@ -223,7 +223,7 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onBasicDataAvailable(List<Cases> dataList, DownloadStatus status) {
+    public void onBasicDataAvailable(List<PHCases> dataList, DownloadStatus status) {
 
     }
 
@@ -271,7 +271,7 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
         return view;
     }
 
-    private void initLineChart(List<Cases> casualties) {
+    private void initLineChart(List<PHCases> casualties) {
 
         TrackerLineChart chart = new TrackerLineChart(lineChart);
         chart.setAttributes();
@@ -283,10 +283,10 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
 
     }
 
-    private List<String> getLineChartLabel(List<Cases> casualties) {
+    private List<String> getLineChartLabel(List<PHCases> casualties) {
         List<String> labels = new ArrayList<>();
 
-        for (Cases trend : casualties) {
+        for (PHCases trend : casualties) {
             try {
                 labels.add(TrackerUtility.formatSimpleDate(trend.getLatestUpdate()));
             } catch (ParseException e) {
@@ -306,7 +306,7 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
         chart.setXAxis(XAxis.XAxisPosition.BOTTOM).setValueFormatter(new IndexAxisValueFormatter(Arrays.asList("1-17", "18-30", "31-45", "46-60", "60+")));
         chart.setAxisLeft();
         chart.setAxisRight();
-        BarDataSet dataSet = chart.setData(setHorizontalChartData(total), "Cases by Age Group", new int[]{COLORS[0]});
+        BarDataSet dataSet = chart.setData(setHorizontalChartData(total), "PHCases by Age Group", new int[]{COLORS[0]});
         dataSet.setValueFormatter(new PercentFormatter());
         dataSet.setBarShadowColor(getResources().getColor(R.color.bar_bg));
     }

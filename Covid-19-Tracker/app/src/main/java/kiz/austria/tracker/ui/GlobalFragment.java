@@ -45,8 +45,8 @@ import kiz.austria.tracker.data.RawDataDownloader;
 import kiz.austria.tracker.data.RawDataDownloader.DownloadStatus;
 import kiz.austria.tracker.data.parser.APIFYDataParser;
 import kiz.austria.tracker.data.parser.NationDataParser;
-import kiz.austria.tracker.model.Cases;
 import kiz.austria.tracker.model.Nation;
+import kiz.austria.tracker.model.PHCases;
 import kiz.austria.tracker.model.Philippines;
 import kiz.austria.tracker.util.TrackerHorizontalChart;
 import kiz.austria.tracker.util.TrackerNumber;
@@ -124,24 +124,24 @@ public class GlobalFragment extends BaseFragment implements
     }
 
     @Override
-    public void onFullDataAvailable(ArrayList<Cases> dataList, DownloadStatus status) {
+    public void onFullDataAvailable(ArrayList<PHCases> dataList, DownloadStatus status) {
 
     }
 
     @Override
-    public void onDateAvailable(Cases data, DownloadStatus status) {
+    public void onDateAvailable(PHCases data, DownloadStatus status) {
         if (status == DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
             setLatestUpdate(data);
         }
     }
 
     @Override
-    public void onEssentialDataAvailable(List<Cases> dataList, DownloadStatus status) {
+    public void onEssentialDataAvailable(List<PHCases> dataList, DownloadStatus status) {
 
     }
 
     @Override
-    public void onBasicDataAvailable(List<Cases> dataList, DownloadStatus status) {
+    public void onBasicDataAvailable(List<PHCases> dataList, DownloadStatus status) {
 
     }
 
@@ -238,7 +238,7 @@ public class GlobalFragment extends BaseFragment implements
         return view;
     }
 
-    private void setLatestUpdate(Cases trend) {
+    private void setLatestUpdate(PHCases trend) {
         Log.d(TAG, "onDataTrendAvailable() " + trend.getLatestUpdate());
         try {
             tvUpdate.setText(TrackerUtility.formatDate(trend.getLatestUpdate()));
@@ -280,13 +280,13 @@ public class GlobalFragment extends BaseFragment implements
         chart.setAxisLeft();
         chart.setAxisRight();
         chart.setLegend(setEntries());
-        chart.setData(setHorizontalChartData(), "Top Daily Cases", JOYFUL_COLORS);
+        chart.setData(setHorizontalChartData(), "Top Daily PHCases", JOYFUL_COLORS);
 
     }
 
     private List<LegendEntry> setEntries() {
         return new ArrayList<>(Arrays.asList(
-                new LegendEntry("Daily New Cases", Legend.LegendForm.SQUARE, 9f, 5, null, Color.rgb(255, 68, 51)),
+                new LegendEntry("Daily New PHCases", Legend.LegendForm.SQUARE, 9f, 5, null, Color.rgb(255, 68, 51)),
                 new LegendEntry("Daily New Deaths", Legend.LegendForm.SQUARE, 9f, 5, null, Color.rgb(233, 236, 239))));
     }
 
