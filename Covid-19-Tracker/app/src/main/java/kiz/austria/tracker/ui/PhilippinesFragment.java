@@ -38,8 +38,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import kiz.austria.tracker.R;
-import kiz.austria.tracker.data.DownloadRawData;
 import kiz.austria.tracker.data.DownloadedData;
+import kiz.austria.tracker.data.RawDataDownloader.DownloadStatus;
 import kiz.austria.tracker.data.parser.APIFYDataParser;
 import kiz.austria.tracker.data.parser.NationDataParser;
 import kiz.austria.tracker.data.parser.PHDOHDataParser;
@@ -135,8 +135,8 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mPHDOHDataParser.isCancelled()) {
+    public void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, DownloadStatus status) {
+        if (status == DownloadStatus.OK && !mPHDOHDataParser.isCancelled()) {
             Log.d(TAG, "onDataPHDOHAvailable() size = " + dohDrops.size());
             retrievedStats(dohDrops);
             initPieChart();
@@ -204,18 +204,18 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onFullDataAvailable(ArrayList<Cases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onFullDataAvailable(ArrayList<Cases> dataList, DownloadStatus status) {
 
     }
 
     @Override
-    public void onDateAvailable(Cases data, DownloadRawData.DownloadStatus status) {
+    public void onDateAvailable(Cases data, DownloadStatus status) {
 
     }
 
     @Override
-    public void onEssentialDataAvailable(List<Cases> dataList, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
+    public void onEssentialDataAvailable(List<Cases> dataList, DownloadStatus status) {
+        if (status == DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
             Log.d(TAG, "onEssentialDataAvailable() data received by PhilippinesFragment " + dataList.toString());
             initLineChart(dataList);
             getLatestUpdate(dataList.get(dataList.size() - 1));
@@ -223,18 +223,18 @@ public class PhilippinesFragment extends BaseFragment implements PHDOHDataParser
     }
 
     @Override
-    public void onBasicDataAvailable(List<Cases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onBasicDataAvailable(List<Cases> dataList, DownloadStatus status) {
 
     }
 
     @Override
-    public void onCountriesDataAvailable(ArrayList<Nation> nations, DownloadRawData.DownloadStatus status) {
+    public void onCountriesDataAvailable(ArrayList<Nation> nations, DownloadStatus status) {
 
     }
 
     @Override
-    public void onPhilippinesDataAvailable(Philippines philippines, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mNationDataParser.isCancelled()) {
+    public void onPhilippinesDataAvailable(Philippines philippines, DownloadStatus status) {
+        if (status == DownloadStatus.OK && !mNationDataParser.isCancelled()) {
             Log.d(TAG, "onEssentialDataAvailable() data received by PhilippinesFragment " + philippines);
             mCountCases = Integer.parseInt(philippines.getConfirmed());
             mCountRecovered = Integer.parseInt(philippines.getRecovered());

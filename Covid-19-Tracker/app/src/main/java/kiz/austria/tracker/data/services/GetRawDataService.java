@@ -10,22 +10,20 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import kiz.austria.tracker.data.Addresses;
-import kiz.austria.tracker.data.DownloadRawData;
+import kiz.austria.tracker.data.RawDataDownloader;
 
-public class GetRawDataService extends Service implements DownloadRawData.OnDownloadComplete {
+public class GetRawDataService extends Service implements RawDataDownloader.OnDownloadComplete {
 
     private static final String TAG = "GetRawDataService";
 
     private RawDataReceiver mReceiver;//callback
     private IBinder mIBinder = new RawDataServiceBinder();
-    private DownloadRawData mRawDataFromApify;
-    private DownloadRawData mRawDataDOHFromHerokuapp;
-    private DownloadRawData mRawDataPhilippinesFromHerokuapp;
-    private DownloadRawData mRawDataCountriesFromHerokuapp;
+
+    private RawDataDownloader mRawDataDownloader;
 
     @Override
-    public void onDownloadCompleteFromApify(String data, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mRawDataFromApify.isCancelled()) {
+    public void onDownloadCompleteFromApify(String data, RawDataDownloader.DownloadStatus status) {
+        if (status == RawDataDownloader.DownloadStatus.OK && !mRawDataDownloader.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received data from apify link.");
             mReceiver.onReceivedApifyData(true, data);
             mReceiver.onDataCompleted();
@@ -33,8 +31,8 @@ public class GetRawDataService extends Service implements DownloadRawData.OnDown
     }
 
     @Override
-    public void onDownloadCompleteDOHDataFromHerokuapp(String data, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mRawDataDOHFromHerokuapp.isCancelled()) {
+    public void onDownloadCompleteDOHDataFromHerokuapp(String data, RawDataDownloader.DownloadStatus status) {
+        if (status == RawDataDownloader.DownloadStatus.OK && !mRawDataDownloader.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received DOH data from herokuapp link.");
             mReceiver.onReceivedDOHDropHerokuappData(true, data);
             mReceiver.onDataCompleted();
@@ -42,8 +40,8 @@ public class GetRawDataService extends Service implements DownloadRawData.OnDown
     }
 
     @Override
-    public void onDownloadCompletePhilippinesDataFromHerokuapp(String data, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
+    public void onDownloadCompletePhilippinesDataFromHerokuapp(String data, RawDataDownloader.DownloadStatus status) {
+        if (status == RawDataDownloader.DownloadStatus.OK && !mRawDataDownloader.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received Philippines data from herokuapp link.");
             mReceiver.onReceivedPhilippinesHerokuappData(true, data);
             mReceiver.onDataCompleted();
@@ -51,8 +49,8 @@ public class GetRawDataService extends Service implements DownloadRawData.OnDown
     }
 
     @Override
-    public void onDownloadCompleteCountriesDataFromHerokuapp(String data, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mRawDataPhilippinesFromHerokuapp.isCancelled()) {
+    public void onDownloadCompleteCountriesDataFromHerokuapp(String data, RawDataDownloader.DownloadStatus status) {
+        if (status == RawDataDownloader.DownloadStatus.OK && !mRawDataDownloader.isCancelled()) {
             Log.d(TAG, "onDownloadComplete() received Countries data from herokuapp link.");
             mReceiver.onReceivedCountriesHerokuappData(true, data);
             mReceiver.onDataCompleted();
@@ -71,21 +69,18 @@ public class GetRawDataService extends Service implements DownloadRawData.OnDown
 
     @Override
     public void onCreate() {
-        mRawDataFromApify = new DownloadRawData(this);
-        mRawDataDOHFromHerokuapp = new DownloadRawData(this);
-        mRawDataPhilippinesFromHerokuapp = new DownloadRawData(this);
-        mRawDataCountriesFromHerokuapp = new DownloadRawData(this);
+        mRawDataDownloader = new RawDataDownloader(this);
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand() service is now running on different thread.");
-//        new Thread(() -> {
-            mRawDataFromApify.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY);
-            mRawDataDOHFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_DOH_DROP_FROM_HEROKUAPP);
-            mRawDataPhilippinesFromHerokuapp.execute(Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP);
-            mRawDataCountriesFromHerokuapp.execute(Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
-//        }).start();
+        mRawDataDownloader.execute(Addresses.Link.DATA_PHILIPPINES_FROM_APIFY,
+                Addresses.Link.DATA_PHILIPPINES_DOH_DROP_FROM_HEROKUAPP,
+                Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP,
+                Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP);
+
         return START_STICKY;
     }
 
@@ -117,10 +112,7 @@ public class GetRawDataService extends Service implements DownloadRawData.OnDown
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy() was stopped by host!");
-        if (mRawDataFromApify != null) mRawDataFromApify.cancel(true);
-        if (mRawDataDOHFromHerokuapp != null) mRawDataDOHFromHerokuapp.cancel(true);
-        if (mRawDataPhilippinesFromHerokuapp != null) mRawDataPhilippinesFromHerokuapp.cancel(true);
-        if (mRawDataCountriesFromHerokuapp != null) mRawDataCountriesFromHerokuapp.cancel(true);
+        if (mRawDataDownloader != null) mRawDataDownloader.cancel(true);
     }
 
     @Override

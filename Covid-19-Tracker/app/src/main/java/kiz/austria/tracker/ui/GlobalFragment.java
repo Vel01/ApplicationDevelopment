@@ -40,8 +40,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import kiz.austria.tracker.R;
-import kiz.austria.tracker.data.DownloadRawData;
 import kiz.austria.tracker.data.DownloadedData;
+import kiz.austria.tracker.data.RawDataDownloader;
+import kiz.austria.tracker.data.RawDataDownloader.DownloadStatus;
 import kiz.austria.tracker.data.parser.APIFYDataParser;
 import kiz.austria.tracker.data.parser.NationDataParser;
 import kiz.austria.tracker.model.Cases;
@@ -87,8 +88,8 @@ public class GlobalFragment extends BaseFragment implements
     }
 
     @Override
-    public void onCountriesDataAvailable(ArrayList<Nation> nations, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mNationDataParser.isCancelled()) {
+    public void onCountriesDataAvailable(ArrayList<Nation> nations, RawDataDownloader.DownloadStatus status) {
+        if (status == DownloadStatus.OK && !mNationDataParser.isCancelled()) {
 
             Collections.sort(nations, (o1, o2) ->
                     TrackerUtility.sort(Integer.parseInt(o1.getTodayCases()),
@@ -118,29 +119,29 @@ public class GlobalFragment extends BaseFragment implements
     }
 
     @Override
-    public void onPhilippinesDataAvailable(Philippines philippines, DownloadRawData.DownloadStatus status) {
+    public void onPhilippinesDataAvailable(Philippines philippines, DownloadStatus status) {
 
     }
 
     @Override
-    public void onFullDataAvailable(ArrayList<Cases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onFullDataAvailable(ArrayList<Cases> dataList, DownloadStatus status) {
 
     }
 
     @Override
-    public void onDateAvailable(Cases data, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
+    public void onDateAvailable(Cases data, DownloadStatus status) {
+        if (status == DownloadStatus.OK && !mAPIFYDataParser.isCancelled()) {
             setLatestUpdate(data);
         }
     }
 
     @Override
-    public void onEssentialDataAvailable(List<Cases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onEssentialDataAvailable(List<Cases> dataList, DownloadStatus status) {
 
     }
 
     @Override
-    public void onBasicDataAvailable(List<Cases> dataList, DownloadRawData.DownloadStatus status) {
+    public void onBasicDataAvailable(List<Cases> dataList, DownloadStatus status) {
 
     }
 

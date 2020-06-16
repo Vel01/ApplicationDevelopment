@@ -40,8 +40,8 @@ import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.AdapterClickListener;
 import kiz.austria.tracker.adapter.CountriesRecyclerAdapter;
 import kiz.austria.tracker.broadcast.ConnectivityReceiver;
-import kiz.austria.tracker.data.DownloadRawData;
 import kiz.austria.tracker.data.DownloadedData;
+import kiz.austria.tracker.data.RawDataDownloader.DownloadStatus;
 import kiz.austria.tracker.data.parser.NationDataParser;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.model.Philippines;
@@ -156,8 +156,8 @@ public class CountriesFragment extends BaseFragment implements
     }
 
     @Override
-    public void onCountriesDataAvailable(ArrayList<Nation> nations, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mNationDataParser.isCancelled()) {
+    public void onCountriesDataAvailable(ArrayList<Nation> nations, DownloadStatus status) {
+        if (status == DownloadStatus.OK && !mNationDataParser.isCancelled()) {
             Log.d(TAG, "onDataAvailable() data received from itself: " + nations.toString());
             mNations.addAll(nations);
             if (mNations != null && mNations.size() > 0) {
@@ -167,7 +167,7 @@ public class CountriesFragment extends BaseFragment implements
     }
 
     @Override
-    public void onPhilippinesDataAvailable(Philippines philippines, DownloadRawData.DownloadStatus status) {
+    public void onPhilippinesDataAvailable(Philippines philippines, DownloadStatus status) {
         //not supported.
     }
 

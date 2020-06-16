@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import kiz.austria.tracker.data.DownloadRawData;
+import kiz.austria.tracker.data.RawDataDownloader.DownloadStatus;
 import kiz.austria.tracker.model.Cases;
 
 public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<Cases>> {
@@ -17,7 +17,7 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<Cases>> {
     private static final String TAG = "APIFYDataParser";
     private final OnDataAvailable mOnDataAvailable;
     private ArrayList<Cases> mPHListUpdatesCasesList;
-    private DownloadRawData.DownloadStatus mDownloadStatus;
+    private DownloadStatus mDownloadStatus;
     private Cases mLatestDateUpdated;
     private ParseData mParseData;
 
@@ -51,11 +51,11 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<Cases>> {
 
                     mPHListUpdatesCasesList.add(new Cases(country, infected, tested, recovered, deceased, pui, pum, latestUpdate));
                 }
-                mDownloadStatus = DownloadRawData.DownloadStatus.OK;
+                mDownloadStatus = DownloadStatus.OK;
             } catch (JSONException e) {
                 e.getMessage();
                 e.printStackTrace();
-                mDownloadStatus = DownloadRawData.DownloadStatus.FAILED_OR_EMPTY;
+                mDownloadStatus = DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
@@ -65,11 +65,11 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<Cases>> {
                 JSONObject jsonObject = jsonList.getJSONObject(jsonList.length() - 1);
                 String latestUpdate = jsonObject.getString("lastUpdatedAtApify");
                 mLatestDateUpdated = new Cases(latestUpdate);
-                mDownloadStatus = DownloadRawData.DownloadStatus.OK;
+                mDownloadStatus = DownloadStatus.OK;
             } catch (JSONException e) {
                 e.getMessage();
                 e.printStackTrace();
-                mDownloadStatus = DownloadRawData.DownloadStatus.FAILED_OR_EMPTY;
+                mDownloadStatus = DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
@@ -85,11 +85,11 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<Cases>> {
                     String latestUpdate = jsonObject.getString("lastUpdatedAtApify");
                     mPHListUpdatesCasesList.add(new Cases(infected, recovered, deceased, latestUpdate));
                 }
-                mDownloadStatus = DownloadRawData.DownloadStatus.OK;
+                mDownloadStatus = DownloadStatus.OK;
             } catch (JSONException e) {
                 e.getMessage();
                 e.printStackTrace();
-                mDownloadStatus = DownloadRawData.DownloadStatus.FAILED_OR_EMPTY;
+                mDownloadStatus = DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
@@ -106,11 +106,11 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<Cases>> {
 
                     mPHListUpdatesCasesList.add(new Cases(tested, pui, pum));
                 }
-                mDownloadStatus = DownloadRawData.DownloadStatus.OK;
+                mDownloadStatus = DownloadStatus.OK;
             } catch (JSONException e) {
                 e.getMessage();
                 e.printStackTrace();
-                mDownloadStatus = DownloadRawData.DownloadStatus.FAILED_OR_EMPTY;
+                mDownloadStatus = DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
@@ -167,13 +167,13 @@ public class APIFYDataParser extends AsyncTask<String, Void, ArrayList<Cases>> {
     public enum ParseData {FULL_DATA, DATE_ONLY, ESSENTIAL_DATA, BASIC_DATA}
 
     public interface OnDataAvailable {
-        void onFullDataAvailable(ArrayList<Cases> dataList, final DownloadRawData.DownloadStatus status);
+        void onFullDataAvailable(ArrayList<Cases> dataList, final DownloadStatus status);
 
-        void onDateAvailable(Cases data, final DownloadRawData.DownloadStatus status);
+        void onDateAvailable(Cases data, final DownloadStatus status);
 
-        void onEssentialDataAvailable(List<Cases> dataList, final DownloadRawData.DownloadStatus status);
+        void onEssentialDataAvailable(List<Cases> dataList, final DownloadStatus status);
 
-        void onBasicDataAvailable(List<Cases> dataList, final DownloadRawData.DownloadStatus status);
+        void onBasicDataAvailable(List<Cases> dataList, final DownloadStatus status);
 
     }
 

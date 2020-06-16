@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import kiz.austria.tracker.data.DownloadRawData;
+import kiz.austria.tracker.data.RawDataDownloader.DownloadStatus;
 import kiz.austria.tracker.model.Nation;
 import kiz.austria.tracker.model.Philippines;
 
@@ -19,7 +19,7 @@ public class NationDataParser extends AsyncTask<String, Void, ArrayList<Nation>>
     public enum ParseData {PHILIPPINES, COUNTRIES}
 
 
-    private DownloadRawData.DownloadStatus mDownloadStatus;
+    private DownloadStatus mDownloadStatus;
     private final OnDataAvailable mOnDataAvailable;
     private ArrayList<Nation> mNations;
     private Philippines mPhilippines;
@@ -44,11 +44,11 @@ public class NationDataParser extends AsyncTask<String, Void, ArrayList<Nation>>
                     String critical = currentCovered.getString("critical");
                     mNations.add(new Nation(country, cases, deaths, todayCases, todayDeaths, recovered, active, critical));
                 }
-                mDownloadStatus = DownloadRawData.DownloadStatus.OK;
+                mDownloadStatus = DownloadStatus.OK;
             } catch (JSONException e) {
                 e.getMessage();
                 e.printStackTrace();
-                mDownloadStatus = DownloadRawData.DownloadStatus.FAILED_OR_EMPTY;
+                mDownloadStatus = DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
@@ -64,10 +64,10 @@ public class NationDataParser extends AsyncTask<String, Void, ArrayList<Nation>>
                 String active = jsonObject.getString("active");
                 String critical = jsonObject.getString("critical");
                 mPhilippines = new Philippines(cases, todayCases, deaths, todayDeaths, recovered, active, critical);
-                mDownloadStatus = DownloadRawData.DownloadStatus.OK;
+                mDownloadStatus = DownloadStatus.OK;
             } catch (JSONException e) {
                 e.printStackTrace();
-                mDownloadStatus = DownloadRawData.DownloadStatus.FAILED_OR_EMPTY;
+                mDownloadStatus = DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
@@ -83,9 +83,9 @@ public class NationDataParser extends AsyncTask<String, Void, ArrayList<Nation>>
     }
 
     public interface OnDataAvailable {
-        void onCountriesDataAvailable(ArrayList<Nation> nations, final DownloadRawData.DownloadStatus status);
+        void onCountriesDataAvailable(ArrayList<Nation> nations, final DownloadStatus status);
 
-        void onPhilippinesDataAvailable(Philippines philippines, final DownloadRawData.DownloadStatus status);
+        void onPhilippinesDataAvailable(Philippines philippines, final DownloadStatus status);
     }
 
     @Override

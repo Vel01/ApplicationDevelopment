@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import kiz.austria.tracker.data.DownloadRawData;
+import kiz.austria.tracker.data.RawDataDownloader.DownloadStatus;
 import kiz.austria.tracker.model.DOHDrop;
 
 public class PHDOHDataParser extends AsyncTask<String, Void, ArrayList<DOHDrop>> {
@@ -20,7 +20,7 @@ public class PHDOHDataParser extends AsyncTask<String, Void, ArrayList<DOHDrop>>
 
 
     private OnDataAvailable mOnDataAvailable;
-    private DownloadRawData.DownloadStatus mDownloadStatus;
+    private DownloadStatus mDownloadStatus;
 
     public void parse(ParseData parseData) {
         mParseData = parseData;
@@ -55,10 +55,10 @@ public class PHDOHDataParser extends AsyncTask<String, Void, ArrayList<DOHDrop>>
                     mDOHDrop.add(new DOHDrop(caseCode, age, sex, isAdmitted, date_reported, date_died,
                             recovered_on, region_res, prov_city_res, location, latitude, longitude));
                 }
-                mDownloadStatus = DownloadRawData.DownloadStatus.OK;
+                mDownloadStatus = DownloadStatus.OK;
             } catch (JSONException e) {
                 e.printStackTrace();
-                mDownloadStatus = DownloadRawData.DownloadStatus.FAILED_OR_EMPTY;
+                mDownloadStatus = DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
@@ -84,6 +84,6 @@ public class PHDOHDataParser extends AsyncTask<String, Void, ArrayList<DOHDrop>>
     }
 
     public interface OnDataAvailable {
-        void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, final DownloadRawData.DownloadStatus status);
+        void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, final DownloadStatus status);
     }
 }

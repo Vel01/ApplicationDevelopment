@@ -23,8 +23,8 @@ import butterknife.Unbinder;
 import kiz.austria.tracker.R;
 import kiz.austria.tracker.adapter.AdapterClickListener;
 import kiz.austria.tracker.adapter.DropRecyclerAdapter;
-import kiz.austria.tracker.data.DownloadRawData;
 import kiz.austria.tracker.data.DownloadedData;
+import kiz.austria.tracker.data.RawDataDownloader.DownloadStatus;
 import kiz.austria.tracker.data.parser.PHDOHDataParser;
 import kiz.austria.tracker.model.DOHDrop;
 import kiz.austria.tracker.util.TrackerKeys;
@@ -63,8 +63,8 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
 
 
     @Override
-    public void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, DownloadRawData.DownloadStatus status) {
-        if (status == DownloadRawData.DownloadStatus.OK && !mPHDOHDataParser.isCancelled()) {
+    public void onDataPHDOHAvailable(ArrayList<DOHDrop> dohDrops, DownloadStatus status) {
+        if (status == DownloadStatus.OK && !mPHDOHDataParser.isCancelled()) {
             Collections.reverse(dohDrops);
             mDropList.addAll(dohDrops);
             adaptWithData();

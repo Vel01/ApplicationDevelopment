@@ -10,26 +10,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+public class RawDataDownloader extends AsyncTask<String, Void, String> {
 
-public class DownloadRawData extends AsyncTask<String, Void, String> {
-
-    public enum DownloadStatus {IDLE, PROCESSING, NOT_INITIALISED, FAILED_OR_EMPTY, OK}
-
-    private static final String TAG = "GetRawData";
-
-    private DownloadStatus mDownloadStatus;
+    private static final String TAG = "RawDataDownloader";
     private final OnDownloadComplete mOnDownloadComplete;
-
+    private DownloadStatus mDownloadStatus;
     private String mCurrentAddress;
 
-    void runInTheSameThread(String path) {
-        if (mOnDownloadComplete != null) {
-            String data = doInBackground(path);
-            mOnDownloadComplete.onDownloadCompleteFromApify(data, mDownloadStatus);
-        }
-    }
-
-    public DownloadRawData(OnDownloadComplete onDownloadComplete) {
+    public RawDataDownloader(OnDownloadComplete onDownloadComplete) {
         mOnDownloadComplete = onDownloadComplete;
         mDownloadStatus = DownloadStatus.IDLE;
     }
@@ -85,33 +73,39 @@ public class DownloadRawData extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String data) {
-        if (mOnDownloadComplete != null) {
-            switch (mCurrentAddress) {
-                case Addresses.Link.DATA_PHILIPPINES_FROM_APIFY:
-                    mOnDownloadComplete.onDownloadCompleteFromApify(data, mDownloadStatus);
-                    break;
-                case Addresses.Link.DATA_PHILIPPINES_DOH_DROP_FROM_HEROKUAPP:
-                    mOnDownloadComplete.onDownloadCompleteDOHDataFromHerokuapp(data, mDownloadStatus);
-                    break;
-                case Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP:
-                    mOnDownloadComplete.onDownloadCompletePhilippinesDataFromHerokuapp(data, mDownloadStatus);
-                    break;
-                case Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP:
-                    mOnDownloadComplete.onDownloadCompleteCountriesDataFromHerokuapp(data, mDownloadStatus);
-                    break;
-            }
-        }
-    }
+    protected String doInBackground(String... paths) {
 
-    @Override
-    protected String doInBackground(String... path) {
-        if (path[0] == null) {
+        if (paths[0] == null) {
             mDownloadStatus = DownloadStatus.NOT_INITIALISED;
             return null;
         }
-        return downloadJSON(path[0]);
+
+        for (String path : paths) {
+
+            String data = downloadJSON(path);
+
+            if (mOnDownloadComplete != null) {
+                switch (mCurrentAddress) {
+                    case Addresses.Link.DATA_PHILIPPINES_FROM_APIFY:
+                        mOnDownloadComplete.onDownloadCompleteFromApify(data, mDownloadStatus);
+                        break;
+                    case Addresses.Link.DATA_PHILIPPINES_DOH_DROP_FROM_HEROKUAPP:
+                        mOnDownloadComplete.onDownloadCompleteDOHDataFromHerokuapp(data, mDownloadStatus);
+                        break;
+                    case Addresses.Link.DATA_PHILIPPINES_FROM_HEROKUAPP:
+                        mOnDownloadComplete.onDownloadCompletePhilippinesDataFromHerokuapp(data, mDownloadStatus);
+                        break;
+                    case Addresses.Link.DATA_COUNTRIES_FROM_HEROKUAPP:
+                        mOnDownloadComplete.onDownloadCompleteCountriesDataFromHerokuapp(data, mDownloadStatus);
+                        break;
+                }
+            }
+        }
+
+        return null;
     }
+
+    public enum DownloadStatus {IDLE, PROCESSING, NOT_INITIALISED, FAILED_OR_EMPTY, OK}
 
     public interface OnDownloadComplete {
 
@@ -123,4 +117,5 @@ public class DownloadRawData extends AsyncTask<String, Void, String> {
 
         void onDownloadCompleteCountriesDataFromHerokuapp(String data, DownloadStatus status);
     }
+
 }
