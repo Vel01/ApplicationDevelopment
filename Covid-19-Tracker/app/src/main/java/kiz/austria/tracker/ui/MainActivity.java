@@ -6,9 +6,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -377,6 +377,51 @@ public class MainActivity extends BaseActivity implements
         mTapToClose = 0;
     }
 
+    private boolean resetScrollPosition(String current) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(current);
+        if (current.equals(getString(R.string.tag_fragment_philippines))) {
+            PhilippinesFragment frag = (PhilippinesFragment) fragment;
+            return resetScrollPosition(frag);
+
+        } else if (current.equals(getString(R.string.tag_fragment_global))) {
+            GlobalFragment frag = (GlobalFragment) fragment;
+            return resetScrollPosition(frag);
+
+
+        } else if (current.equals(getString(R.string.tag_fragment_cases))) {
+            CasesFragment frag = (CasesFragment) fragment;
+            return resetScrollPosition(frag);
+
+        } else if (current.equals(getString(R.string.tag_fragment_drop))) {
+            DropFragment frag = (DropFragment) fragment;
+            return resetScrollPosition(frag);
+        }
+
+        return true;
+    }
+
+    private boolean resetScrollPosition(BaseFragment frag) {
+        int position = Objects.requireNonNull(frag).getScrollPosition();
+        if (position > 0) {
+            frag.resetScrollPosition();
+            return true;
+        }
+        return false;
+    }
+
+    private void exitApplication() {
+        if (mTapToClose == 1) {
+            TrackerUtility.message(this, "Tap again to exit",
+                    0, R.color.md_white_1000,
+                    R.color.toast_message_color);
+        }
+
+        if (mTapToClose >= 2) {
+            TrackerUtility.finishFade(this, mRoot);
+        }
+    }
+
+
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed: called");
@@ -397,31 +442,10 @@ public class MainActivity extends BaseActivity implements
             onTapToCloseReset();
         } else if (backStackCount == 1) {
 
-            String fragment = mFragmentTags.get(0);
-            if (fragment.equals(getString(R.string.tag_fragment_philippines))) {
-                PhilippinesFragment frag = (PhilippinesFragment) getSupportFragmentManager().findFragmentByTag(fragment);
-                int position = Objects.requireNonNull(frag).getScrollPosition();
-                if (position > 0) {
-                    frag.resetScrollPosition();
-                    return;
-                }
-            } else if (fragment.equals(getString(R.string.tag_fragment_global))) {
-                GlobalFragment frag = (GlobalFragment) getSupportFragmentManager().findFragmentByTag(fragment);
-                int position = Objects.requireNonNull(frag).getScrollPosition();
-                if (position > 0) {
-                    frag.resetScrollPosition();
-                    return;
-                }
-            }
-
-            if (mTapToClose == 0) {
-                Toast.makeText(this, "1 more click to exit", Toast.LENGTH_SHORT).show();
-            }
-            onTapToClose();
-
-            if (mTapToClose >= 2) {
-                TrackerUtility.finishFade(this, mRoot);
-            }
+            String current = mFragmentTags.get(0);
+            boolean isReset = resetScrollPosition(current);
+            if (!isReset) onTapToClose();
+            exitApplication();
         }
     }
 }

@@ -6,7 +6,7 @@
 
     <color name="bar_bg">#F1F1F1</color>
     <color name="shimmer_bg">#dddddd</color>
-    <color name="toast_connection_lost">@color/md_red_400</color>
+    <color name="toast_message_color">@color/md_red_400</color>
 
     <color name="color_bottom_nav_red">@color/md_red_400</color>
     <color name="color_bottom_nav_grey">#c3c3c3</color>

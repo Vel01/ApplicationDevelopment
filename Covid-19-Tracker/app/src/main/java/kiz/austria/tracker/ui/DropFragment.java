@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -29,7 +28,7 @@ import kiz.austria.tracker.data.parser.PHDOHDataParser;
 import kiz.austria.tracker.model.DOHDrop;
 import kiz.austria.tracker.util.TrackerKeys;
 
-public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvailable, AdapterClickListener.OnAdapterClickListener {
+public class DropFragment extends BaseFragment implements PHDOHDataParser.OnDataAvailable, AdapterClickListener.OnAdapterClickListener {
 
     private static final String TAG = "DropFragment";
 
@@ -45,6 +44,7 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
 
     private String mRawDataDropFromHerokuapp;
     private boolean isPaused = false;
+    private LinearLayoutManager mLinearLayoutManager;
 
 
     @Override
@@ -92,7 +92,8 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
     }
 
     private void initRecyclerViewAdapter() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
         AdapterClickListener listener = new AdapterClickListener(getActivity(), mRecyclerView);
         listener.setOnAdapterClickListener(this);
         mDropRecyclerAdapter = new DropRecyclerAdapter();
@@ -155,6 +156,14 @@ public class DropFragment extends Fragment implements PHDOHDataParser.OnDataAvai
 
     private void cancelDownload() {
         if (mPHDOHDataParser != null) mPHDOHDataParser.cancel(true);
+    }
+
+    public int getScrollPosition() {
+        return mRecyclerView.computeVerticalScrollOffset();
+    }
+
+    public void resetScrollPosition() {
+        mLinearLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 
     @Override

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -27,7 +26,7 @@ import kiz.austria.tracker.data.RawDataDownloader;
 import kiz.austria.tracker.data.parser.CaseDataParser;
 import kiz.austria.tracker.model.Case;
 
-public class CasesFragment extends Fragment implements AdapterClickListener.OnAdapterClickListener, CaseDataParser.OnDataAvailable {
+public class CasesFragment extends BaseFragment implements AdapterClickListener.OnAdapterClickListener, CaseDataParser.OnDataAvailable {
 
     private static final String TAG = "CasesFragment";
 
@@ -44,6 +43,7 @@ public class CasesFragment extends Fragment implements AdapterClickListener.OnAd
     private CaseDataParser mCaseDataParser = null;
 
     private ArrayList<Case> mCasesList = new ArrayList<>();
+    private LinearLayoutManager mLinearLayoutManager;
 
     @Override
     public void onDataCasesAvailable(ArrayList<Case> cases, RawDataDownloader.DownloadStatus status) {
@@ -104,8 +104,8 @@ public class CasesFragment extends Fragment implements AdapterClickListener.OnAd
     }
 
     private void initRecyclerView() {
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
         AdapterClickListener listener = new AdapterClickListener(getActivity(), mRecyclerView);
         listener.setOnAdapterClickListener(this);
         mCaseRecyclerAdapter = new CaseRecyclerAdapter();
@@ -159,6 +159,14 @@ public class CasesFragment extends Fragment implements AdapterClickListener.OnAd
 
     private boolean isPausedToStopReDownload() {
         return isPaused;
+    }
+
+    public int getScrollPosition() {
+        return mRecyclerView.computeVerticalScrollOffset();
+    }
+
+    public void resetScrollPosition() {
+        mLinearLayoutManager.scrollToPositionWithOffset(0, 0);
     }
 
     @Override

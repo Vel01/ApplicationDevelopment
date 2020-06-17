@@ -142,7 +142,7 @@ public class CountriesFragment extends BaseFragment implements
         if (ConnectivityReceiver.isNotConnected()) {
             TrackerUtility.message(getActivity(), "No Internet Connection",
                     R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                    R.color.toast_connection_lost);
+                    R.color.toast_message_color);
         }
     }
 
@@ -400,4 +400,14 @@ public class CountriesFragment extends BaseFragment implements
         cancelJSONParsing();
     }
 
+    @Override
+    public int getScrollPosition() {
+        //not supported
+        return 0;
+    }
+
+    @Override
+    public void resetScrollPosition() {
+        //not supported
+    }
 }

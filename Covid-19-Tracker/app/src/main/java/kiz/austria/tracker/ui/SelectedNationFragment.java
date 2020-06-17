@@ -110,6 +110,17 @@ public class SelectedNationFragment extends BaseFragment {
         super.onDestroyView();
         mUnbinder.unbind();
     }
+
+    @Override
+    public int getScrollPosition() {
+        //not supported
+        return 0;
+    }
+
+    @Override
+    public void resetScrollPosition() {
+        //not supported
+    }
 }
 
 

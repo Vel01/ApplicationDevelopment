@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -39,8 +38,6 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
     private boolean mIsSplashPaused = false;
     private boolean mIsDownloadCompletedInForeground = true;
 
-    private ViewGroup mRootSplash;
-
     @Override
     public void onDataCompleted() {
         if (mIsDownloadCompletedInForeground) {
@@ -67,7 +64,7 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
         } else {
             TrackerUtility.message(this, "No Internet Connection",
                     R.drawable.ic_signal_wifi_off, R.color.md_white_1000,
-                    R.color.toast_connection_lost);
+                    R.color.toast_message_color);
             unbindDownloadDataService();
             if (!mIsServiceBound) stopService(mDownloadDataServiceIntent);
         }
@@ -152,7 +149,6 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        mRootSplash = findViewById(R.id.tracker_splash);
         mDownloadDataServiceIntent = new Intent(this, GetRawDataService.class);
         initTrackerListener();
     }
