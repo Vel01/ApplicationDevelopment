@@ -30,6 +30,7 @@ import kiz.austria.tracker.util.TrackerKeys;
 import kiz.austria.tracker.util.TrackerUtility;
 
 public class MainActivity extends BaseActivity implements
+        ModifiableBar,
         TrackerDialog.OnDialogListener,
         Inflatable,
         BottomNavigationViewEx.OnNavigationItemSelectedListener {
@@ -447,5 +448,10 @@ public class MainActivity extends BaseActivity implements
             if (!isReset) onTapToClose();
             exitApplication();
         }
+    }
+
+    @Override
+    public void updateActionBarColor(int color) {
+        mToolbar.setBackgroundColor(color);
     }
 }
