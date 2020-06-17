@@ -52,6 +52,7 @@ public class SplashScreen extends AppCompatActivity implements GetRawDataService
                 Log.d(TAG, "onDataCompleted() is completed ");
                 startActivity(new Intent(this, MainActivity.class));
                 overridePendingTransition(R.anim.fade_in_start_activity, R.anim.fade_out_end_activity);
+                finish();
             }
         }
     }

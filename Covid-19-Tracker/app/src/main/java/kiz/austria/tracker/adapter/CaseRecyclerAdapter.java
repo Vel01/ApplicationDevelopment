@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -121,7 +122,17 @@ public class CaseRecyclerAdapter extends RecyclerView.Adapter<BaseViewHolder> im
             if (current.getNationality() != null) nationality.setText(current.getNationality());
             if (current.getHospitalAdmittedTo() != null)
                 hospital.setText(current.getHospitalAdmittedTo());
-            if (current.getHealthStatus() != null) status.setText(current.getHealthStatus());
+            if (current.getHealthStatus() != null) {
+                status.setText(current.getHealthStatus());
+                String status = current.getHealthStatus().toLowerCase();
+                if (status.equals("recovered")) {
+                    this.status.setBackground(ResourcesCompat.getDrawable(this.status.getResources(), R.drawable.rounded_status_recovered, null));
+                } else if (status.equals("died")) {
+                    this.status.setBackground(ResourcesCompat.getDrawable(this.status.getResources(), R.drawable.rounded_status_died, null));
+                } else {
+                    this.status.setBackground(ResourcesCompat.getDrawable(this.status.getResources(), R.drawable.rounded_status_other, null));
+                }
+            }
         }
 
         @Override
